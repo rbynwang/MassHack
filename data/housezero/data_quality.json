@@ -3,7 +3,7 @@
     "minute_rows": 570240,
     "hourly_rows": 9504,
     "source_timestamp_backsteps_sorted": 59,
-    "missing_minutes": {
+    "blank_minute_grid_slots": {
       "Heat_pump (kW)": 833,
       "Heat_pump_electric (kW)": 829,
       "Cooling_pump (kW)": 831,
@@ -32,7 +32,7 @@
       "In (kW)": 774,
       "Out (kW)": 774
     },
-    "incomplete_hours": {
+    "hours_below_60_valid_minute_slots": {
       "Heat_pump (kW)": 117,
       "Heat_pump_electric (kW)": 113,
       "Cooling_pump (kW)": 117,
@@ -66,29 +66,39 @@
     "minute_rows": 570240,
     "hourly_rows": 9504,
     "source_timestamp_backsteps_sorted": 0,
-    "missing_minutes": {
+    "blank_minute_grid_slots": {
       "Outdoor_air_temp (\u00b0F)": 18335,
       "Wind_speed (m_s)": 8452,
       "Wind_dir (\u00b0)": 48068,
       "Rain (Boolean)": 18335,
       "Relative_humidity (%)": 456229
     },
-    "incomplete_hours": {
+    "hours_below_60_valid_minute_slots": {
       "Outdoor_air_temp (\u00b0F)": 353,
       "Wind_speed (m_s)": 198,
       "Wind_dir (\u00b0)": 857,
       "Rain (Boolean)": 353,
       "Relative_humidity (%)": 9504
+    },
+    "humidity_native_sampling": {
+      "interval_minutes": 5,
+      "expected_samples_per_hour": 12,
+      "expected_total_samples": 114048,
+      "finite_samples": 114011,
+      "missing_expected_samples": 37,
+      "hours_with_all_12_samples": 9499,
+      "hours_below_12_samples": 5,
+      "note": "Humidity grid blanks between five-minute observations are unsampled slots, not lost expected observations."
     }
   },
   "radiation": {
     "minute_rows": 570240,
     "hourly_rows": 9504,
     "source_timestamp_backsteps_sorted": 0,
-    "missing_minutes": {
+    "blank_minute_grid_slots": {
       "HZ_solar_radiation (W_m^2)": 735
     },
-    "incomplete_hours": {
+    "hours_below_60_valid_minute_slots": {
       "HZ_solar_radiation (W_m^2)": 97
     }
   },
