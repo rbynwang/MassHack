@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Commonwatt Live 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+html{color-scheme:light}
+body{margin:0}
+[hidden]{display:none!important}
+</style>
+<style>
+/* Layout: a fixed 1600x900 canvas scaled to fit, like a video frame. A 3D clay-model neighborhood (commonwatt-kit.js) renders inside; the camera visits four buildings, then pulls back to the agent network. Labels, cards and the network overlay are HTML/SVG on top. Playback controls live outside the frame so screen recordings stay clean. */
+:root{
+  --page:#e8ebe7;
+  --ink:#15181c;
+  --ink-2:#565d65;
+  --ink-3:#8a9097;
+  --card:#ffffff;
+  --hair:#dde1dc;
+  --solar:#36c56c;
+  --battery:#f2a63a;
+  --grid:#2fb5ae;
+  --strain:#e9533f;
+  --signal:#6268f2;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+body{background:var(--page);color:var(--ink);font-family:var(--display);font-size:15px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:22px 34px}
+.wrap{max-width:1600px;margin-inline:auto;display:grid;gap:14px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 20px}
+.top h1{margin:0;font-size:21px;font-weight:650;font-stretch:112%;letter-spacing:-.01em;text-wrap:balance}
+.top p{margin:0;color:var(--ink-2);font-size:14px}
+
+/* ---------- the frame ---------- */
+.viewport{
+  --hud:#15181c; --hud2:#59606a; --pillbg:rgba(255,255,255,.78); --pillfg:#59606a;
+  --navtxt:#59606a; --navon:#15181c; --navtrack:rgba(21,24,28,.14); --navfill:#15181c; --nlabel:#3b4148; --nodebg:#ffffff; --scrim:rgba(232,233,232,.88);
+  position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#e7e8e5;
+  box-shadow:0 1px 0 rgba(0,0,0,.04),0 24px 60px -32px rgba(20,24,28,.4);transition:background 1.6s ease;
+}
+.viewport.evening{
+  --hud:#f3f4f2; --hud2:#b7bdc4; --pillbg:rgba(20,22,26,.7); --pillfg:#c4c9cf;
+  --navtxt:#a8aeb5; --navon:#ffffff; --navtrack:rgba(255,255,255,.18); --navfill:#ffffff; --nlabel:#d6dade; --nodebg:#1d2025; --scrim:rgba(18,20,23,.85);
+  background:#191c20;
+}
+.viewport:fullscreen{border-radius:0;aspect-ratio:auto;width:100vw;height:100vh;background:#0c0e11}
+.canvas{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;overflow:hidden}
+#gl{position:absolute;inset:0;width:1600px;height:900px;display:block}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink-2);font:500 15px var(--mono);background:#e7e8e5;transition:opacity .6s ease}
+.loading.done{opacity:0;pointer-events:none}
+.loading .err{max-width:560px;text-align:center;color:var(--ink);font:500 15px/1.5 var(--display)}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,rgba(0,0,0,0) 60%,rgba(0,0,0,.07) 100%)}
+/* keeps the title and caption readable over the scene */
+.scrim{position:absolute;left:0;top:0;width:1000px;height:440px;pointer-events:none;background:radial-gradient(70% 70% at 0 0,var(--scrim) 35%,transparent 100%);transition:background 1.6s ease}
+
+/* agent network overlay */
+#net{position:absolute;inset:0;width:1600px;height:900px;pointer-events:none;opacity:0;transition:opacity .8s ease}
+#net.show{opacity:1}
+#net .arc{fill:none;stroke:#8d92ff;stroke-width:1.4;opacity:0;transition:opacity .6s ease}
+#net .arc.on{opacity:.55}
+#net .tether{stroke:#8d92ff;stroke-width:1;stroke-dasharray:2 4;opacity:0;transition:opacity .5s ease}
+#net .tether.on{opacity:.55}
+#net .node{opacity:0;transition:opacity .5s ease}
+#net .node.on{opacity:1}
+#net .node .body{fill:var(--nodebg);stroke:var(--signal);stroke-width:2}
+#net .node .guard{fill:none;stroke:var(--nlabel);stroke-width:1.2;stroke-dasharray:3 4;opacity:.7;transition:stroke .3s ease,opacity .3s ease}
+#net .node .guard.deny{stroke:var(--strain);stroke-dasharray:none;stroke-width:2.6;opacity:1}
+#net .node .glyph{fill:#8d92ff;font:600 13px var(--display);text-anchor:middle;dominant-baseline:central}
+#net .node .nlabel{fill:var(--nlabel);font:500 12px var(--mono);text-anchor:middle;paint-order:stroke;stroke:rgba(0,0,0,.35);stroke-width:3px}
+#net .node .halo{fill:none;stroke:#8d92ff;stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+#net .node.ping .halo{animation:halo .9s ease-out}
+#net .node.coord .body{fill:var(--signal);stroke:#fff;stroke-width:2.5}
+#net .node.coord .hub{fill:#fff} #net .node.coord .hubline{stroke:#fff;stroke-width:1.6}
+#net .node.coord .nlabel{font:600 13px var(--display)}
+#net .node .pop{transform-box:fill-box;transform-origin:center}
+#net .node.join .pop{animation:join .9s cubic-bezier(.2,1.4,.4,1) both}
+#net .blocked{fill:var(--strain);font:600 12px var(--mono);text-anchor:middle;opacity:0;transition:opacity .3s ease;paint-order:stroke;stroke:rgba(10,12,15,.75);stroke-width:4px}
+#net .blocked.on{opacity:1}
+#net .dot{filter:drop-shadow(0 0 4px currentColor)}
+@keyframes halo{from{opacity:.85;transform:scale(1)}to{opacity:0;transform:scale(2.3)}}
+@keyframes join{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+
+/* overlay: chips, hud, cards */
+.overlay{position:absolute;inset:0;pointer-events:none}
+.chip{position:absolute;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;background:#111317;color:#fff;font:500 15px/1 var(--display);white-space:nowrap;opacity:0;transition:opacity .5s ease;box-shadow:0 8px 22px -10px rgba(0,0,0,.55)}
+.chip.on{opacity:1}
+.chip.on.idle{opacity:.38}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.chip .vl{color:#aeb4bb;font:500 13px/1 var(--mono)}
+.chip .bar{width:70px;height:5px;border-radius:3px;background:#3a3f46;position:relative;overflow:hidden}
+.chip .bar i{position:absolute;inset:0 auto 0 0;background:var(--solar);border-radius:3px}
+.chip.above{transform:translate(-50%,calc(-100% - 14px))}
+.chip.below{transform:translate(-50%,14px)}
+.chip.left{transform:translate(calc(-100% - 14px),-50%)}
+.chip.right{transform:translate(14px,-50%)}
+.chip::after{content:"";position:absolute;background:#111317}
+.chip.above::after{left:50%;bottom:-10px;width:1.5px;height:10px;margin-left:-.75px}
+.chip.below::after{left:50%;top:-10px;width:1.5px;height:10px;margin-left:-.75px}
+.chip.left::after{top:50%;right:-10px;height:1.5px;width:10px;margin-top:-.75px}
+.chip.right::after{top:50%;left:-10px;height:1.5px;width:10px;margin-top:-.75px}
+.k-solar{color:var(--solar)} .k-battery{color:var(--battery)} .k-grid{color:var(--grid)} .k-signal{color:#8d92ff} .k-ink{color:#e9ecef}
+
+.hud{position:absolute;left:52px;top:44px;max-width:560px;color:var(--hud);transition:color 1.2s ease}
+.hud .brand{display:flex;align-items:center;gap:12px;font:600 12px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--hud2)}
+.hud .brand .clock{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:8px;background:var(--pillbg);font:500 14px/1 var(--mono);letter-spacing:0;color:var(--hud);text-transform:none}
+.hud h2{margin:14px 0 8px;font-size:46px;line-height:1.02;font-weight:640;font-stretch:115%;letter-spacing:-.02em;text-wrap:balance}
+.hud p{margin:0;font-size:18px;line-height:1.45;color:var(--hud2);text-wrap:pretty;transition:color 1.2s ease}
+.pill{position:absolute;right:44px;top:44px;padding:6px 10px;border-radius:999px;background:var(--pillbg);color:var(--pillfg);font:500 11px/1 var(--mono);letter-spacing:.02em}
+
+.card{position:absolute;right:52px;top:120px;width:430px;padding:24px 26px 22px;border-radius:18px;background:var(--card);color:var(--ink);box-shadow:0 30px 70px -30px rgba(20,24,28,.35),0 2px 6px rgba(20,24,28,.06);opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease}
+.card.on{opacity:1;transform:none}
+.card .head{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
+.card .head .live{width:9px;height:9px;border-radius:50%;background:var(--solar);box-shadow:0 0 0 4px rgba(54,197,108,.18)}
+.card .head .when{margin-left:auto;font:500 12px var(--mono);color:var(--ink-3)}
+.card .meta{margin-top:4px;font-size:13px;color:var(--ink-3)}
+.card h3{margin:18px 0 8px;font-size:25px;line-height:1.15;font-weight:640;font-stretch:108%;letter-spacing:-.01em;text-wrap:balance}
+.card .body{margin:0;font-size:16px;line-height:1.5;color:var(--ink-2)}
+.card .note{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:6px 10px;border-radius:8px;background:#fff5e6;color:#8a5a12;font:500 13px var(--mono)}
+.card dl{margin:18px 0 0;padding-top:16px;border-top:1px solid var(--hair);display:grid;gap:12px}
+.card dl div{display:grid;gap:3px}
+.card dt{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.card dd{margin:0;font-size:16px}
+.card dd.mono{font:600 18px var(--mono);color:var(--signal)}
+.card dd .lock{display:inline-block;vertical-align:-2px;margin-right:6px;color:var(--ink-3)}
+.card .foot{margin:14px 0 0;font-size:13px;color:var(--ink-3)}
+
+.log{position:absolute;right:44px;top:92px;width:470px;padding:16px 18px 14px;border-radius:14px;background:rgba(14,16,20,.86);color:#e7eaee;font:12.5px/1.6 var(--mono);opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .6s ease;backdrop-filter:blur(6px)}
+.log.on{opacity:1;transform:none}
+.log .lh{display:flex;justify-content:space-between;margin-bottom:8px;font:600 11px/1 var(--display);letter-spacing:.14em;text-transform:uppercase;color:#9aa1a8}
+.log .row{display:grid;grid-template-columns:44px 1fr;gap:10px;animation:rowIn .45s ease both}
+.log .t{color:#7d848c}
+.log .who{color:#fff}
+.t-ok{color:#5fd98d} .t-counter{color:#f2b55a} .t-block{color:#ff7d6b} .t-join{color:#a6aaff} .t-ask{color:#7fd6d1} .t-req{color:#c9cdd2} .t-info{color:#9aa1a8} .t-receipt{color:#d7dbe0}
+@keyframes rowIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.stat{position:absolute;width:300px;padding:16px 18px;border-radius:14px;background:var(--card);color:var(--ink);box-shadow:0 22px 50px -26px rgba(0,0,0,.5);opacity:0;transition:opacity .6s ease}
+.stat.on{opacity:1}
+.stat b{display:block;font-size:16px;font-weight:620}
+.stat span{display:block;margin-top:2px;font-size:12px;color:var(--ink-3)}
+.stat .meter{margin-top:12px;height:7px;border-radius:4px;background:#e6e8e5;overflow:hidden}
+.stat .meter i{display:block;height:100%;border-radius:4px;transition:width 1.6s cubic-bezier(.3,.7,.2,1)}
+.stat .val{margin-top:8px;font:600 14px var(--mono)}
+
+.nav{position:absolute;left:52px;right:52px;bottom:34px;display:grid;grid-template-columns:repeat(5,1fr);gap:18px;pointer-events:auto}
+.nav button{all:unset;cursor:pointer;display:grid;gap:9px;color:var(--navtxt);font:600 13px/1.2 var(--display);letter-spacing:.02em;transition:color .4s ease}
+.nav button.cur{color:var(--navon)}
+.nav button:focus-visible{outline:2px solid var(--signal);outline-offset:6px;border-radius:4px}
+.nav .trk{height:4px;border-radius:2px;background:var(--navtrack);overflow:hidden}
+.nav .trk i{display:block;height:100%;width:0;background:var(--navfill)}
+
+/* controls outside the frame */
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.controls button{font:600 14px var(--display);color:var(--ink);background:#fff;border:1px solid #cfd4ce;border-radius:999px;padding:8px 16px;cursor:pointer}
+.controls button:hover{border-color:#9aa1a7}
+.controls button:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.controls button.primary{background:var(--ink);color:#fff;border-color:var(--ink);min-width:86px}
+.controls .sep{width:1px;height:22px;background:#cfd4ce;margin-inline:4px}
+.controls .hint{color:var(--ink-2);font-size:13px;margin-left:4px}
+.note{margin:0;max-width:80ch;color:var(--ink-2);font-size:13.5px}
+.note code{font-family:var(--mono);font-size:12.5px;background:#fff;border:1px solid #dde1dc;border-radius:5px;padding:1px 5px}
+@media (prefers-reduced-motion:reduce){ .log .row{animation:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Commonwatt</h1>
+    <p>Four members, one network. Presentation scenes.</p>
+  </header>
+
+  <div class="viewport" id="viewport">
+    <div class="canvas" id="canvas">
+      <canvas id="gl" width="1600" height="900" aria-label="3D model of a Cambridge neighborhood: an office complex, single-family homes, a corner café, a public library, a substation, transmission towers, and a power plant"></canvas>
+      <div class="vignette"></div>
+      <div class="scrim"></div>
+      <svg id="net" viewBox="0 0 1600 900" aria-hidden="true"><g id="gNet"></g></svg>
+      <div class="overlay" id="overlay"></div>
+
+      <div class="hud" id="hud">
+        <div class="brand"><span>Commonwatt</span><span aria-hidden="true">·</span><span>Cambridge, MA</span><span class="clock"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 3.6V7l2.2 1.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="clock">2:40 PM</span></span></div>
+        <h2 id="hTitle">Office complex</h2>
+        <p id="hCaption"></p>
+      </div>
+      <div class="pill" id="pill">Illustrative values</div>
+
+      <aside class="card" id="card" aria-live="polite">
+        <div class="head"><span class="live"></span><span id="cAgent"></span><span class="when">Just now</span></div>
+        <div class="meta" id="cMeta"></div>
+        <h3 id="cTitle"></h3>
+        <p class="body" id="cBody"></p>
+        <div class="note" id="cNote" hidden></div>
+        <dl>
+          <div><dt>Offer to the commons</dt><dd class="mono" id="cOffer"></dd></div>
+          <div><dt>Private limits</dt><dd><svg class="lock" width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><rect x="1" y="6" width="10" height="7.5" rx="1.6" fill="currentColor"/><path d="M3.3 6V4.2a2.7 2.7 0 0 1 5.4 0V6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span id="cLimits"></span></dd></div>
+        </dl>
+        <p class="foot">Limits stay with this agent. The commons sees only the offer.</p>
+      </aside>
+
+      <div class="log" id="log"><div class="lh"><span>Commons message log</span><span id="logCount">0 messages</span></div><div id="logRows"></div></div>
+
+      <div class="stat" id="statLocal" style="left:300px;top:710px"><b>Clean power used locally</b><span>Solar and batteries inside the commons</span><div class="meter"><i id="mLocal" style="background:var(--solar)"></i></div><div class="val" id="vLocal"></div></div>
+      <div class="stat" id="statPeak" style="left:1250px;top:710px"><b>Peak from large generators</b><span>Neighborhood draw, 5–7 PM</span><div class="meter"><i id="mPeak" style="background:#8f969d"></i></div><div class="val" id="vPeak"></div></div>
+
+      <nav class="nav" id="nav" aria-label="Scenes"></nav>
+      <div class="loading" id="loading"><span id="loadMsg">Building the neighborhood…</span></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="bPrev" type="button">Previous</button>
+    <button id="bPlay" type="button" class="primary">Pause</button>
+    <button id="bNext" type="button">Next</button>
+    <button id="bFull" type="button">Full screen</button>
+    <span class="sep" aria-hidden="true"></span>
+    <button id="bStill" type="button" title="Saves the 3D render of the current frame at 3840×2160, without labels or cards">Save still (4K)</button>
+    <button id="bGlb" type="button" title="Downloads the neighborhood model for Blender, Keynote, Figma or another 3D tool">Export 3D model (.glb)</button>
+    <span class="hint">Space plays or pauses. Arrow keys change scenes.</span>
+  </div>
+  <p class="note">Numbers on screen are illustrative. To show your simulation results, edit the <code>STORY</code> object at the top of the script. The 3D models, materials and energy lines live in <code>commonwatt-kit.js</code> and can be reused in other pages. Add <code>?quality=low</code> to the URL on a slow machine.</p>
+</div>
+
+<script>document.write('<script src="story-data.js?t=' + Date.now() + '"><\/script>');</script>
+<script>
+(() => {
+'use strict';
+
+const STORY = window.COMMONWATT_STORY;
+
+/* ===================================================================== */
+window.__cwStart = function(THREE, X){
+const NS = 'http://www.w3.org/2000/svg';
+const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const Q = new URLSearchParams(location.search);
+const LOW = Q.get('quality') === 'low';
+function el(tag, attrs, parent){ const e=document.createElementNS(NS, tag); if(attrs) for(const k in attrs) e.setAttribute(k, attrs[k]); if(parent) parent.appendChild(e); return e; }
+const $ = id => document.getElementById(id);
+
+const kit = window.CommonwattKit(THREE, X);
+const stage = kit.createStage($('gl'), { ao: !LOW });
+const B = kit.buildNeighborhood(stage);
+const V3 = (a) => new THREE.Vector3(a[0], a[1], a[2]);
+
+/* ---------- agent network overlay ---------- */
+const gNet = $('gNet');
+const NODES = {
+  coord:  {label:'commons coordinator', coord:true, world: V3(STORY.network.coord)},
+  office: {label:'office',     glyph:'O', b:'office'},
+  home03: {label:'home_03',    glyph:'H', b:'home03'},
+  home05: {label:'home_05',    glyph:'H', b:'home05'},
+  home07: {label:'home_07',    glyph:'H', b:'home07'},
+  cafe:   {label:'café',       glyph:'C', b:'cafe'},
+  library:{label:'library_01', glyph:'L', b:'library'},
+  grid:   {label:'grid',       glyph:'G', b:'grid'}
+};
+for(const id in NODES){ const n = NODES[id]; if(n.b){ n.world = B[n.b].anchors.top.clone(); n.roof = n.world.clone(); n.roof.y -= 9.5; } n.p = [0,0]; }
+const arcs = {};
+for(const id in NODES){ if(id==='coord') continue; arcs[id] = el('path',{class:'arc'}, gNet); NODES[id].tether = el('line',{class:'tether'}, gNet); }
+for(const id in NODES){
+  const n = NODES[id];
+  const g = el('g',{class:'node'+(n.coord?' coord':'')}, gNet); n.g = g;
+  const pop = el('g',{class:'pop'}, g);
+  if(n.coord){
+    el('circle',{r:26, class:'halo'}, pop);
+    el('circle',{r:26, class:'body'}, pop);
+    [[0,-8],[-7.5,5],[7.5,5]].forEach(([a,c],i,arr)=>{ const nx=arr[(i+1)%3]; el('line',{x1:a,y1:c,x2:nx[0],y2:nx[1],class:'hubline'},pop); });
+    [[0,-8],[-7.5,5],[7.5,5]].forEach(([a,c])=>el('circle',{cx:a,cy:c,r:3.2,class:'hub'},pop));
+    el('text',{y:46, class:'nlabel'}, pop).textContent = n.label;
+  } else {
+    el('circle',{r:17, class:'halo'}, pop);
+    n.guard = el('circle',{r:24, class:'guard'}, pop);
+    el('circle',{r:17, class:'body'}, pop);
+    el('text',{class:'glyph'}, pop).textContent = n.glyph;
+    el('text',{y:44, class:'nlabel'}, pop).textContent = n.label;
+    n.blk = el('text',{y:-32, class:'blocked'}, pop); n.blk.textContent = 'blocked';
+      n.why = el('text',{y:82, class:'blocked'}, pop);
+  }
+}
+function layoutNet(){
+  for(const id in NODES){ const n = NODES[id], d = (STORY.network.nudge || {})[id] || [0, 0]; const p = stage.project(n.world); p[0] += d[0]; p[1] += d[1]; n.p = p; n.g.setAttribute('transform', `translate(${p[0].toFixed(1)} ${p[1].toFixed(1)})`); }
+  const c = NODES.coord.p;
+  for(const id in arcs){
+    const n = NODES[id], qx = (c[0]+n.p[0])/2, qy = Math.min(c[1], n.p[1]) - 70 + (n.p[1]-c[1])*0.25;
+    arcs[id].setAttribute('d', `M${c[0].toFixed(1)} ${c[1].toFixed(1)} Q${qx.toFixed(1)} ${qy.toFixed(1)} ${n.p[0].toFixed(1)} ${n.p[1].toFixed(1)}`);
+    const r = stage.project(n.roof);
+    n.tether.setAttribute('x1', n.p[0].toFixed(1)); n.tether.setAttribute('y1', (n.p[1]+25).toFixed(1));
+    n.tether.setAttribute('x2', r[0].toFixed(1)); n.tether.setAttribute('y2', r[1].toFixed(1));
+  }
+}
+function showNode(id, on){ const n=NODES[id]; n.g.classList.toggle('on', on); if(n.tether) n.tether.classList.toggle('on', on); if(arcs[id]) arcs[id].classList.toggle('on', on); }
+function ping(id){ const g=NODES[id].g; g.classList.remove('ping'); void g.getBBox(); g.classList.add('ping'); }
+const msgs = [];
+function sendMsg(from, to, opts){
+  opts = opts || {};
+  const nodeId = from==='coord' ? to : from, path = arcs[nodeId];
+  const color = opts.color || '#8d92ff';
+  if(RM){ ping(to); if(opts.onDone) opts.onDone(); return; }
+  const dot = el('circle',{r:5, class:'dot'}, gNet);
+  dot.style.fill = color; dot.style.color = color;
+  msgs.push({ dot, path, rev: from!=='coord', t:0, dur:opts.dur||0.62, stop:opts.stop||1, to, onDone:opts.onDone });
+}
+function block(id, reason){
+  const n=NODES[id];
+  n.why.textContent = reason || '';
+  sendMsg('coord', id, { stop:0.8, onDone:()=>{ n.guard.classList.add('deny'); n.blk.classList.add('on'); n.why.classList.add('on');
+    later(1.8, ()=>{ n.guard.classList.remove('deny'); n.blk.classList.remove('on'); n.why.classList.remove('on'); }); } });
+}
+function join(id){ showNode(id, true); NODES[id].g.classList.add('join'); ping(id); }
+function resetNodes(){
+  for(const id in NODES){ const n=NODES[id]; showNode(id,false); n.g.classList.remove('join','ping');
+    if(n.guard){ n.guard.classList.remove('deny'); n.blk.classList.remove('on'); n.why.classList.remove('on'); } }
+  msgs.splice(0).forEach(m=>m.dot.remove());
+}
+
+/* ---------- overlay chips ---------- */
+const overlay = $('overlay');
+const chips = [];
+STORY.chapters.forEach((ch, ci) => (ch.chips||[]).forEach(c => {
+  const wp = c.bus ? B[c.b].svc.clone() : stage.anchor(c.b, c.at);
+  if(!wp){ console.warn('Unknown anchor', c); return; }
+  const d = document.createElement('div');
+  d.className = 'chip '+(c.place||'above')+' k-'+(c.kind||'ink')+(c.idle?' idle':'');
+  d.innerHTML = '<span class="dot"></span><span class="nm"></span><span class="vl"></span>'+(c.bar!=null?'<span class="bar"><i></i></span>':'');
+  d.querySelector('.nm').textContent = c.name;
+  d.querySelector('.vl').textContent = c.value || '';
+  if(c.bar!=null) d.querySelector('.bar i').style.width = c.bar+'%';
+  overlay.appendChild(d);
+  chips.push({ el:d, wp, ch:ci });
+}));
+
+/* ---------- camera ---------- */
+function camOf(ch){
+  const c = ch.cam;
+  const at = c.b ? stage.anchor(c.b, c.at).toArray() : c.at;
+  return { at, dist:c.dist, az:c.az, el:c.el, fx:c.fx, fy:c.fy, drift: RM ? 0 : c.drift };
+}
+
+/* ---------- HUD, card, log, meters, nav ---------- */
+const viewport = $('viewport'), canvas = $('canvas');
+$('pill').hidden = !STORY.illustrative;
+const nav = $('nav');
+STORY.chapters.forEach((ch,i) => {
+  const btn = document.createElement('button'); btn.type='button';
+  btn.innerHTML = '<span></span><span class="trk"><i></i></span>';
+  btn.firstChild.textContent = ch.nav;
+  btn.addEventListener('click', () => { enter(i); setPlaying(true); });
+  nav.appendChild(btn);
+});
+const navBtns = [...nav.children];
+let logN = 0;
+function addLog(r){
+  const row = document.createElement('div'); row.className='row';
+  const t = document.createElement('span'); t.className='t'; t.textContent=r[0];
+  const m = document.createElement('span');
+  const who = document.createElement('span'); who.className='who'; who.textContent=r[1]+'  ';
+  const tx = document.createElement('span'); tx.className='t-'+(r[3]||'info'); tx.textContent=r[2];
+  m.append(who, tx); row.append(t, m);
+  const rows = $('logRows'); rows.appendChild(row);
+  while(rows.children.length > 8) rows.firstChild.remove();
+  logN++; $('logCount').textContent = logN + (logN===1?' message':' messages');
+}
+function setMeters(local, peak){
+  $('mLocal').style.width = local+'%'; $('vLocal').textContent = local+'% of demand';
+  $('mPeak').style.width = peak+'%'; $('vPeak').textContent = peak===100 ? 'Baseline peak' : '−'+(100-peak)+'% vs. baseline';
+}
+
+/* ---------- playback ---------- */
+let cur = -1, elapsed = 0, fired = 0, playing = true, token = 0;
+const timers = [];
+function later(sec, fn){ timers.push({at: elapsed + sec, fn, tok: token}); }
+
+function enter(i, instant){
+  cur = i; elapsed = 0; fired = 0; token++; timers.length = 0;
+  const ch = STORY.chapters[i];
+  viewport.classList.toggle('evening', ch.mood==='evening');
+  stage.setMood(ch.mood);
+  if(instant) stage.snapMood();
+  stage.setCamera(camOf(ch), instant || RM);
+  stage.allFlowsOff();
+  (ch.flows||[]).forEach(f => stage.setFlow(f[0], f[1], f[2]));
+  chips.forEach(c => c.el.classList.remove('on'));
+  later((instant||RM) ? 0 : 1.4, () => chips.filter(c=>c.ch===i).forEach(c=>c.el.classList.add('on')));
+  $('clock').textContent = ch.clock; $('hTitle').textContent = ch.title; $('hCaption').textContent = ch.caption;
+  const card = $('card');
+  card.classList.remove('on');
+  if(ch.card){
+    $('cAgent').textContent = ch.card.agent; $('cMeta').textContent = ch.card.meta; $('cTitle').textContent = ch.card.title;
+    $('cBody').textContent = ch.card.body; $('cOffer').textContent = ch.card.offer; $('cLimits').textContent = ch.card.limits;
+    $('cNote').hidden = !ch.card.note; $('cNote').textContent = ch.card.note || '';
+    later((instant||RM) ? 0 : 1.0, () => card.classList.add('on'));
+  }
+  const isNet = ch.key==='network';
+  $('net').classList.toggle('show', isNet);
+  resetNodes();
+  $('log').classList.toggle('on', isNet);
+  $('logRows').innerHTML = ''; logN = 0; $('logCount').textContent = '0 messages';
+  $('statLocal').classList.toggle('on', isNet); $('statPeak').classList.toggle('on', isNet);
+  if(ch.meters) setMeters(ch.meters.localBefore, ch.meters.peakBefore);
+  stage.setSmoke(isNet ? 1 : 0.75);
+  navBtns.forEach((b,j) => { b.classList.toggle('cur', j===i); b.querySelector('i').style.width = j<i ? '100%' : '0%'; });
+}
+
+function runEvent(e){
+  const ch = STORY.chapters[cur];
+  if(e.clock) $('clock').textContent = e.clock;
+  if(e.caption) $('hCaption').textContent = e.caption;
+  if(e.log) addLog(e.log);
+  if(e.nodes){ showNode('coord', true); showNode('grid', true);
+    ['office','home03','home05','home07','cafe'].forEach((id,k) => later(k*0.12, () => showNode(id, true))); }
+  if(e.msg){ const [a,c] = e.msg; sendMsg(a, c, {onDone:() => ping(c)}); }
+  if(e.block) block(e.block, e.reason);
+  if(e.join) join(e.join);
+  if(e.relieve && ch.relieve){
+    ch.relieve.flows.forEach(f => stage.setFlow(f[0], f[1], f[2]));
+    stage.setSmoke(ch.relieve.smoke);
+    if(ch.meters) setMeters(ch.meters.localAfter, ch.meters.peakAfter);
+  }
+}
+
+function setPlaying(p){ playing = p; $('bPlay').textContent = p ? 'Pause' : 'Play'; }
+function next(){ if(cur < STORY.chapters.length-1){ enter(cur+1); setPlaying(true); } }
+function prev(){ enter(Math.max(0, cur-1)); setPlaying(true); }
+$('bPlay').addEventListener('click', () => {
+  if(!playing && cur===STORY.chapters.length-1 && elapsed >= STORY.chapters[cur].dur){ enter(0); setPlaying(true); return; }
+  setPlaying(!playing);
+});
+$('bNext').addEventListener('click', next);
+$('bPrev').addEventListener('click', prev);
+$('bFull').addEventListener('click', () => {
+  try{
+    if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+    else if(viewport.requestFullscreen) viewport.requestFullscreen().catch(()=>{});
+  }catch(_){}
+});
+$('bStill').addEventListener('click', () => stage.saveStill('commonwatt-'+STORY.chapters[cur].key, 2.4));
+$('bGlb').addEventListener('click', () => stage.exportGLB('commonwatt-neighborhood'));
+document.addEventListener('keydown', e => {
+  if(e.target.closest && e.target.closest('input,textarea')) return;
+  if(e.code==='Space'){ e.preventDefault(); $('bPlay').click(); }
+  else if(e.key==='ArrowRight'){ next(); }
+  else if(e.key==='ArrowLeft'){ prev(); }
+});
+
+/* ---------- fit the canvas; pixel ratio follows the on-screen size ---------- */
+let fitK = 1, prScale = 1;
+function applyPR(){ stage.setPixelRatio(Math.max(0.75, Math.min(1.5, (window.devicePixelRatio||1)*fitK) * prScale * (LOW ? 0.6 : 1))); }
+function fit(){
+  const W = viewport.clientWidth, H = viewport.clientHeight;
+  const k = Math.min(W/1600, H/900);
+  canvas.style.transform = `translate(${(W-1600*k)/2}px,${(H-900*k)/2}px) scale(${k})`;
+  if(Math.abs(k-fitK) > 0.02){ fitK = k; applyPR(); }
+}
+new ResizeObserver(fit).observe(viewport); fitK = 0; fit();
+
+/* ---------- main loop ---------- */
+let last = performance.now(), slow = 0;
+function frame(now){
+  const dt = Math.min(0.05, (now-last)/1000); last = now;
+  // keep the frame rate up on slower machines
+  if(dt > 1/28){ if(++slow > 90 && prScale > 0.6){ prScale -= 0.15; applyPR(); slow = 0; } } else slow = Math.max(0, slow-1);
+  const ch = STORY.chapters[cur];
+  if(playing){
+    elapsed += dt;
+    const ev = ch.events || [];
+    while(fired < ev.length && ev[fired].at <= elapsed) runEvent(ev[fired++]);
+    if(elapsed >= ch.dur){ if(cur < STORY.chapters.length-1) enter(cur+1); else { elapsed = ch.dur; setPlaying(false); } }
+  }
+  for(let i=timers.length-1;i>=0;i--){ const t=timers[i]; if(t.tok!==token){ timers.splice(i,1); continue; } if(elapsed >= t.at){ timers.splice(i,1); t.fn(); } }
+  stage.update(dt, { reducedMotion: RM });
+  stage.render();
+  chips.forEach(c => { if(c.ch!==cur) return; const p = stage.project(c.wp); c.el.style.left = p[0].toFixed(1)+'px'; c.el.style.top = p[1].toFixed(1)+'px'; });
+  if(STORY.chapters[cur].key === 'network'){
+    layoutNet();
+    for(let i=msgs.length-1;i>=0;i--){ const m = msgs[i];
+      m.t += dt/m.dur; const u = Math.min(m.t, m.stop); const s = m.rev ? 1-u : u;
+      const len = m.path.getTotalLength(), p = m.path.getPointAtLength(s*len);
+      m.dot.setAttribute('cx', p.x.toFixed(1)); m.dot.setAttribute('cy', p.y.toFixed(1));
+      if(m.stop<1 && m.t>=m.stop){ m.dot.style.fill='var(--strain)'; m.dot.style.color='var(--strain)'; }
+      if(m.t >= m.stop + (m.stop<1 ? 0.5 : 0)){ m.dot.remove(); msgs.splice(i,1); if(m.onDone) m.onDone(); }
+    }
+  }
+  if(cur>=0) navBtns[cur].querySelector('i').style.width = Math.min(100, elapsed/ch.dur*100).toFixed(1)+'%';
+  requestAnimationFrame(frame);
+}
+
+/* establishing shot: start on the whole neighborhood, then glide to the first building */
+stage.setCamera(camOf(STORY.chapters[STORY.chapters.length-1]), true);
+enter(0);
+$('loading').classList.add('done');
+requestAnimationFrame(frame);
+
+window.commonwatt = {
+  go(i, t){ enter(i, true); if(t){ const ch=STORY.chapters[i]; const ev=ch.events||[]; elapsed=t; while(fired<ev.length && ev[fired].at<=t) runEvent(ev[fired++]); for(let n=0;n<4 && timers.length;n++){ const pend=timers.splice(0); pend.forEach(x=>{ if(x.tok===token) x.fn(); }); } stage.update(3, { reducedMotion: true }); } setPlaying(false); },
+  play(){ setPlaying(true); }, pause(){ setPlaying(false); }, story: STORY, stage, kit
+};
+};
+})();
+</script>
+<script>document.write('<script src="commonwatt-kit.js?t=' + Date.now() + '"><\/script>');</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+const fail = (e) => {
+  console.error(e);
+  const m = document.getElementById('loadMsg');
+  m.className = 'err';
+  m.textContent = 'The 3D scene could not load. It needs an internet connection the first time, to fetch three.js. Offline, open commonwatt-story.v1-backup.html for the 2D version.';
+};
+try {
+  const [THREE, BGU, RE, EC, RP, GT, OP, L2, LM, LG, GE] = await Promise.all([
+    import('three'),
+    import('three/addons/utils/BufferGeometryUtils.js'),
+    import('three/addons/environments/RoomEnvironment.js'),
+    import('three/addons/postprocessing/EffectComposer.js'),
+    import('three/addons/postprocessing/RenderPass.js'),
+    import('three/addons/postprocessing/GTAOPass.js'),
+    import('three/addons/postprocessing/OutputPass.js'),
+    import('three/addons/lines/Line2.js'),
+    import('three/addons/lines/LineMaterial.js'),
+    import('three/addons/lines/LineGeometry.js'),
+    import('three/addons/exporters/GLTFExporter.js')
+  ]);
+  window.__cwStart(THREE, {
+    mergeGeometries: BGU.mergeGeometries, RoomEnvironment: RE.RoomEnvironment, EffectComposer: EC.EffectComposer,
+    RenderPass: RP.RenderPass, GTAOPass: GT.GTAOPass, OutputPass: OP.OutputPass,
+    Line2: L2.Line2, LineMaterial: LM.LineMaterial, LineGeometry: LG.LineGeometry, GLTFExporter: GE.GLTFExporter
+  });
+} catch (e) { fail(e); }
+</script>
+</body>
+</html>

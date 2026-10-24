@@ -1,1 +1,17 @@
 .DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Generated synthetic hourly data (61-73 MB per 200 homes): regenerate with `uv run homesim`.
+# Small review files per run (DATACARD.md, calibration.json, config.yaml, plots, homes.parquet) are kept.
+data/synthetic/*/hourly/
+
+# Large baseline download (44 MB): re-fetch with `uv run homesim-baseline`
+data/baseline/raw/resstock_*.csv
+
+# Test caches
+.hypothesis/
+.pytest_cache/

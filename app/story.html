@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commonwatt · One peak day in a Cambridge commons</title>
+<link rel="stylesheet" href="story.css">
+<script src="vendor/plotly-basic.min.js"></script>
+<script src="data/demo.js"></script>
+</head>
+<body>
+<div class="wrap" id="app">
+
+  <header class="top">
+    <div class="brand">Commonwatt</div>
+    <div class="chips" id="topChips"></div>
+    <a class="story-link" href="presentation/commonwatt-story.html">Watch the 1-minute story</a>
+  </header>
+
+  <!-- 3.1 Hero -->
+  <section class="card hero" aria-labelledby="heroTitle">
+    <h1 id="heroTitle"></h1>
+    <div class="hero-stats" id="heroStats"></div>
+  </section>
+
+  <!-- 3.2 Why this day -->
+  <section class="card strip" aria-labelledby="whyTitle">
+    <div class="strip-head">
+      <h2 id="whyTitle">Why this day</h2>
+      <p id="whyReason"></p>
+    </div>
+    <div class="sparks" id="sparks"></div>
+  </section>
+
+  <!-- 3.3 Alone vs together -->
+  <section class="card" aria-labelledby="chartTitle">
+    <div class="sec-head">
+      <h2 id="chartTitle">Alone vs. together</h2>
+      <p id="chartSub"></p>
+    </div>
+    <figure class="chart-fig">
+      <div id="mainChart" class="main-chart" role="img"></div>
+      <figcaption id="chartAlt" class="sr-note"></figcaption>
+    </figure>
+    <div class="legend-row" id="chartLegend"></div>
+  </section>
+
+  <!-- 3.4 Replay -->
+  <section class="card replay" id="replay" aria-labelledby="replayTitle" tabindex="-1">
+    <div class="sec-head">
+      <h2 id="replayTitle">Watch the negotiation</h2>
+      <p>One message at a time. Space plays or pauses, arrow keys step, chapters jump.</p>
+    </div>
+    <div class="replay-grid">
+      <div class="stage-wrap">
+        <svg id="stage" viewBox="0 0 760 574" role="img" aria-label="The commons: grid agent, coordinator, and 19 member agents in four groups"></svg>
+        <div class="state-legend" id="stateLegend"></div>
+      </div>
+      <aside class="happening" aria-labelledby="hapTitle">
+        <div class="hap-clock"><span id="hapClock">09:55</span><span id="hapChapter"></span></div>
+        <h3 id="hapTitle" class="hap-sentence" aria-live="polite"></h3>
+        <div id="hapCards" class="hap-cards"></div>
+      </aside>
+    </div>
+    <div class="pooled">
+      <div class="pooled-head"><span>Pooled commitment</span><span class="mono" id="pooledVal"></span></div>
+      <div class="pooled-bar" id="pooledBar"><div class="pooled-fill" id="pooledFill"></div><div id="pooledTicks"></div></div>
+      <div class="pooled-legend" id="pooledLegend"></div>
+    </div>
+    <div class="timeline">
+      <div class="controls">
+        <button type="button" id="bPrev" aria-label="Previous step">Back</button>
+        <button type="button" id="bPlay" class="primary">Play</button>
+        <button type="button" id="bNext" aria-label="Next step">Step</button>
+        <label class="speed">Speed
+          <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select>
+        </label>
+        <button type="button" id="bEnd">Show final state</button>
+      </div>
+      <div class="scrub">
+        <input type="range" id="scrub" min="0" value="0" aria-label="Replay position">
+        <div class="chap-ticks" id="chapTicks" aria-hidden="true"></div>
+        <div class="chapters" id="chapters" role="group" aria-label="Chapters"></div>
+      </div>
+    </div>
+    <details class="fulllog">
+      <summary id="logSummary"></summary>
+      <label class="filter"><input type="checkbox" id="keyOnly" checked> Key moments only</label>
+      <div id="logGroups"></div>
+    </details>
+  </section>
+
+  <!-- 3.5 Inside one building -->
+  <section class="card inside" aria-labelledby="insideTitle">
+    <div class="sec-head">
+      <h2 id="insideTitle">Inside one building</h2>
+      <p>What each agent shares with the coordinator, and what never leaves the building.</p>
+    </div>
+    <div class="picker" id="picker"></div>
+    <div class="inside-grid">
+      <div class="leaves">
+        <h3>Leaves the building <span class="sub">the offer</span></h3>
+        <dl id="leaves"></dl>
+        <div class="arrow-out" aria-hidden="true">to the coordinator <span>→</span></div>
+      </div>
+      <div class="inside-glyph">
+        <svg id="bigGlyph" viewBox="0 0 260 200" role="img"></svg>
+        <div class="inside-name" id="insideName"></div>
+      </div>
+      <div class="stays">
+        <h3><svg class="lock" width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><rect x="1" y="6" width="10" height="7.5" rx="1.6" fill="currentColor"/><path d="M3.3 6V4.2a2.7 2.7 0 0 1 5.4 0V6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Stays inside <span class="sub">only the member and its guard</span></h3>
+        <dl id="stays"></dl>
+      </div>
+    </div>
+    <div class="inside-bottom">
+      <div>
+        <h3>This member's negotiation</h3>
+        <ol class="steps" id="memberSteps"></ol>
+      </div>
+      <div class="phone" aria-label="Member phone card"><div class="screen" id="phone"></div></div>
+    </div>
+  </section>
+
+  <!-- 3.6 Fairness -->
+  <section class="card fair" aria-labelledby="fairTitle">
+    <div class="sec-head">
+      <h2 id="fairTitle">Who earned what</h2>
+      <p>Earnings for the 5–7 PM ask, by kind of member.</p>
+    </div>
+    <div class="fair-grid">
+      <div id="fairBars" class="fair-bars"></div>
+      <div class="fair-side">
+        <div class="callout" id="fairCallout"></div>
+        <p class="honest" id="fairNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3.7 Methods -->
+  <details class="card methods">
+    <summary><h2>Methods and sources</h2><span>measured, simulated and assumed values; how to run it</span></summary>
+    <div id="labelLegend" class="label-legend"></div>
+    <div class="methods-grid">
+      <div>
+        <h3>How to run it</h3>
+        <pre class="code">uv run commonwatt-demo        # writes app/data/demo.js
+open app/story.html           # this page, offline</pre>
+        <p id="toolLine"></p>
+        <p>The seven protocol messages (agent card, ask, offer, request, response, assignment, receipt) are published as
+          JSON Schemas in <code>protocol/schemas/</code>. Every message is an Ed25519-signed envelope.</p>
+      </div>
+      <div class="table-scroll"><table id="srcTable"></table></div>
+    </div>
+    <p class="footnote">Synthetic and simulated members are labeled. Battery sizes, prices paid and tariffs are
+      assumptions; savings are simulation results, not measured outcomes. Data: HouseZero (Harvard CGBC, CC BY 4.0,
+      DOIs 10.6084/m9.figshare.30260233.v1 and 10.6084/m9.figshare.32790984.v1), City of Boston Analyze Boston
+      (Central Library electricity, PDDL), ISO New England, National Grid (Massachusetts Electric) class load shapes,
+      NREL ComStock templates.</p>
+  </details>
+</div>
+<div class="missing" id="missing" hidden>Run <code>uv run commonwatt-demo</code> first.</div>
+<script src="story.js"></script>
+</body>
+</html>

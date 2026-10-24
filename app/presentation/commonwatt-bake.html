@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commonwatt Renderer</title>
+<style>
+/* Renders each STORY chapter once with the 3D kit and saves: renders/<key>.webp (3200x1800)
+   and renders/scenes.js (where every flow line, label and node lands on the 1600x900 frame).
+   The presentation player only needs those files, so it runs without WebGL. */
+:root{ --ink:#15181c; --ink-2:#565d65; --page:#e8ebe7 }
+body{margin:0;padding:24px 16px;background:var(--page);color:var(--ink);font:15px/1.5 "Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;display:grid;gap:14px}
+h1{margin:0;font-size:22px}
+p{margin:0;color:var(--ink-2)}
+.frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#ddd}
+.frame canvas{position:absolute;left:0;top:0;width:100%!important;height:100%!important}
+button{justify-self:start;font:600 14px inherit;padding:9px 18px;border-radius:999px;border:0;background:var(--ink);color:#fff;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+pre{margin:0;padding:12px 14px;border-radius:10px;background:#fff;font:12.5px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;max-height:260px;overflow:auto}
+code{font-family:ui-monospace,Menlo,monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Commonwatt renderer</h1>
+  <p>Renders each scene in <code>story-data.js</code> with <code>commonwatt-kit.js</code>. Your browser downloads <code>office.webp</code>, <code>home.webp</code>, <code>cafe.webp</code>, <code>library.webp</code>, <code>network.webp</code> and <code>scenes.js</code>. Put them in the <code>renders/</code> folder next to <code>commonwatt-story.html</code>. Re-render after changing a camera, a building, or a flow route.</p>
+  <button id="go" type="button" disabled>Render all scenes</button>
+  <div class="frame"><canvas id="gl" width="1600" height="900"></canvas></div>
+  <pre id="log">Loading three.js…</pre>
+</div>
+<script>
+/* always load the latest story data and kit, never a cached copy */
+document.write('<script src="story-data.js?t=' + Date.now() + '"><\/script><script src="commonwatt-kit.js?t=' + Date.now() + '"><\/script>');
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+const log = (m) => { const el = document.getElementById('log'); el.textContent += '\n' + m; el.scrollTop = 1e9; };
+const Q = new URLSearchParams(location.search);
+const SAVE = Q.get('save');            // optional: POST files to a local endpoint instead of downloading
+const SCALE = Number(Q.get('scale') || 2);
+const QUALITY = Number(Q.get('q') || 0.9);
+const SAMPLES = Number(Q.get('samples') || 16);   // renders averaged per scene
+const SOFT = Number(Q.get('soft') || 0.07);        // sun-disk radius: larger gives softer shadow edges
+
+let THREE, X;
+try {
+  const m = await Promise.all([
+    import('three'), import('three/addons/utils/BufferGeometryUtils.js'), import('three/addons/environments/RoomEnvironment.js'),
+    import('three/addons/postprocessing/EffectComposer.js'), import('three/addons/postprocessing/RenderPass.js'),
+    import('three/addons/postprocessing/GTAOPass.js'), import('three/addons/postprocessing/OutputPass.js'),
+    import('three/addons/lines/Line2.js'), import('three/addons/lines/LineMaterial.js'), import('three/addons/lines/LineGeometry.js'),
+    import('three/addons/exporters/GLTFExporter.js')
+  ]);
+  THREE = m[0];
+  X = { mergeGeometries: m[1].mergeGeometries, RoomEnvironment: m[2].RoomEnvironment, EffectComposer: m[3].EffectComposer, RenderPass: m[4].RenderPass,
+        GTAOPass: m[5].GTAOPass, OutputPass: m[6].OutputPass, Line2: m[7].Line2, LineMaterial: m[8].LineMaterial, LineGeometry: m[9].LineGeometry, GLTFExporter: m[10].GLTFExporter };
+} catch (e) { log('Could not load three.js (needs internet): ' + e.message); throw e; }
+
+const STORY = window.COMMONWATT_STORY;
+const kit = window.CommonwattKit(THREE, X);
+const stage = kit.createStage(document.getElementById('gl'), { ao: true });
+const B = kit.buildNeighborhood(stage);
+window.commonwattBake = { stage, kit, run };
+log('Neighborhood built. ' + Object.keys(stage.F).length + ' flow lines.');
+
+const V3 = a => new THREE.Vector3(a[0], a[1], a[2]);
+const r1 = n => Math.round(n*10)/10;
+function camOf(ch){ const c = ch.cam; return { at: c.b ? stage.anchor(c.b, c.at).toArray() : c.at, dist: c.dist, az: c.az, el: c.el, fx: c.fx, fy: c.fy, drift: 0 }; }
+function pt(v){ const p = stage.project(v); return p[2] < 1 ? [r1(p[0]), r1(p[1])] : null; }
+
+async function save(name, dataUrl){
+  if(SAVE){ await fetch(SAVE.replace(/\/$/, '') + '/' + name, { method: 'POST', body: dataUrl }); return; }
+  const a = document.createElement('a'); a.href = dataUrl; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  await new Promise(r => setTimeout(r, 400));
+}
+
+async function run(){
+  document.getElementById('go').disabled = true;
+  const out = { version: new Date().toISOString(), frame: [1600, 900], scale: SCALE, chapters: {} };
+  for(const ch of STORY.chapters){
+    stage.setMood(ch.mood); stage.snapMood();
+    stage.setCamera(camOf(ch), true);
+    stage.allFlowsOff(); stage.setSmoke(0);
+    stage.update(10, { reducedMotion: true });
+    // soft shadows: average several renders with the sun nudged around a small disk
+    stage.setPixelRatio(SCALE);
+    const gl = stage.renderer.domElement, acc = document.createElement('canvas');
+    acc.width = gl.width; acc.height = gl.height;
+    const ctx = acc.getContext('2d');
+    for(let s=0; s<SAMPLES; s++){
+      const a = s*2.39996, r = Math.sqrt((s+0.5)/SAMPLES)*SOFT;
+      stage.setSunOffset(Math.cos(a)*r, Math.sin(a)*r); stage.render();
+      ctx.globalAlpha = 1/(s+1); ctx.drawImage(gl, 0, 0);
+      await new Promise(res => setTimeout(res, 0));
+    }
+    stage.setSunOffset(0, 0);
+    const img = acc.toDataURL('image/webp', QUALITY);
+    const rec = { image: 'renders/' + ch.key + '.webp', flows: {}, chips: [], nodes: {}, smoke: [] };
+    for(const id in stage.F) rec.flows[id] = stage.F[id].pts.map(pt).filter(Boolean);
+    rec.chips = (ch.chips || []).map(c => { const wp = c.bus ? B[c.b].svc : stage.anchor(c.b, c.at); return wp ? pt(wp) : null; });
+    if(ch.key === 'network'){
+      rec.nodes.coord = { p: pt(V3(STORY.network.coord)) };
+      for(const id of ['office','home03','home05','home07','cafe','library','grid']){
+        const top = B[id].anchors.top, roof = top.clone(); roof.y -= 9.5;
+        rec.nodes[id] = { p: pt(top), roof: pt(roof) };
+      }
+      rec.smoke = stage.smokeSources.map(pt).filter(Boolean);
+    }
+    out.chapters[ch.key] = rec;
+    await save(ch.key + '.webp', img);
+    log('Rendered ' + ch.key + ' (' + Math.round(img.length*0.75/1024) + ' KB)');
+  }
+  stage.setPixelRatio(1);
+  const js = '/* Generated by commonwatt-bake.html. Re-render instead of editing by hand. */\nwindow.COMMONWATT_RENDERS = ' + JSON.stringify(out) + ';\n';
+  await save('scenes.js', 'data:text/javascript;base64,' + btoa(unescape(encodeURIComponent(js))));
+  log('Saved scenes.js. Done.');
+  document.getElementById('go').disabled = false;
+  return out;
+}
+document.getElementById('go').disabled = false;
+document.getElementById('go').addEventListener('click', run);
+log('Ready.');
+if(Q.has('auto')) run();
+</script>
+</body>
+</html>

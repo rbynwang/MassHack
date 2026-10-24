@@ -1,0 +1,154 @@
+# homesim default configuration.
+# Follows synthetic-household-data-guidelines.md. Values marked "ASSUMPTION" are not
+# given by the guideline and were chosen by us; they are listed in DATACARD.md.
+
+version: "0.1.0-dev"
+seed: 42
+
+period:
+  timezone: "America/New_York"
+
+inputs:
+  housezero_hourly_csv: "data/housezero/housezero_hourly.csv"
+  columns:
+    timestamp: "timestamp_utc"
+    temp_out_c: "outdoor_temperature_c"
+    solar_w_m2: "solar_radiation_w_m2"
+    pv_kw: "pv_total_raw_kw"
+  # HouseZero rooftop array nameplate, ~15 kW (Architectural Record, 2019).
+  housezero_pv_capacity_kw_dc: 15.0
+  # HouseZero's measured PV already includes its own losses. Home PV is scaled by
+  # derate / reference so we do not apply losses twice. ASSUMPTION.
+  pv_reference_derate: 0.875
+  max_interp_gap_h: 6        # gaps up to this length: time interpolation
+  climatology_window_days: 7 # longer gaps: same-hour mean over +/- this many days
+
+holidays: # Massachusetts holidays in the period (local dates)
+  - "2025-05-26"  # Memorial Day
+  - "2025-06-19"  # Juneteenth
+  - "2025-07-04"  # Independence Day
+  - "2025-09-01"  # Labor Day
+  - "2025-10-13"  # Columbus / Indigenous Peoples' Day
+  - "2025-11-11"  # Veterans Day
+  - "2025-11-27"  # Thanksgiving
+  - "2025-12-25"  # Christmas
+  - "2026-01-01"  # New Year's Day
+  - "2026-01-19"  # MLK Day
+  - "2026-02-16"  # Presidents' Day
+  - "2026-04-20"  # Patriots' Day
+  - "2026-05-25"  # Memorial Day
+
+population:
+  representative:   # ASSUMPTION: plausible MA single-family mix
+    heating: {heat_pump: 0.10, gas_central_ac: 0.40, gas_window_ac: 0.50}
+    p_solar: 0.12
+    p_battery_given_solar: 0.15
+    p_battery_given_no_solar: 0.01
+    ev: {"0": 0.90, "1": 0.09, "2": 0.01}
+    archetype: {commuter: 0.45, wfh: 0.25, retiree: 0.15, family: 0.15}
+  balanced:         # oversample rare combinations for training
+    heating: {heat_pump: 0.34, gas_central_ac: 0.33, gas_window_ac: 0.33}
+    p_solar: 0.50
+    p_battery_given_solar: 0.50
+    p_battery_given_no_solar: 0.10
+    ev: {"0": 0.40, "1": 0.40, "2": 0.20}
+    archetype: {commuter: 0.25, wfh: 0.25, retiree: 0.25, family: 0.25}
+
+home:
+  sqft: {median: 1900, sigma: 0.30, min: 1000, max: 4000}
+  vintage_shares: {pre_1950: 0.35, "1950_1990": 0.40, post_1990: 0.25}  # ASSUMPTION
+  # Guideline range 0.2-0.4 kW/C applied to a median 1,900 sq ft home, then scaled
+  # by (sqft / 1900) ** ua_area_exponent. ASSUMPTION (see feasibility notes).
+  ua_kw_per_c_at_median_sqft:
+    pre_1950: [0.32, 0.40]
+    "1950_1990": [0.26, 0.34]
+    post_1990: [0.20, 0.28]
+  ua_area_exponent: 0.7
+  tau_h:
+    pre_1950: [20, 35]
+    "1950_1990": [25, 42]
+    post_1990: [35, 50]
+  hp_capacity_design_delta_c: 36
+  hp_capacity_spread: 0.20
+  central_ac_capacity_kw_per_ua: 30        # ASSUMPTION (~2.5 tons for UA 0.3)
+  furnace_capacity_kw_per_ua: 45           # ASSUMPTION, only sets blower runtime
+  furnace_blower_kw: [0.3, 0.5]
+  window_ac_fraction: [0.5, 0.7]
+  window_ac_max_kw_thermal: 3.5            # ASSUMPTION (two ~6,000 BTU/h units)
+  window_ac_season: ["06-01", "09-15"]     # ASSUMPTION: units installed for summer
+  backup_heat_cop: 1.0
+  backup_heat_max_kw: 10.0                 # ASSUMPTION: typical resistance strip; shortfall -> T_in sags
+  internal_gain_occupied_kw: [0.4, 0.8]
+  internal_gain_unoccupied_kw: 0.3
+  window_aperture_m2_at_median_sqft: [1.0, 3.0]  # Q_solar = G/1000 * aperture. ASSUMPTION
+  pv_kw_dc: [4.0, 12.0]
+  pv_derate: [0.80, 0.95]
+  pv_noise_max_frac: 0.05
+  battery_kwh: [10.0, 20.0]
+  battery_kw: [5.0, 11.5]
+  battery_eff: [0.88, 0.92]
+  battery_reserve_pct: [10.0, 30.0]
+
+thermostat:
+  winter_setpoint_c: [19.5, 21.5]
+  p_no_setback: 0.40
+  setback_c: [16.5, 18.5]
+  setback_recovery_ramp_h: 2.0    # linear recovery ending at wake-up. ASSUMPTION (calibration)
+  summer_setpoint_c: [23.0, 25.5]
+  comfort_band_c: [1.0, 2.0]
+  vacation_heat_setpoint_c: 15.5  # ASSUMPTION; cooling is off on vacation
+
+occupancy:
+  # Local clock hours. leave/return null = home all day on workdays.
+  archetypes:
+    commuter: {wake: 6.5, sleep: 23.0, leave: 7.75, return: 18.0, dinner: 18.75}
+    wfh:      {wake: 7.0, sleep: 23.0, leave: null, return: null, dinner: 18.25}
+    retiree:  {wake: 6.5, sleep: 22.0, leave: null, return: null, dinner: 17.25}
+    family:   {wake: 6.0, sleep: 22.5, leave: 8.0,  return: 15.0, dinner: 17.75}
+  weekend_wake_delay_h: 1.0
+  weekend_dinner: 18.25
+  family_morning_rush_multiplier: 1.5
+  # Calibration pass 1: widened from 0.5 / 0.25 h; the evening peak was too sharp vs R-1.
+  jitter_per_home_h: 0.75
+  jitter_per_day_h: 0.6
+  vacation_weeks: [1, 2]
+
+appliances:
+  # Calibration pass 1: guideline 0.15-0.40. Night load was ~half of R-1 / ResStock, so the
+  # always-on range now also covers freezers, dehumidifiers, sump/well pumps, circulators.
+  base_kw: [0.25, 0.50]
+  plug_activity_kw: [0.10, 0.50]   # guideline-consistent; was 0.10-0.60
+  lighting_kw: [0.10, 0.40]
+  darkness_irradiance_w_m2: 150   # lighting scales with 1 - G/150 (HouseZero irradiance)
+  dryer: {kw: 3.0, duration_h: [0.75, 1.0], per_week: [2, 5]}
+  oven: {kw: 2.0, duration_h: [0.5, 1.0], p_dinner: [0.5, 0.85], p_lunch_if_home: 0.15}
+  dishwasher: {kw: 1.2, duration_h: [1.0, 1.5], per_week: [3, 7]}
+  electric_water_heater:
+    p_has: {heat_pump: 0.40, gas: 0.10}   # ASSUMPTION
+    kw: 4.5
+    morning_runtime_h: [0.75, 1.5]
+    evening_runtime_h: [0.5, 1.25]
+
+ev:
+  mean_daily_kwh: [8.0, 14.0]    # per-vehicle mean; daily draws clipped to [5, 20]
+  daily_kwh_clip: [5.0, 20.0]
+  daily_cv: 0.30
+  charger_kw: {"7.2": 0.8, "11.5": 0.2}
+  charge_eff: 0.90               # ASSUMPTION
+  weekday_arrival: {mean: 18.5, sd: 1.0}
+  weekend_arrival_uniform: [10.0, 21.0]
+  ready_by: 7.5
+  # Two-EV homes share one charger: the second car starts when the first finishes.
+
+compliance_rate: [0.60, 0.95]
+
+splits:
+  home_fractions: {train: 0.70, val: 0.15, test: 0.15}
+  months:
+    train: ["2025-05", "2026-01"]
+    val: ["2026-02", "2026-03"]
+    test: ["2026-04", "2026-05"]
+
+output:
+  batch_size: 250
+  compression: "zstd"

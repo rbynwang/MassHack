@@ -1,0 +1,100 @@
+{
+  "description": "Trust guard -> member, coordinator, ledger: signed record of what was requested, delivered and paid.",
+  "properties": {
+    "type": {
+      "const": "receipt",
+      "default": "receipt",
+      "title": "Type",
+      "type": "string"
+    },
+    "receipt_id": {
+      "title": "Receipt Id",
+      "type": "string"
+    },
+    "ask_id": {
+      "title": "Ask Id",
+      "type": "string"
+    },
+    "member_id": {
+      "title": "Member Id",
+      "type": "string"
+    },
+    "window": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Window",
+      "type": "array"
+    },
+    "committed_kw": {
+      "title": "Committed Kw",
+      "type": "number"
+    },
+    "delivered_kwh": {
+      "title": "Delivered Kwh",
+      "type": "number"
+    },
+    "price_usd_per_kwh": {
+      "title": "Price Usd Per Kwh",
+      "type": "number"
+    },
+    "payment_usd": {
+      "title": "Payment Usd",
+      "type": "number"
+    },
+    "indoor_f_range": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Indoor F Range"
+    },
+    "battery_min_pct": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Battery Min Pct"
+    },
+    "prev_hash": {
+      "title": "Prev Hash",
+      "type": "string"
+    },
+    "guard_public_key": {
+      "title": "Guard Public Key",
+      "type": "string"
+    },
+    "signature": {
+      "default": "",
+      "title": "Signature",
+      "type": "string"
+    }
+  },
+  "required": [
+    "receipt_id",
+    "ask_id",
+    "member_id",
+    "window",
+    "committed_kw",
+    "delivered_kwh",
+    "price_usd_per_kwh",
+    "payment_usd",
+    "prev_hash",
+    "guard_public_key"
+  ],
+  "title": "Receipt",
+  "type": "object"
+}

@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "py-compile-on-save",
+      "description": "Catch Python syntax errors as soon as the agent saves a .py file.",
+      "trigger": "PostFileSave",
+      "matcher": "\\.py$",
+      "action": {
+        "type": "command",
+        "command": "git ls-files -m -o --exclude-standard -- '*.py' | xargs -r python3 -m py_compile"
+      },
+      "timeout": 30
+    }
+  ]
+}

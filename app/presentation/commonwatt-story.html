@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Commonwatt Story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+html{color-scheme:light}
+body{margin:0}
+[hidden]{display:none!important}
+</style>
+<style>
+/* Layout: a fixed 1600x900 frame scaled to fit, like a video frame. Each scene is a pre-rendered
+   3D still (renders/*.webp, made by commonwatt-bake.html) with energy lines, labels and the agent
+   network drawn on top in SVG/HTML, so playback needs no WebGL. Controls live outside the frame
+   so screen recordings stay clean. */
+:root{
+  --page:#e8ebe7;
+  --ink:#15181c;
+  --ink-2:#565d65;
+  --ink-3:#8a9097;
+  --card:#ffffff;
+  --hair:#dde1dc;
+  --solar:#36c56c;
+  --battery:#f2a63a;
+  --grid:#2fb5ae;
+  --strain:#e9533f;
+  --signal:#6268f2;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+body{background:var(--page);color:var(--ink);font-family:var(--display);font-size:15px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:22px 34px}
+.wrap{max-width:1600px;margin-inline:auto;display:grid;gap:14px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 20px}
+.top h1{margin:0;font-size:21px;font-weight:650;font-stretch:112%;letter-spacing:-.01em;text-wrap:balance}
+.top p{margin:0;color:var(--ink-2);font-size:14px}
+
+/* ---------- the frame ---------- */
+.viewport{
+  --hud:#15181c; --hud2:#59606a; --pillbg:rgba(255,255,255,.78); --pillfg:#59606a;
+  --navtxt:#59606a; --navon:#15181c; --navtrack:rgba(21,24,28,.14); --navfill:#15181c; --nlabel:#3b4148; --nodebg:#ffffff; --scrim:rgba(232,233,232,.88);
+  position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#e8e9e8;
+  box-shadow:0 1px 0 rgba(0,0,0,.04),0 24px 60px -32px rgba(20,24,28,.4);transition:background 1.6s ease;
+}
+.viewport.evening{
+  --hud:#f3f4f2; --hud2:#b7bdc4; --pillbg:rgba(20,22,26,.7); --pillfg:#c4c9cf;
+  --navtxt:#a8aeb5; --navon:#ffffff; --navtrack:rgba(255,255,255,.18); --navfill:#ffffff; --nlabel:#d6dade; --nodebg:#1d2025; --scrim:rgba(18,20,23,.85);
+  background:#121417;
+}
+.viewport:fullscreen{border-radius:0;aspect-ratio:auto;width:100vw;height:100vh;background:#0c0e11}
+.canvas{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;overflow:hidden}
+
+/* scenes: one layer per chapter, crossfaded; each slowly zooms toward its focus point */
+.scene{position:absolute;inset:0;opacity:0;transition:opacity 1.3s ease;pointer-events:none}
+.scene.on{opacity:1}
+.scene .zoom{position:absolute;inset:0;transform-origin:var(--fx,800px) var(--fy,450px)}
+.scene .zoom.run{animation:kb var(--kb,11s) linear forwards}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.045)}}
+.scene .shot{position:absolute;left:0;top:0;width:1600px;height:900px;display:block;user-select:none}
+.scene svg.flows{position:absolute;inset:0;width:1600px;height:900px;overflow:visible}
+.missing{position:absolute;inset:0;display:grid;place-items:center;padding:40px;text-align:center;color:var(--ink);font:500 16px/1.5 var(--display);background:#e8e9e8}
+
+/* energy lines */
+.fl{opacity:0;transition:opacity .7s ease;color:var(--solar)}
+.fl.on{opacity:1}
+.fl path{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+.fl .glow{stroke-width:11;opacity:.2}
+.fl .base{stroke-width:3.6;opacity:.9}
+.fl .dash{stroke:#fff;stroke-width:2.2;opacity:.75;stroke-dasharray:9 19;animation:flow 1s linear infinite}
+.fl circle{fill:currentColor}
+.fl.k-strain .base{stroke-width:4.4} .fl.k-strain .glow{stroke-width:14;opacity:.26}
+@keyframes flow{to{stroke-dashoffset:-28}}
+.k-solar{color:var(--solar)} .k-battery{color:var(--battery)} .k-grid{color:var(--grid)} .k-strain{color:var(--strain)} .k-signal{color:#8d92ff} .k-ink{color:#e9ecef}
+
+/* smoke over the power plant (network scene) */
+.smoke{position:absolute;inset:0;opacity:1;transition:opacity 1.6s ease}
+.smoke i{position:absolute;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;background:radial-gradient(circle,rgba(140,146,154,.75) 0%,rgba(140,146,154,.35) 45%,rgba(140,146,154,0) 70%);animation:puff 6s linear infinite;opacity:0}
+@keyframes puff{0%{transform:translate(0,0) scale(.5);opacity:0}12%{opacity:.85}100%{transform:translate(70px,-150px) scale(2.6);opacity:0}}
+
+/* agent network overlay */
+svg.net{position:absolute;inset:0;width:1600px;height:900px;overflow:visible}
+svg.net .arc{fill:none;stroke:#8d92ff;stroke-width:1.4;opacity:0;transition:opacity .6s ease}
+svg.net .arc.on{opacity:.55}
+svg.net .tether{stroke:#8d92ff;stroke-width:1;stroke-dasharray:2 4;opacity:0;transition:opacity .5s ease}
+svg.net .tether.on{opacity:.55}
+svg.net .node{opacity:0;transition:opacity .5s ease}
+svg.net .node.on{opacity:1}
+svg.net .node .body{fill:var(--nodebg);stroke:var(--signal);stroke-width:2}
+svg.net .node .guard{fill:none;stroke:var(--nlabel);stroke-width:1.2;stroke-dasharray:3 4;opacity:.7;transition:stroke .3s ease,opacity .3s ease}
+svg.net .node .guard.deny{stroke:var(--strain);stroke-dasharray:none;stroke-width:2.6;opacity:1}
+svg.net .node .glyph{fill:#8d92ff;font:600 13px var(--display);text-anchor:middle;dominant-baseline:central}
+svg.net .node .nlabel{fill:var(--nlabel);font:500 12px var(--mono);text-anchor:middle;paint-order:stroke;stroke:rgba(0,0,0,.35);stroke-width:3px}
+svg.net .node .halo{fill:none;stroke:#8d92ff;stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+svg.net .node.ping .halo{animation:halo .9s ease-out}
+svg.net .node.coord .body{fill:var(--signal);stroke:#fff;stroke-width:2.5}
+svg.net .node.coord .hub{fill:#fff} svg.net .node.coord .hubline{stroke:#fff;stroke-width:1.6}
+svg.net .node.coord .nlabel{font:600 13px var(--display)}
+svg.net .node .pop{transform-box:fill-box;transform-origin:center}
+svg.net .node.join .pop{animation:join .9s cubic-bezier(.2,1.4,.4,1) both}
+svg.net .blocked{fill:var(--strain);font:600 12px var(--mono);text-anchor:middle;opacity:0;transition:opacity .3s ease;paint-order:stroke;stroke:rgba(10,12,15,.75);stroke-width:4px}
+svg.net .blocked.on{opacity:1}
+svg.net .dot{filter:drop-shadow(0 0 4px currentColor)}
+@keyframes halo{from{opacity:.85;transform:scale(1)}to{opacity:0;transform:scale(2.3)}}
+@keyframes join{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+
+/* labels */
+.chip{position:absolute;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;background:#111317;color:#fff;font:500 15px/1 var(--display);white-space:nowrap;opacity:0;transition:opacity .5s ease;box-shadow:0 8px 22px -10px rgba(0,0,0,.55)}
+.chip.on{opacity:1}
+.chip.on.idle{opacity:.38}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.chip .vl{color:#aeb4bb;font:500 13px/1 var(--mono)}
+.chip .bar{width:70px;height:5px;border-radius:3px;background:#3a3f46;position:relative;overflow:hidden}
+.chip .bar i{position:absolute;inset:0 auto 0 0;background:var(--solar);border-radius:3px}
+.chip.above{transform:translate(-50%,calc(-100% - 14px))}
+.chip.below{transform:translate(-50%,14px)}
+.chip.left{transform:translate(calc(-100% - 14px),-50%)}
+.chip.right{transform:translate(14px,-50%)}
+.chip::after{content:"";position:absolute;background:#111317}
+.chip.above::after{left:50%;bottom:-10px;width:1.5px;height:10px;margin-left:-.75px}
+.chip.below::after{left:50%;top:-10px;width:1.5px;height:10px;margin-left:-.75px}
+.chip.left::after{top:50%;right:-10px;height:1.5px;width:10px;margin-top:-.75px}
+.chip.right::after{top:50%;left:-10px;height:1.5px;width:10px;margin-top:-.75px}
+
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,rgba(0,0,0,0) 60%,rgba(0,0,0,.07) 100%)}
+/* keeps the title and caption readable over the scene */
+.scrim{position:absolute;left:0;top:0;width:1000px;height:440px;pointer-events:none;background:radial-gradient(70% 70% at 0 0,var(--scrim) 35%,transparent 100%)}
+
+.hud{position:absolute;left:52px;top:44px;max-width:560px;color:var(--hud);transition:color 1.2s ease}
+.hud .brand{display:flex;align-items:center;gap:12px;font:600 12px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--hud2)}
+.hud .brand .clock{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:8px;background:var(--pillbg);font:500 14px/1 var(--mono);letter-spacing:0;color:var(--hud);text-transform:none}
+.hud h2{margin:14px 0 8px;font-size:46px;line-height:1.02;font-weight:640;font-stretch:115%;letter-spacing:-.02em;text-wrap:balance}
+.hud p{margin:0;font-size:18px;line-height:1.45;color:var(--hud2);text-wrap:pretty;transition:color 1.2s ease}
+.pill{position:absolute;right:44px;top:44px;padding:6px 10px;border-radius:999px;background:var(--pillbg);color:var(--pillfg);font:500 11px/1 var(--mono);letter-spacing:.02em}
+
+.card{position:absolute;right:52px;top:120px;width:430px;padding:24px 26px 22px;border-radius:18px;background:var(--card);color:var(--ink);box-shadow:0 30px 70px -30px rgba(20,24,28,.35),0 2px 6px rgba(20,24,28,.06);opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease}
+.card.on{opacity:1;transform:none}
+.card .head{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
+.card .head .live{width:9px;height:9px;border-radius:50%;background:var(--solar);box-shadow:0 0 0 4px rgba(54,197,108,.18)}
+.card .head .when{margin-left:auto;font:500 12px var(--mono);color:var(--ink-3)}
+.card .meta{margin-top:4px;font-size:13px;color:var(--ink-3)}
+.card h3{margin:18px 0 8px;font-size:25px;line-height:1.15;font-weight:640;font-stretch:108%;letter-spacing:-.01em;text-wrap:balance}
+.card .body{margin:0;font-size:16px;line-height:1.5;color:var(--ink-2)}
+.card .note{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:6px 10px;border-radius:8px;background:#fff5e6;color:#8a5a12;font:500 13px var(--mono)}
+.card dl{margin:18px 0 0;padding-top:16px;border-top:1px solid var(--hair);display:grid;gap:12px}
+.card dl div{display:grid;gap:3px}
+.card dt{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.card dd{margin:0;font-size:16px}
+.card dd.mono{font:600 18px var(--mono);color:var(--signal)}
+.card dd .lock{display:inline-block;vertical-align:-2px;margin-right:6px;color:var(--ink-3)}
+.card .foot{margin:14px 0 0;font-size:13px;color:var(--ink-3)}
+
+.log{position:absolute;right:44px;top:92px;width:470px;padding:16px 18px 14px;border-radius:14px;background:rgba(14,16,20,.86);color:#e7eaee;font:12.5px/1.6 var(--mono);opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .6s ease}
+.log.on{opacity:1;transform:none}
+.log .lh{display:flex;justify-content:space-between;margin-bottom:8px;font:600 11px/1 var(--display);letter-spacing:.14em;text-transform:uppercase;color:#9aa1a8}
+.log .row{display:grid;grid-template-columns:44px 1fr;gap:10px;animation:rowIn .45s ease both}
+.log .t{color:#7d848c}
+.log .who{color:#fff}
+.t-ok{color:#5fd98d} .t-counter{color:#f2b55a} .t-block{color:#ff7d6b} .t-join{color:#a6aaff} .t-ask{color:#7fd6d1} .t-req{color:#c9cdd2} .t-info{color:#9aa1a8} .t-receipt{color:#d7dbe0}
+@keyframes rowIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.stat{position:absolute;width:300px;padding:16px 18px;border-radius:14px;background:var(--card);color:var(--ink);box-shadow:0 22px 50px -26px rgba(0,0,0,.5);opacity:0;transition:opacity .6s ease}
+.stat.on{opacity:1}
+.stat b{display:block;font-size:16px;font-weight:620}
+.stat span{display:block;margin-top:2px;font-size:12px;color:var(--ink-3)}
+.stat .meter{margin-top:12px;height:7px;border-radius:4px;background:#e6e8e5;overflow:hidden}
+.stat .meter i{display:block;height:100%;border-radius:4px;transition:width 1.6s cubic-bezier(.3,.7,.2,1)}
+.stat .val{margin-top:8px;font:600 14px var(--mono)}
+
+.nav{position:absolute;left:52px;right:52px;bottom:34px;display:grid;grid-template-columns:repeat(5,1fr);gap:18px;pointer-events:auto}
+.nav button{all:unset;cursor:pointer;display:grid;gap:9px;color:var(--navtxt);font:600 13px/1.2 var(--display);letter-spacing:.02em;transition:color .4s ease}
+.nav button.cur{color:var(--navon)}
+.nav button:focus-visible{outline:2px solid var(--signal);outline-offset:6px;border-radius:4px}
+.nav .trk{height:4px;border-radius:2px;background:var(--navtrack);overflow:hidden}
+.nav .trk i{display:block;height:100%;width:0;background:var(--navfill)}
+
+/* controls outside the frame */
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.controls button,.controls a{font:600 14px var(--display);color:var(--ink);background:#fff;border:1px solid #cfd4ce;border-radius:999px;padding:8px 16px;cursor:pointer;text-decoration:none}
+.controls button:hover,.controls a:hover{border-color:#9aa1a7}
+.controls button:focus-visible,.controls a:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.controls button.primary{background:var(--ink);color:#fff;border-color:var(--ink);min-width:86px}
+.controls .sep{width:1px;height:22px;background:#cfd4ce;margin-inline:4px}
+.controls .hint{color:var(--ink-2);font-size:13px;margin-left:4px}
+.note{margin:0;max-width:84ch;color:var(--ink-2);font-size:13.5px}
+.note code{font-family:var(--mono);font-size:12.5px;background:#fff;border:1px solid #dde1dc;border-radius:5px;padding:1px 5px}
+@media (prefers-reduced-motion:reduce){ .log .row{animation:none} .fl .dash,.smoke i{animation:none} .scene .zoom.run{animation:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Commonwatt</h1>
+    <p>Four members, one network. Presentation scenes.</p>
+  </header>
+
+  <div class="viewport" id="viewport">
+    <div class="canvas" id="canvas">
+      <div id="scenes" role="img" aria-label="Rendered model of a Cambridge neighborhood: an office complex, single-family homes, a corner café, a public library, a substation, transmission towers, and a power plant"></div>
+      <div class="vignette"></div>
+      <div class="scrim"></div>
+
+      <div class="hud" id="hud">
+        <div class="brand"><span>Commonwatt</span><span aria-hidden="true">·</span><span>Cambridge, MA</span><span class="clock"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 3.6V7l2.2 1.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="clock">2:40 PM</span></span></div>
+        <h2 id="hTitle">Office complex</h2>
+        <p id="hCaption"></p>
+      </div>
+      <div class="pill" id="pill">Illustrative values</div>
+
+      <aside class="card" id="card" aria-live="polite">
+        <div class="head"><span class="live"></span><span id="cAgent"></span><span class="when">Just now</span></div>
+        <div class="meta" id="cMeta"></div>
+        <h3 id="cTitle"></h3>
+        <p class="body" id="cBody"></p>
+        <div class="note" id="cNote" hidden></div>
+        <dl>
+          <div><dt>Offer to the commons</dt><dd class="mono" id="cOffer"></dd></div>
+          <div><dt>Private limits</dt><dd><svg class="lock" width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><rect x="1" y="6" width="10" height="7.5" rx="1.6" fill="currentColor"/><path d="M3.3 6V4.2a2.7 2.7 0 0 1 5.4 0V6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span id="cLimits"></span></dd></div>
+        </dl>
+        <p class="foot">Limits stay with this agent. The commons sees only the offer.</p>
+      </aside>
+
+      <div class="log" id="log"><div class="lh"><span>Commons message log</span><span id="logCount">0 messages</span></div><div id="logRows"></div></div>
+
+      <div class="stat" id="statLocal" style="left:300px;top:710px"><b>Clean power used locally</b><span>Solar and batteries inside the commons</span><div class="meter"><i id="mLocal" style="background:var(--solar)"></i></div><div class="val" id="vLocal"></div></div>
+      <div class="stat" id="statPeak" style="left:1250px;top:710px"><b>Peak from large generators</b><span>Neighborhood draw, 5–7 PM</span><div class="meter"><i id="mPeak" style="background:#8f969d"></i></div><div class="val" id="vPeak"></div></div>
+
+      <nav class="nav" id="nav" aria-label="Scenes"></nav>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="bPrev" type="button">Previous</button>
+    <button id="bPlay" type="button" class="primary">Pause</button>
+    <button id="bNext" type="button">Next</button>
+    <button id="bFull" type="button">Full screen</button>
+    <span class="sep" aria-hidden="true"></span>
+    <a href="commonwatt-live-3d.html">Live 3D view</a>
+    <span class="hint">Space plays or pauses. Arrow keys change scenes.</span>
+  </div>
+  <p class="note">Numbers on screen are illustrative. Words and numbers live in <code>story-data.js</code>; edit them and reload. Scenes are pre-rendered by <code>commonwatt-bake.html</code>; re-render after changing a camera, a building, or an energy-line route.</p>
+</div>
+
+<script>
+/* load the story and the latest renders without the browser serving stale copies */
+const cwBust = Date.now();
+document.write('<script src="story-data.js?t=' + cwBust + '"><\/script><script src="renders/scenes.js?t=' + cwBust + '"><\/script>');
+</script>
+<script>
+(() => {
+'use strict';
+const STORY = window.COMMONWATT_STORY;
+const RENDERS = window.COMMONWATT_RENDERS;
+const NS = 'http://www.w3.org/2000/svg';
+const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = id => document.getElementById(id);
+function el(tag, attrs, parent){ const e=document.createElementNS(NS, tag); if(attrs) for(const k in attrs) e.setAttribute(k, attrs[k]); if(parent) parent.appendChild(e); return e; }
+const viewport = $('viewport'), canvas = $('canvas');
+
+/* ---------- fit the frame ---------- */
+function fit(){
+  const W = viewport.clientWidth, H = viewport.clientHeight, k = Math.min(W/1600, H/900);
+  canvas.style.transform = `translate(${(W-1600*k)/2}px,${(H-900*k)/2}px) scale(${k})`;
+}
+new ResizeObserver(fit).observe(viewport); fit();
+
+if(!RENDERS){
+  const m = document.createElement('div'); m.className = 'missing';
+  m.textContent = 'The scene images are missing. Open commonwatt-bake.html to render them into the renders/ folder.';
+  $('scenes').appendChild(m); return;
+}
+
+/* ---------- energy lines: dash travel in px per second, by kind ---------- */
+const KIND_V = { strain:92, solar:47, battery:42, grid:42, signal:42 };
+const pathD = pts => 'M' + pts.map(p => p[0]+' '+p[1]).join(' L');
+
+/* ---------- one layer per chapter: still image, energy lines, smoke, labels ---------- */
+const scenesEl = $('scenes');
+const SC = STORY.chapters.map(ch => {
+  const rec = RENDERS.chapters[ch.key] || { flows:{}, chips:[], nodes:{}, smoke:[] };
+  const layer = document.createElement('div'); layer.className = 'scene';
+  const zoom = document.createElement('div'); zoom.className = 'zoom'; layer.appendChild(zoom);
+  zoom.style.setProperty('--fx', (ch.cam.fx ?? 800)+'px'); zoom.style.setProperty('--fy', (ch.cam.fy ?? 450)+'px');
+  zoom.style.setProperty('--kb', (ch.dur + 1.4)+'s');
+  const img = document.createElement('img'); img.className = 'shot'; img.alt = ''; img.decoding = 'async'; img.src = rec.image + '?v=' + encodeURIComponent(RENDERS.version || ''); zoom.appendChild(img);
+  const svg = el('svg', { class:'flows', viewBox:'0 0 1600 900' }, zoom);
+  const ids = new Set((ch.flows||[]).map(f => f[0]).concat(ch.relieve ? ch.relieve.flows.map(f => f[0]) : []));
+  const flows = {};
+  ids.forEach(id => {
+    const pts = rec.flows[id]; if(!pts || pts.length < 2) return;
+    const g = el('g', { class:'fl' }, svg), d = pathD(pts);
+    el('path', { d, class:'glow' }, g); el('path', { d, class:'base' }, g);
+    const dash = el('path', { d, class:'dash' }, g);
+    el('circle', { cx:pts[0][0], cy:pts[0][1], r:4.5 }, g); el('circle', { cx:pts[pts.length-1][0], cy:pts[pts.length-1][1], r:4.5 }, g);
+    flows[id] = { g, dash };
+  });
+  let smoke = null;
+  if(rec.smoke && rec.smoke.length){
+    smoke = document.createElement('div'); smoke.className = 'smoke';
+    rec.smoke.forEach((p, si) => { for(let k=0;k<6;k++){ const i = document.createElement('i'); i.style.left = p[0]+'px'; i.style.top = p[1]+'px'; i.style.animationDelay = (-(k + si*0.4)) + 's'; smoke.appendChild(i); } });
+    zoom.appendChild(smoke);
+  }
+  const chips = (ch.chips||[]).map((c, k) => {
+    const p = rec.chips[k]; if(!p) return null;
+    const d = document.createElement('div');
+    d.className = 'chip '+(c.place||'above')+' k-'+(c.kind||'ink')+(c.idle?' idle':'');
+    d.innerHTML = '<span class="dot"></span><span class="nm"></span><span class="vl"></span>'+(c.bar!=null?'<span class="bar"><i></i></span>':'');
+    d.querySelector('.nm').textContent = c.name; d.querySelector('.vl').textContent = c.value || '';
+    if(c.bar!=null) d.querySelector('.bar i').style.width = c.bar+'%';
+    d.style.left = p[0]+'px'; d.style.top = p[1]+'px';
+    zoom.appendChild(d); return d;
+  }).filter(Boolean);
+  scenesEl.appendChild(layer);
+  return { ch, rec, layer, zoom, flows, smoke, chips };
+});
+
+function setFlow(sc, id, kind, speed){
+  const f = sc.flows[id]; if(!f) return;
+  if(!kind){ f.g.classList.remove('on'); return; }
+  f.g.setAttribute('class', 'fl on k-'+kind);
+  const v = (KIND_V[kind] || 42) * (speed == null ? 1 : speed);
+  f.dash.style.animationDuration = (28/v).toFixed(3)+'s';
+}
+
+/* ---------- agent network overlay (network chapter) ---------- */
+const netSc = SC.find(s => s.ch.key === 'network');
+const NODES = {
+  coord:  {label:'commons coordinator', coord:true},
+  office: {label:'office',     glyph:'O'},
+  home03: {label:'home_03',    glyph:'H'},
+  home05: {label:'home_05',    glyph:'H'},
+  home07: {label:'home_07',    glyph:'H'},
+  cafe:   {label:'café',       glyph:'C'},
+  library:{label:'library_01', glyph:'L'},
+  grid:   {label:'grid',       glyph:'G'}
+};
+const arcs = {}, msgs = [];
+let gNet = null;
+if(netSc){
+  gNet = el('svg', { class:'net', viewBox:'0 0 1600 900' }, netSc.zoom);
+  const NUDGE = STORY.network.nudge || {};
+  for(const id in NODES){ const r = netSc.rec.nodes[id] || {}, d = NUDGE[id] || [0, 0], p = r.p || [800, 200]; NODES[id].p = [p[0]+d[0], p[1]+d[1]]; NODES[id].roof = r.roof; }
+  const c = NODES.coord.p;
+  for(const id in NODES){ if(id==='coord') continue; const n = NODES[id];
+    const qx = (c[0]+n.p[0])/2, qy = Math.min(c[1], n.p[1]) - 70 + (n.p[1]-c[1])*0.25;
+    arcs[id] = el('path', { class:'arc', d:`M${c[0]} ${c[1]} Q${qx} ${qy} ${n.p[0]} ${n.p[1]}` }, gNet);
+    if(n.roof) n.tether = el('line', { class:'tether', x1:n.p[0], y1:n.p[1]+25, x2:n.roof[0], y2:n.roof[1] }, gNet);
+  }
+  for(const id in NODES){
+    const n = NODES[id];
+    const g = el('g', { class:'node'+(n.coord?' coord':''), transform:`translate(${n.p[0]} ${n.p[1]})` }, gNet); n.g = g;
+    const pop = el('g', { class:'pop' }, g);
+    if(n.coord){
+      el('circle',{r:26, class:'halo'}, pop); el('circle',{r:26, class:'body'}, pop);
+      [[0,-8],[-7.5,5],[7.5,5]].forEach(([a,b],i,arr)=>{ const nx=arr[(i+1)%3]; el('line',{x1:a,y1:b,x2:nx[0],y2:nx[1],class:'hubline'},pop); });
+      [[0,-8],[-7.5,5],[7.5,5]].forEach(([a,b])=>el('circle',{cx:a,cy:b,r:3.2,class:'hub'},pop));
+      el('text',{y:46, class:'nlabel'}, pop).textContent = n.label;
+    } else {
+      el('circle',{r:17, class:'halo'}, pop); n.guard = el('circle',{r:24, class:'guard'}, pop); el('circle',{r:17, class:'body'}, pop);
+      el('text',{class:'glyph'}, pop).textContent = n.glyph; el('text',{y:44, class:'nlabel'}, pop).textContent = n.label;
+      n.blk = el('text',{y:-32, class:'blocked'}, pop); n.blk.textContent = 'blocked';
+      n.why = el('text',{y:82, class:'blocked'}, pop);
+    }
+  }
+}
+function showNode(id, on){ const n=NODES[id]; if(!n || !n.g) return; n.g.classList.toggle('on', on); if(n.tether) n.tether.classList.toggle('on', on); if(arcs[id]) arcs[id].classList.toggle('on', on); }
+function ping(id){ const g=NODES[id] && NODES[id].g; if(!g) return; g.classList.remove('ping'); void g.getBBox(); g.classList.add('ping'); }
+function sendMsg(from, to, opts){
+  opts = opts || {};
+  const nodeId = from==='coord' ? to : from, path = arcs[nodeId]; if(!path) return;
+  const color = opts.color || '#8d92ff';
+  if(RM){ ping(to); if(opts.onDone) opts.onDone(); return; }
+  const dot = el('circle',{r:5, class:'dot'}, gNet);
+  dot.style.fill = color; dot.style.color = color;
+  msgs.push({ dot, path, len: path.getTotalLength(), rev: from!=='coord', t:0, dur:opts.dur||0.62, stop:opts.stop||1, onDone:opts.onDone });
+}
+function block(id, reason){
+  const n=NODES[id];
+  n.why.textContent = reason || '';
+  sendMsg('coord', id, { stop:0.8, onDone:()=>{ n.guard.classList.add('deny'); n.blk.classList.add('on'); n.why.classList.add('on');
+    later(1.8, ()=>{ n.guard.classList.remove('deny'); n.blk.classList.remove('on'); n.why.classList.remove('on'); }); } });
+}
+function join(id){ showNode(id, true); NODES[id].g.classList.add('join'); ping(id); }
+function resetNodes(){
+  for(const id in NODES){ const n=NODES[id]; if(!n.g) continue; showNode(id,false); n.g.classList.remove('join','ping');
+    if(n.guard){ n.guard.classList.remove('deny'); n.blk.classList.remove('on'); n.why.classList.remove('on'); } }
+  msgs.splice(0).forEach(m=>m.dot.remove());
+}
+
+/* ---------- HUD, card, log, meters, nav ---------- */
+$('pill').hidden = !STORY.illustrative;
+const nav = $('nav');
+STORY.chapters.forEach((ch,i) => {
+  const btn = document.createElement('button'); btn.type='button';
+  btn.innerHTML = '<span></span><span class="trk"><i></i></span>';
+  btn.firstChild.textContent = ch.nav;
+  btn.addEventListener('click', () => { enter(i); setPlaying(true); });
+  nav.appendChild(btn);
+});
+const navBtns = [...nav.children];
+let logN = 0;
+function addLog(r){
+  const row = document.createElement('div'); row.className='row';
+  const t = document.createElement('span'); t.className='t'; t.textContent=r[0];
+  const m = document.createElement('span');
+  const who = document.createElement('span'); who.className='who'; who.textContent=r[1]+'  ';
+  const tx = document.createElement('span'); tx.className='t-'+(r[3]||'info'); tx.textContent=r[2];
+  m.append(who, tx); row.append(t, m);
+  const rows = $('logRows'); rows.appendChild(row);
+  while(rows.children.length > 8) rows.firstChild.remove();
+  logN++; $('logCount').textContent = logN + (logN===1?' message':' messages');
+}
+function setMeters(local, peak){
+  $('mLocal').style.width = local+'%'; $('vLocal').textContent = local+'% of demand';
+  $('mPeak').style.width = peak+'%'; $('vPeak').textContent = peak===100 ? 'Baseline peak' : '−'+(100-peak)+'% vs. baseline';
+}
+
+/* ---------- playback ---------- */
+let cur = -1, elapsed = 0, fired = 0, playing = true, token = 0;
+const timers = [];
+function later(sec, fn){ timers.push({at: elapsed + sec, fn, tok: token}); }
+
+function enter(i, instant){
+  cur = i; elapsed = 0; fired = 0; token++; timers.length = 0;
+  const sc = SC[i], ch = sc.ch;
+  viewport.classList.toggle('evening', ch.mood==='evening');
+  SC.forEach(s => s.layer.classList.toggle('on', s === sc));
+  if(instant) SC.forEach(s => { s.layer.style.transition = 'none'; void s.layer.offsetWidth; s.layer.style.transition = ''; });
+  sc.zoom.classList.remove('run'); void sc.zoom.offsetWidth; sc.zoom.classList.add('run');
+  for(const id in sc.flows) setFlow(sc, id, null);
+  (ch.flows||[]).forEach(f => setFlow(sc, f[0], f[1], f[2]));
+  sc.chips.forEach(c => c.classList.remove('on'));
+  later((instant||RM) ? 0 : 1.1, () => sc.chips.forEach(c => c.classList.add('on')));
+  if(sc.smoke) sc.smoke.style.opacity = 1;
+  $('clock').textContent = ch.clock; $('hTitle').textContent = ch.title; $('hCaption').textContent = ch.caption;
+  const card = $('card');
+  card.classList.remove('on');
+  if(ch.card){
+    $('cAgent').textContent = ch.card.agent; $('cMeta').textContent = ch.card.meta; $('cTitle').textContent = ch.card.title;
+    $('cBody').textContent = ch.card.body; $('cOffer').textContent = ch.card.offer; $('cLimits').textContent = ch.card.limits;
+    $('cNote').hidden = !ch.card.note; $('cNote').textContent = ch.card.note || '';
+    later((instant||RM) ? 0 : 0.9, () => card.classList.add('on'));
+  }
+  const isNet = ch.key==='network';
+  resetNodes();
+  $('log').classList.toggle('on', isNet);
+  $('logRows').innerHTML = ''; logN = 0; $('logCount').textContent = '0 messages';
+  $('statLocal').classList.toggle('on', isNet); $('statPeak').classList.toggle('on', isNet);
+  if(ch.meters) setMeters(ch.meters.localBefore, ch.meters.peakBefore);
+  navBtns.forEach((b,j) => { b.classList.toggle('cur', j===i); b.querySelector('i').style.width = j<i ? '100%' : '0%'; });
+}
+
+function runEvent(e){
+  const sc = SC[cur], ch = sc.ch;
+  if(e.clock) $('clock').textContent = e.clock;
+  if(e.caption) $('hCaption').textContent = e.caption;
+  if(e.log) addLog(e.log);
+  if(e.nodes){ showNode('coord', true); showNode('grid', true);
+    ['office','home03','home05','home07','cafe'].forEach((id,k) => later(k*0.12, () => showNode(id, true))); }
+  if(e.msg){ const [a,c] = e.msg; sendMsg(a, c, {onDone:() => ping(c)}); }
+  if(e.block) block(e.block, e.reason);
+  if(e.join) join(e.join);
+  if(e.relieve && ch.relieve){
+    ch.relieve.flows.forEach(f => setFlow(sc, f[0], f[1], f[2]));
+    if(sc.smoke) sc.smoke.style.opacity = ch.relieve.smoke;
+    if(ch.meters) setMeters(ch.meters.localAfter, ch.meters.peakAfter);
+  }
+}
+
+function setPlaying(p){ playing = p; $('bPlay').textContent = p ? 'Pause' : 'Play'; SC.forEach(s => s.zoom.style.animationPlayState = p ? 'running' : 'paused'); }
+function next(){ if(cur < STORY.chapters.length-1){ enter(cur+1); setPlaying(true); } }
+function prev(){ enter(Math.max(0, cur-1)); setPlaying(true); }
+$('bPlay').addEventListener('click', () => {
+  if(!playing && cur===STORY.chapters.length-1 && elapsed >= STORY.chapters[cur].dur){ enter(0); setPlaying(true); return; }
+  setPlaying(!playing);
+});
+$('bNext').addEventListener('click', next);
+$('bPrev').addEventListener('click', prev);
+$('bFull').addEventListener('click', () => {
+  try{
+    if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+    else if(viewport.requestFullscreen) viewport.requestFullscreen().catch(()=>{});
+  }catch(_){}
+});
+document.addEventListener('keydown', e => {
+  if(e.target.closest && e.target.closest('input,textarea')) return;
+  if(e.code==='Space'){ e.preventDefault(); $('bPlay').click(); }
+  else if(e.key==='ArrowRight'){ next(); }
+  else if(e.key==='ArrowLeft'){ prev(); }
+});
+
+/* ---------- main loop: story timing, message dots and the progress bar only ---------- */
+let last = performance.now();
+function frame(now){
+  const dt = Math.min(0.05, (now-last)/1000); last = now;
+  const ch = STORY.chapters[cur];
+  if(playing){
+    elapsed += dt;
+    const ev = ch.events || [];
+    while(fired < ev.length && ev[fired].at <= elapsed) runEvent(ev[fired++]);
+    if(elapsed >= ch.dur){ if(cur < STORY.chapters.length-1) enter(cur+1); else { elapsed = ch.dur; setPlaying(false); } }
+  }
+  for(let i=timers.length-1;i>=0;i--){ const t=timers[i]; if(t.tok!==token){ timers.splice(i,1); continue; } if(elapsed >= t.at){ timers.splice(i,1); t.fn(); } }
+  for(let i=msgs.length-1;i>=0;i--){ const m = msgs[i];
+    m.t += dt/m.dur; const u = Math.min(m.t, m.stop); const s = m.rev ? 1-u : u;
+    const p = m.path.getPointAtLength(s*m.len);
+    m.dot.setAttribute('cx', p.x.toFixed(1)); m.dot.setAttribute('cy', p.y.toFixed(1));
+    if(m.stop<1 && m.t>=m.stop){ m.dot.style.fill='var(--strain)'; m.dot.style.color='var(--strain)'; }
+    if(m.t >= m.stop + (m.stop<1 ? 0.5 : 0)){ m.dot.remove(); msgs.splice(i,1); if(m.onDone) m.onDone(); }
+  }
+  if(cur>=0) navBtns[cur].querySelector('i').style.width = Math.min(100, elapsed/ch.dur*100).toFixed(1)+'%';
+  requestAnimationFrame(frame);
+}
+
+enter(0);
+requestAnimationFrame(frame);
+
+window.commonwatt = {
+  go(i, t){ enter(i, true); if(t){ const ch=STORY.chapters[i]; const ev=ch.events||[]; elapsed=t; while(fired<ev.length && ev[fired].at<=t) runEvent(ev[fired++]); for(let n=0;n<4 && timers.length;n++){ const pend=timers.splice(0); pend.forEach(x=>{ if(x.tok===token) x.fn(); }); } } setPlaying(false); },
+  play(){ setPlaying(true); }, pause(){ setPlaying(false); }, story: STORY, renders: RENDERS
+};
+})();
+</script>
+</body>
+</html>

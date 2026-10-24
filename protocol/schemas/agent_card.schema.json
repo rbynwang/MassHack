@@ -1,0 +1,112 @@
+{
+  "description": "Who I am, who owns me, what I have, which commons I belong to. Published to the registry.",
+  "properties": {
+    "type": {
+      "const": "agent_card",
+      "default": "agent_card",
+      "title": "Type",
+      "type": "string"
+    },
+    "agent_id": {
+      "title": "Agent Id",
+      "type": "string"
+    },
+    "role": {
+      "enum": [
+        "member",
+        "coordinator",
+        "grid",
+        "guard"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "kind": {
+      "anyOf": [
+        {
+          "enum": [
+            "large_building",
+            "household",
+            "small_business",
+            "public_institution"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Kind"
+    },
+    "display_name": {
+      "title": "Display Name",
+      "type": "string"
+    },
+    "owner": {
+      "title": "Owner",
+      "type": "string"
+    },
+    "commons": {
+      "title": "Commons",
+      "type": "string"
+    },
+    "assets": {
+      "description": "e.g. pv, battery, heat_pump, hvac",
+      "items": {
+        "type": "string"
+      },
+      "title": "Assets",
+      "type": "array"
+    },
+    "can_offer": {
+      "items": {
+        "enum": [
+          "reduce",
+          "increase"
+        ],
+        "type": "string"
+      },
+      "title": "Can Offer",
+      "type": "array"
+    },
+    "public_key": {
+      "description": "Ed25519 public key (hex) of the agent",
+      "title": "Public Key",
+      "type": "string"
+    },
+    "guard_public_key": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Key its trust guard signs receipts with",
+      "title": "Guard Public Key"
+    },
+    "data_label": {
+      "default": "simulated",
+      "enum": [
+        "measured",
+        "simulated",
+        "assumption"
+      ],
+      "title": "Data Label",
+      "type": "string"
+    }
+  },
+  "required": [
+    "agent_id",
+    "role",
+    "display_name",
+    "owner",
+    "commons",
+    "public_key"
+  ],
+  "title": "AgentCard",
+  "type": "object"
+}

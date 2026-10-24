@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Commonwatt · Cambridge commons · June 24, 2025</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<script src="vendor/plotly-basic.min.js"></script>
+<script src="data/demo.js"></script>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Commonwatt <span>⚡</span></h1>
+    <p class="sub">Every building gets an agent. Every neighborhood gets a network.</p>
+  </div>
+  <div class="meta" id="meta"></div>
+</header>
+
+<section class="controls">
+  <button id="play">▶ Play the day</button>
+  <button id="step">Step</button>
+  <button id="showall">Show all</button>
+  <button id="reset">Reset</button>
+  <label>Speed <input id="speed" type="range" min="20" max="600" value="180"></label>
+  <div class="beats" id="beats"></div>
+</section>
+
+<main>
+  <section class="panel network">
+    <h2>The network <small>coordinator sees agent cards and offers only</small></h2>
+    <svg id="net" viewBox="0 0 660 430"></svg>
+    <div class="legend">
+      <span class="l request">request</span><span class="l accept">accept</span><span class="l counter">counter</span>
+      <span class="l blocked">blocked / decline</span><span class="l receipt">receipt</span><span class="l join">joined</span>
+    </div>
+  </section>
+  <section class="panel log">
+    <h2>Message log <small>every message is a signed envelope</small></h2>
+    <ol id="log"></ol>
+  </section>
+
+  <section class="panel chart wide">
+    <h2>Neighborhood load, June 24, 2025 <small id="chart-note"></small></h2>
+    <div id="chart"></div>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section class="panel phone-panel">
+    <h2>Member card</h2>
+    <select id="member"></select>
+    <div class="phone"><div class="screen" id="phone"></div></div>
+  </section>
+  <section class="panel privacy">
+    <h2>What leaves the building <small>and what stays private</small></h2>
+    <div class="cols">
+      <div><h3>Coordinator sees (offer)</h3><table id="seen"></table></div>
+      <div><h3>Stays with the member and its guard</h3><table id="private"></table></div>
+    </div>
+    <h3>Negotiation for this member</h3>
+    <table id="steps"></table>
+  </section>
+
+  <section class="panel fair">
+    <h2>Fairness <small>earnings by kind of member</small></h2>
+    <div id="fairchart"></div>
+    <table id="fairtable"></table>
+  </section>
+  <section class="panel sources">
+    <h2>Where every number comes from</h2>
+    <div id="labels"></div>
+    <table id="srctable"></table>
+  </section>
+</main>
+<footer>
+  Synthetic and simulated members are labeled. Battery sizes, prices paid and tariffs are assumptions; savings are
+  simulation results, not measured outcomes. Data: HouseZero (Harvard CGBC, CC BY 4.0, DOIs
+  10.6084/m9.figshare.30260233.v1 and 10.6084/m9.figshare.32790984.v1), City of Boston Analyze Boston (Central
+  Library electricity, PDDL), ISO New England, National Grid (Massachusetts Electric) class load shapes, NREL ComStock
+  templates.
+</footer>
+<script src="app.js"></script>
+</body>
+</html>

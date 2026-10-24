@@ -1,0 +1,59 @@
+{
+  "description": "Coordinator -> member: the final committed plan, including staggered preparation and recovery.",
+  "properties": {
+    "type": {
+      "const": "assignment",
+      "default": "assignment",
+      "title": "Type",
+      "type": "string"
+    },
+    "ask_id": {
+      "title": "Ask Id",
+      "type": "string"
+    },
+    "member_id": {
+      "title": "Member Id",
+      "type": "string"
+    },
+    "reduce_kw": {
+      "title": "Reduce Kw",
+      "type": "number"
+    },
+    "window": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Window",
+      "type": "array"
+    },
+    "prep_kw": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "Extra draw per hour before the window",
+      "title": "Prep Kw",
+      "type": "object"
+    },
+    "recovery_kw": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "Extra draw per hour after the window",
+      "title": "Recovery Kw",
+      "type": "object"
+    },
+    "price_usd_per_kwh": {
+      "title": "Price Usd Per Kwh",
+      "type": "number"
+    }
+  },
+  "required": [
+    "ask_id",
+    "member_id",
+    "reduce_kw",
+    "window",
+    "price_usd_per_kwh"
+  ],
+  "title": "Assignment",
+  "type": "object"
+}

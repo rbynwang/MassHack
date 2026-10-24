@@ -1,0 +1,55 @@
+{
+  "description": "Grid -> coordinator: reduce or increase a number of kW during a window.",
+  "properties": {
+    "type": {
+      "const": "ask",
+      "default": "ask",
+      "title": "Type",
+      "type": "string"
+    },
+    "ask_id": {
+      "title": "Ask Id",
+      "type": "string"
+    },
+    "direction": {
+      "enum": [
+        "reduce",
+        "increase"
+      ],
+      "title": "Direction",
+      "type": "string"
+    },
+    "kw": {
+      "exclusiveMinimum": 0,
+      "title": "Kw",
+      "type": "number"
+    },
+    "window": {
+      "description": "Local hours, e.g. [17, 18] = 5 to 7 PM",
+      "items": {
+        "type": "integer"
+      },
+      "title": "Window",
+      "type": "array"
+    },
+    "price_usd_per_kwh": {
+      "minimum": 0,
+      "title": "Price Usd Per Kwh",
+      "type": "number"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "ask_id",
+    "direction",
+    "kw",
+    "window",
+    "price_usd_per_kwh",
+    "reason"
+  ],
+  "title": "Ask",
+  "type": "object"
+}
