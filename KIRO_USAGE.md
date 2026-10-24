@@ -14,6 +14,7 @@ how Kiro was used"). Fill the sections at the end; append to the log as you go.
 | 10/24 ~15:50 | Kiro | Spec tasks 1–12 | Implemented the agent network from the spec: protocol (7 messages, JSON Schemas), signed bus, registry with live join, trust guards with hash-chained receipts, member/coordinator/grid agents behind one model-tool contract, the June 24, 2025 scenario and the offline demo page. |
 | 10/24 ~15:55 | Kiro | Property-based tests | `tests/test_commonwatt.py` (hypothesis): guard never passes a request over the owner's limit; members never accept more than they can hold or drain below reserve; pooled ≤ accepted; payouts add up; tampered receipts and forged envelopes are caught. PBT caught a rounding bug: a member countered 4.53 kW when it could hold 4.529 kW; fixed by rounding promises down. |
 | 10/24 ~15:58 | Kiro | Hook | `commonwatt-tests-on-save` (PostFileSave on `src/commonwatt/*.py`) reruns the network's property-based tests on every change. |
+| 10/24 ~18:30 | Robyn + Claude Code | Spec | Drafted `.kiro/specs/final-submission/` (requirements with the rules' hard requirements, design with site map, week-simulation data shape, video script and form text; 12 time-boxed tasks) for Kiro to execute before the 8 PM deadline. Added the pre-rendered 3D scenes to `app/presentation/` (built with a three.js kit and baked to stills so the page needs no WebGL). |
 
 ## Write-up sections (fill before 6 PM)
 
