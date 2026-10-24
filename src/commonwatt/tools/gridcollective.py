@@ -27,12 +27,13 @@ from gridcollective.physics import Battery, Tariff
 
 
 class GridCollectiveTool(MockModelTool):
-    def __init__(self) -> None:
+    def __init__(self, day: str = EVENT_DAY) -> None:
+        self.day = day
         with open(CACHE, "rb") as fh:
             c = pickle.load(fh)
         self.model_name = c["used"]
         self.fc = {k[0]: v for k, v in c["fc"].items()
-                   if str(k[1])[:10] == EVENT_DAY and k[2] == "baseline" and float(k[3]) == 0.0}
+                   if str(k[1])[:10] == day and k[2] == "baseline" and float(k[3]) == 0.0}
         self.tariff = Tariff()                         # Town of Concord MA G-2, as in the trained model
         self.calls: list[dict] = []
         self.trained_members: set[str] = set()

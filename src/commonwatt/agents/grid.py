@@ -12,12 +12,13 @@ from commonwatt.protocol import AgentCard, Ask
 class GridAgent:
     id = "grid"
 
-    def __init__(self, commons: str) -> None:
+    def __init__(self, commons: str, day: str = EVENT_DAY) -> None:
+        self.day = day
         self.keys = signing.KeyPair()
         self.commons = commons
         g = pd.read_parquet(TRAIN / "grid.parquet")
         g["timestamp_utc"] = pd.to_datetime(g["timestamp_utc"], utc=True)
-        d = g.set_index("timestamp_utc").tz_convert(LOCAL_TZ).loc[EVENT_DAY]
+        d = g.set_index("timestamp_utc").tz_convert(LOCAL_TZ).loc[day]
         h = d[["lmp_usd_mwh", "system_load_mw"]].resample("h").mean()
         self.lmp = h["lmp_usd_mwh"].round(1).tolist()
         self.load_mw = h["system_load_mw"].round(0).tolist()
@@ -32,5 +33,5 @@ class GridAgent:
         peak_h = max(range(24), key=lambda h: self.load_mw[h])
         reason = (f"ISO-NE system load peaks at {self.load_mw[peak_h]:,.0f} MW at {peak_h}:00; Boston-zone "
                   f"real-time price ${self.lmp[window[0]]:,.0f}-{max(self.lmp[h] for h in window):,.0f}/MWh")
-        return Ask(ask_id="ask-2025-06-24", direction="reduce", kw=kw, window=window,
+        return Ask(ask_id=f"ask-{self.day}", direction="reduce", kw=kw, window=window,
                    price_usd_per_kwh=round(price, 3), reason=reason)

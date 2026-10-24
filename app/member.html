@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commonwatt · Member app</title>
+<link rel="stylesheet" href="story.css">
+<script src="data/demo.js"></script>
+<script src="data/week.js"></script>
+<script src="nav.js"></script>
+<style>
+.mgrid { display:grid; grid-template-columns:minmax(0, 1fr) 410px; gap:24px; align-items:start; }
+.who { display:grid; gap:8px; }
+.who button { display:grid; grid-template-columns:auto 1fr; gap:2px 10px; text-align:left; font:600 14px var(--display); background:#fff;
+  border:1px solid #d3d7d2; border-radius:14px; padding:10px 14px; cursor:pointer; }
+.who button small { grid-column:2; font:500 12px var(--display); color:var(--ink-2); }
+.who button .mono { grid-row:span 2; align-self:center; font-size:12px; color:var(--ink-3); }
+.who button[aria-pressed=true] { background:var(--ink); color:#fff; border-color:var(--ink); }
+.who button[aria-pressed=true] small, .who button[aria-pressed=true] .mono { color:#c9cdd2; }
+.mgrid > * { min-width:0; }
+.dev { width:100%; max-width:410px; border-radius:52px; background:#15181c; padding:10px; box-shadow:0 30px 60px -30px rgba(20,24,28,.6); }
+.scr { width:100%; max-width:390px; height:844px; border-radius:44px; background:#f3f4f2; overflow-y:auto; overflow-x:hidden; }
+.bar { display:flex; justify-content:space-between; padding:14px 26px 6px; font:600 14px var(--display); }
+.pic { position:relative; height:200px; margin:0 12px; border-radius:22px; overflow:hidden; background:#e2e4e0; }
+.pic img { width:100%; height:100%; object-fit:cover; }
+.pic svg { position:absolute; inset:0; width:100%; height:100%; }
+.flow { stroke-dasharray:6 6; animation:dash 1.2s linear infinite; }
+.flow.rev { animation-direction:reverse; }
+@keyframes dash { to { stroke-dashoffset:-24; } }
+.sec { background:#fff; border-radius:20px; margin:10px 12px; padding:14px 16px; }
+.sec h4 { margin:0 0 6px; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); }
+.hdr { padding:12px 18px 4px; }
+.hdr h3 { font-size:24px; font-stretch:112%; margin:0; }
+.status { display:inline-block; margin-top:6px; font:600 12px var(--display); padding:4px 10px; border-radius:999px; background:#e3f5ea; color:#1d7a43; }
+.status.idle { background:#eef0ed; color:var(--ink-2); } .status.blocked { background:#fbe3df; color:#a8321f; }
+.pw { display:flex; align-items:baseline; gap:10px; }
+.pw b { font:650 30px var(--mono); }
+.pw span { color:var(--ink-2); font-size:14px; }
+.nego { border-left:4px solid #c4c9c3; padding-left:10px; }
+.nego.accept { border-color:var(--solar); } .nego.counter { border-color:var(--battery); } .nego.blocked, .nego.decline { border-color:var(--strain); }
+.nego b { display:block; font-size:16px; }
+.nego p { margin:2px 0 0; color:var(--ink-2); font-size:13.5px; }
+.lim { display:grid; gap:6px; }
+.lim div { display:flex; justify-content:space-between; font-size:14px; }
+.lim dd { margin:0; font:600 13.5px var(--mono); }
+.never { font:600 11px var(--display); color:var(--ink-2); display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+.big { font:650 34px var(--mono); }
+.wk { display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; align-items:end; height:96px; margin-top:6px; }
+.wk div { display:flex; flex-direction:column; justify-content:flex-end; align-items:center; height:100%; font:500 10px var(--mono); color:var(--ink-3); gap:3px; }
+.wk i { display:block; width:100%; border-radius:6px 6px 2px 2px; background:var(--solar); min-height:2px; }
+.wk i.off { background:#dfe2de; }
+.go { display:block; text-align:center; margin:12px 12px 22px; background:var(--ink); color:#fff; border-radius:999px; padding:12px; text-decoration:none; font-weight:650; }
+.batt { height:10px; border-radius:6px; background:#e6e8e5; overflow:hidden; margin-top:8px; }
+.batt i { display:block; height:100%; background:var(--battery); }
+@media (max-width:900px) { .mgrid { grid-template-columns:1fr; } .dev { justify-self:center; } }
+@media (max-width:440px) { .dev { padding:0; border-radius:0; background:none; box-shadow:none; } .scr { border-radius:20px; height:auto; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <section class="card">
+    <div class="sec-head"><h2>Member app</h2><p>What one owner sees on their phone on June 24, 2025, at 5 PM. Pick a member.</p></div>
+    <div class="mgrid">
+      <div>
+        <div class="who" id="who" role="group" aria-label="Members"></div>
+        <p class="footnote" id="memNote"></p>
+      </div>
+      <div class="dev"><div class="scr" id="scr" aria-live="polite"></div></div>
+    </div>
+  </section>
+</div>
+<div class="missing" id="missing" hidden>Run <code>uv run commonwatt-demo</code> and <code>uv run commonwatt-week</code> first.</div>
+<script>
+(function () {
+  'use strict';
+  var D = window.COMMONWATT, W = window.CW_WEEK, $ = function (id) { return document.getElementById(id); };
+  if (!D || !W) { $('app').hidden = true; $('missing').hidden = false; return; }
+  var fmt = function (x, d) { return Number(x).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var pill = function (l) { return '<span class="pill ' + l + '">' + l + '</span>'; };
+  var byId = {}; D.members.forEach(function (m) { byId[m.id] = m; });
+  var H = 17;   // 5 PM, inside the grid's ask window
+  var hasBat = function (m) { return !!m.battery; };
+  var lastStep = function (m) { return m.steps.length ? m.steps[m.steps.length - 1] : null; };
+  function pick(pred) { for (var i = 0; i < D.members.length; i++) if (pred(D.members[i])) return D.members[i]; return null; }
+  var CHOICES = [
+    [pick(function (m) { return m.kind === 'household' && hasBat(m) && m.receipt && m.id !== 'home_03'; }), 'Household, solar + home battery', 'home'],
+    [byId.home_03 || pick(function (m) { return (lastStep(m) || {}).decision === 'blocked'; }), 'Household, request blocked by its guard', 'home'],
+    [pick(function (m) { return m.kind === 'household' && !hasBat(m) && m.receipt; }), 'Household, heat pump only', 'home'],
+    [pick(function (m) { return m.kind === 'small_business' && m.receipt; }), 'Small business', 'cafe'],
+    [byId.library_01 || pick(function (m) { return m.kind === 'public_institution'; }), 'Public institution', 'library'],
+    [byId.housezero || pick(function (m) { return m.kind === 'large_building'; }), 'Large building', 'office'],
+  ].filter(function (c) { return c[0]; });
+  var POS = { home: '38% 58%', cafe: '50% 55%', library: '55% 50%', office: '45% 55%' };
+  var F = function (c) { return c * 9 / 5 + 32; };
+  var dayLab = function (d) { return new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'narrow' }); };
+
+  function render(i) {
+    var c = CHOICES[i], m = c[0], r = m.receipt, s = lastStep(m), wk = W.members[m.id];
+    document.querySelectorAll('#who button').forEach(function (b, k) { b.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
+    var net = m.actual_kw[H], planned = m.planned_kw[H];
+    var importing = net >= 0;
+    var status = !s ? ['idle', 'Running on its own'] : s.decision === 'blocked' ? ['blocked', 'Your guard blocked a request']
+      : (s.decision === 'accept' || s.decision === 'counter') ? ['', 'Helping the grid, 5–7 PM'] : ['idle', 'Declined today\'s request'];
+    var nego = !s ? '<div class="nego"><b>No request today</b></div>' : '<div class="nego ' + s.decision + '"><b>' +
+      (s.decision === 'blocked' ? 'Asked ' + fmt(s.asked_kw, 1) + ' kW → blocked by your guard'
+        : s.decision === 'counter' ? 'Asked ' + fmt(s.asked_kw, 1) + ' kW → you countered ' + fmt(s.kw, 1) + ' kW'
+        : s.decision === 'accept' ? 'Asked ' + fmt(s.asked_kw, 1) + ' kW → accepted'
+        : 'Asked ' + fmt(s.asked_kw, 1) + ' kW → declined') + '</b><p>' +
+      esc(s.decision === 'blocked' ? 'It was over the limit you set. The coordinator was told only that it was blocked, never your limit.' : s.reason) + '</p></div>';
+    var p = m.private, lim = '<div class="never"><svg width="11" height="13" viewBox="0 0 12 14" aria-hidden="true"><rect x="1" y="6" width="10" height="7.5" rx="1.6" fill="currentColor"/><path d="M3.3 6V4.2a2.7 2.7 0 0 1 5.4 0V6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>NEVER SHARED · only your agent and its guard</div><dl class="lim">' +
+      '<div><dt>Most I will reduce</dt><dd>' + fmt(p.owner_limit_kw, 1) + ' kW</dd></div>' +
+      (p.comfort_max_c != null ? '<div><dt>Warmest indoors</dt><dd>' + fmt(F(p.comfort_max_c), 1) + ' °F</dd></div>' : '') +
+      (p.battery_reserve_pct != null ? '<div><dt>Battery backup reserve</dt><dd>' + fmt(p.battery_reserve_pct) + ' %</dd></div>' : '') + '</dl>';
+    var batt = '';
+    if (m.battery) {
+      var minp = r && r.battery_min_pct != null ? r.battery_min_pct : null;
+      batt = '<div class="sec"><h4>Home battery ' + pill('assumption') + '</h4><div class="pw"><b>' + fmt(m.battery.kwh, 1) + ' kWh</b><span>' + fmt(m.battery.kw, 1) +
+        ' kW</span></div>' + (minp != null ? '<div class="batt"><i style="width:' + Math.min(100, minp) + '%"></i></div><p style="margin:6px 0 0;font-size:13px;color:#565d65">Lowest charge today: ' +
+        fmt(minp) + ' %, above your reserve.</p>' : '') + '</div>';
+    }
+    var maxUsd = Math.max.apply(null, wk ? wk.daily_usd.concat([0.01]) : [0.01]);
+    var week = wk ? '<div class="wk">' + wk.daily_usd.map(function (v, k) {
+      return '<div title="' + W.days_list[k] + ': $' + fmt(v, 2) + '">' + (v ? '$' + fmt(v, 2) : '') + '<i class="' + (v ? '' : 'off') +
+        '" style="height:' + Math.max(3, 70 * v / maxUsd) + 'px"></i>' + dayLab(W.days_list[k]) + '</div>'; }).join('') + '</div>' +
+      '<p style="margin:6px 0 0;font-size:13px;color:#565d65">This week: $' + fmt(wk.daily_usd.reduce(function (a, b) { return a + b; }, 0), 2) + ' ' + pill('simulated') + '</p>'
+      : '<p>Not a member this week.</p>';
+    var col = importing ? '#2a9a95' : '#2db862';
+    $('scr').innerHTML =
+      '<div class="bar"><span>5:00 PM</span><span>Jun 24</span></div>' +
+      '<div class="pic"><img src="presentation/renders/' + c[2] + '.webp" alt="" style="object-position:' + POS[c[2]] + '">' +
+      '<svg viewBox="0 0 366 200" aria-hidden="true"><path class="flow' + (importing ? '' : ' rev') + '" d="M20 180 C120 150 200 150 300 110" fill="none" stroke="' + col +
+      '" stroke-width="3.5" stroke-linecap="round"/><circle cx="300" cy="110" r="7" fill="#fff" stroke="' + col + '" stroke-width="3"/></svg></div>' +
+      '<div class="hdr"><h3>' + esc(m.name) + '</h3><div style="color:#565d65;font-size:13px">' + esc(m.kind_label) + ' · ' + esc(m.assets.join(', ').replace(/_/g, ' ')) +
+      ' ' + pill(m.label) + '</div><span class="status ' + status[0] + '">' + status[1] + '</span></div>' +
+      '<div class="sec"><h4>Power now ' + pill('simulated') + '</h4><div class="pw"><b>' + fmt(Math.abs(net), 1) + ' kW</b><span>' +
+      (importing ? 'from the grid' : 'to the grid') + '</span></div><p style="margin:4px 0 0;font-size:13px;color:#565d65">Without Commonwatt: ' +
+      fmt(Math.abs(planned), 1) + ' kW ' + (planned >= 0 ? 'from' : 'to') + ' the grid.</p></div>' + batt +
+      '<div class="sec"><h4>Today\'s request</h4>' + nego + '</div>' +
+      '<div class="sec"><h4>Your limits</h4>' + lim + '</div>' +
+      '<div class="sec"><h4>Today</h4><div class="big">$' + fmt(r ? r.payment_usd : 0, 2) + '</div><p style="margin:2px 0 0;font-size:13px;color:#565d65">' +
+      (r ? fmt(r.delivered_kwh, 2) + ' kWh delivered' + (r.indoor_f_range ? ' · stayed at ' + fmt(r.indoor_f_range[0]) + '–' + fmt(r.indoor_f_range[1]) + ' °F' : '') +
+        ' · receipt signed by your guard' : 'Nothing delivered today.') + '</p></div>' +
+      '<div class="sec"><h4>This week</h4>' + week + '</div>' +
+      '<a class="go" href="story.html#replay">See it in the network</a>';
+  }
+  $('who').innerHTML = CHOICES.map(function (c, i) {
+    return '<button type="button" data-i="' + i + '"><span class="mono">' + esc(c[0].id) + '</span>' + esc(c[1]) + '<small>' + esc(c[0].phone || ((lastStep(c[0]) || {}).reason || 'No request today.')) + '</small></button>';
+  }).join('');
+  document.querySelectorAll('#who button').forEach(function (b) { b.onclick = function () { render(+b.dataset.i); }; });
+  $('memNote').innerHTML = 'Building pictures are illustrative renders from the Scenes. Numbers come from the June 24 run (' + esc(D.tool) +
+    ') and the June 20–26 week. Batteries are ' + pill('assumption') + 's; loads and payments are ' + pill('simulated') + '.';
+  render(0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commonwatt · About</title>
+<link rel="stylesheet" href="story.css">
+<script src="nav.js"></script>
+<style>
+.prose { max-width:72ch; font-size:16px; line-height:1.6; }
+.prose p { margin:0 0 12px; }
+.three { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+.three div { background:#f6f7f5; border-radius:14px; padding:16px 18px; }
+.three h3 { font-size:16px; margin-bottom:6px; }
+.three p { margin:0; color:var(--ink-2); font-size:14.5px; }
+.arch { width:100%; height:auto; display:block; }
+.arch .box { fill:#fff; stroke:#c9cec8; stroke-width:1.5; }
+.arch .boxk { fill:#15181c; }
+.arch .t { font:650 14px var(--display); fill:var(--ink); }
+.arch .tk { font:650 14px var(--display); fill:#fff; }
+.arch .s { font:500 11.5px var(--display); fill:var(--ink-2); }
+.arch .sk { font:500 11.5px var(--display); fill:#c9cdd2; }
+.arch .m { font:500 11px var(--mono); fill:var(--ink-2); }
+.arch .link { fill:none; stroke-width:2.2; }
+.arch .dash { stroke-dasharray:6 5; }
+.planned { border:2px dashed #c4c9c3; border-radius:16px; padding:18px 20px; background:#fbfbfa; }
+.planned .tag { display:inline-block; font:650 11px var(--display); letter-spacing:.12em; text-transform:uppercase; color:#8a5a12; background:#fbefd9; border-radius:999px; padding:4px 10px; margin-bottom:8px; }
+.planned ul { margin:8px 0 0; padding-left:18px; color:var(--ink-2); }
+.diagram-scroll { overflow-x:auto; }
+.diagram-scroll svg { min-width:860px; }
+@media (max-width:900px) { .three { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="card">
+    <h1 style="font-size:clamp(24px,3vw,34px);font-weight:640;font-stretch:115%;margin-bottom:14px">About Commonwatt</h1>
+    <div class="prose">
+      <p><b>The problem.</b> Massachusetts is electrifying heat and cars, and on hot evenings everyone pulls power at once.
+        Clean power exists, in rooftop solar, home batteries and pre-cooled buildings, but it is scattered across homes,
+        shops and public buildings that each optimize alone, which can create a new, later peak. Grid programs mostly pay
+        battery owners, and joining means handing your data and device control to a utility or aggregator.</p>
+      <p><b>Commonwatt.</b> An agent network that turns a neighborhood into an energy commons. Every building gets an agent
+        that knows its owner's private limits. When the grid asks for help, a coordinator negotiates with the agents; each
+        can accept, counter or decline. Trust guards enforce the limits in code and sign receipts. The grid sees one
+        reliable resource.</p>
+      <p><b>Why it's credible.</b> The agents call a model trained on Massachusetts data (HouseZero, Boston Public Library,
+        ISO-NE load and prices), replayed on the real June 24, 2025 ISO-NE peak day, with property-based tests on the trust
+        guarantees: no request over an owner's limit, pooled commitments never above what members accepted, payouts that
+        add up, and receipts that cannot be changed without breaking the chain.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="sec-head"><h2>Who it serves</h2></div>
+    <div class="three">
+      <div><h3>Building owners</h3><p>Households, small businesses, public buildings and large buildings, including those with only a heat pump. They keep their data and limits; they get paid against a signed receipt.</p></div>
+      <div><h3>Community stewards</h3><p>Town utilities (municipal light plants), community groups and housing authorities, who run a commons for their members.</p></div>
+      <div><h3>The grid</h3><p>ISO-NE and distribution utilities, who get one verified resource that answers when asked, instead of thousands of devices to dispatch.</p></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="archTitle">
+    <div class="sec-head"><h2 id="archTitle">How it works</h2><p>Left to right: data, the model the agents call, the agents, the guards, the coordinator and the grid.</p></div>
+    <div class="diagram-scroll">
+    <svg class="arch" viewBox="0 0 1200 430" role="img" aria-labelledby="archDesc">
+      <desc id="archDesc">Architecture: Massachusetts data feeds the ML model (LightGBM forecasts and the GridCollective battery planner). Member agents call it through the EnergyModelTool contract. Each member agent sits behind a trust guard that holds private limits and signs hash-chained receipts. Guards talk to the commons coordinator, which answers the grid agent's asks. All messages travel on a signed bus as seven protocol messages; receipts go to a ledger. A planned planner and utility view is shown dashed.</desc>
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5960f0"/></marker>
+        <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2a9a95"/></marker>
+      </defs>
+      <!-- data -->
+      <rect class="box" x="10" y="40" width="170" height="150" rx="14"/>
+      <text class="t" x="24" y="66">Massachusetts data</text>
+      <text class="s" x="24" y="88">HouseZero building</text><text class="s" x="24" y="104">Boston Public Library</text>
+      <text class="s" x="24" y="120">ISO-NE load and prices</text><text class="s" x="24" y="136">HouseZero weather</text>
+      <text class="s" x="24" y="152">utility class shapes</text>
+      <text class="m" x="24" y="176">measured</text>
+      <!-- model -->
+      <rect class="box" x="210" y="40" width="190" height="150" rx="14"/>
+      <text class="t" x="224" y="66">ML model</text>
+      <text class="s" x="224" y="88">LightGBM P10/P50/P90</text><text class="s" x="224" y="104">load forecasts</text>
+      <text class="s" x="224" y="124">GridCollective battery</text><text class="s" x="224" y="140">planner (linear program)</text>
+      <text class="m" x="224" y="176">src/gridcollective</text>
+      <!-- contract -->
+      <rect class="box" x="210" y="226" width="190" height="64" rx="14"/>
+      <text class="t" x="224" y="250">EnergyModelTool</text>
+      <text class="m" x="224" y="272">tools/contract.py</text>
+      <!-- members -->
+      <rect class="box" x="430" y="40" width="190" height="250" rx="14"/>
+      <text class="t" x="444" y="66">Member agents (19)</text>
+      <text class="s" x="444" y="88">one per building:</text>
+      <text class="s" x="444" y="106">forecast · offer ·</text><text class="s" x="444" y="122">accept / counter / decline</text>
+      <g transform="translate(446 140)">
+        <rect x="0" y="0" width="158" height="26" rx="8" fill="#eef0f6"/><text class="s" x="10" y="17">large buildings</text>
+        <rect x="0" y="32" width="158" height="26" rx="8" fill="#f4eef2"/><text class="s" x="10" y="49">households</text>
+        <rect x="0" y="64" width="158" height="26" rx="8" fill="#f6f2ea"/><text class="s" x="10" y="81">small businesses</text>
+        <rect x="0" y="96" width="158" height="26" rx="8" fill="#f2efec"/><text class="s" x="10" y="113">public institutions</text>
+      </g>
+      <!-- guards -->
+      <rect class="box" x="650" y="40" width="170" height="250" rx="14" style="stroke:#dd5541;stroke-dasharray:5 4"/>
+      <text class="t" x="664" y="66">Trust guards</text>
+      <text class="s" x="664" y="88">one per member</text>
+      <text class="s" x="664" y="112">hold private limits</text><text class="s" x="664" y="128">(comfort, reserve, kW)</text>
+      <text class="s" x="664" y="150">block what breaks them</text>
+      <text class="s" x="664" y="172">measure delivery</text>
+      <text class="s" x="664" y="194">sign Ed25519 receipts,</text><text class="s" x="664" y="210">hash-chained</text>
+      <text class="m" x="664" y="276">trust.py</text>
+      <!-- coordinator -->
+      <rect class="boxk" x="850" y="80" width="160" height="150" rx="14"/>
+      <text class="tk" x="864" y="106">Commons</text><text class="tk" x="864" y="124">coordinator</text>
+      <text class="sk" x="864" y="148">sees offers only</text>
+      <text class="sk" x="864" y="166">rounds · staggering ·</text><text class="sk" x="864" y="182">settlement</text>
+      <text class="sk" x="864" y="212" style="font-family:var(--mono)">coordinator.py</text>
+      <!-- grid -->
+      <rect class="box" x="1040" y="80" width="150" height="150" rx="14" style="stroke:#2a9a95"/>
+      <text class="t" x="1054" y="106">Grid agent</text>
+      <text class="s" x="1054" y="128">ISO-NE / utility</text>
+      <text class="s" x="1054" y="146">"reduce 60 kW,</text><text class="s" x="1054" y="162">5–7 PM"</text>
+      <text class="m" x="1054" y="212">grid.py</text>
+      <!-- arrows -->
+      <path class="link" stroke="#2a9a95" d="M180 115 H206" marker-end="url(#ag)"/>
+      <path class="link" stroke="#5960f0" d="M305 190 V222" marker-end="url(#ar)"/>
+      <path class="link" stroke="#5960f0" d="M400 258 H426" marker-end="url(#ar)"/>
+      <path class="link" stroke="#5960f0" d="M620 165 H646" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <path class="link" stroke="#5960f0" d="M820 155 H846" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <path class="link" stroke="#2a9a95" d="M1010 155 H1036" marker-start="url(#ag)" marker-end="url(#ag)"/>
+      <!-- bus and ledger -->
+      <rect x="430" y="316" width="580" height="40" rx="12" fill="#eef0fe"/>
+      <text class="t" x="446" y="341">Signed bus</text>
+      <text class="m" x="540" y="341">agent_card · ask · offer · request · response · assignment · receipt</text>
+      <text class="m" x="446" y="374">protocol/schemas/*.json · every message an Ed25519-signed envelope</text>
+      <rect class="box" x="850" y="386" width="160" height="38" rx="12"/>
+      <text class="t" x="864" y="410">Receipts ledger</text>
+      <path class="link" stroke="#2db862" d="M935 358 V382" marker-end="url(#ar)"/>
+      <!-- planned -->
+      <rect x="1040" y="260" width="150" height="96" rx="14" fill="none" stroke="#c4c9c3" stroke-width="2" class="dash"/>
+      <text class="t" x="1054" y="286">Planner /</text><text class="t" x="1054" y="304">utility view</text>
+      <text class="s" x="1054" y="328">planned</text>
+      <path class="link dash" stroke="#c4c9c3" d="M1115 230 V256"/>
+    </svg>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="planned">
+      <span class="tag">Planned next</span>
+      <h2 style="font-size:19px">Planner and utility view</h2>
+      <p style="margin:6px 0 0;color:var(--ink-2)">Not built yet. A view for the community steward or distribution utility:</p>
+      <ul>
+        <li>a neighborhood demand forecast from the ML model, built by summing members' forecasts without seeing their meters;</li>
+        <li>feeder headroom against the transformer and line ratings;</li>
+        <li>upcoming grid events and how much flexibility the commons can promise for each.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="sec-head"><h2>Team and data</h2></div>
+    <div class="prose" style="font-size:14.5px">
+      <p>Built at Hackachusetts 2026 (Climate Tech track, challenge C3) by Robyn (Xuening) Wang and team, with Kiro.
+        ML model and tooling: Robyn. Agent network and site: built with Kiro from Kiro specs.</p>
+      <p>HouseZero data: Harvard Center for Green Buildings and Cities, CC BY 4.0, DOIs
+        <a href="https://doi.org/10.6084/m9.figshare.30260233.v1">10.6084/m9.figshare.30260233.v1</a> and
+        <a href="https://doi.org/10.6084/m9.figshare.32790984.v1">10.6084/m9.figshare.32790984.v1</a>.
+        Boston Public Library Central electricity: City of Boston, Analyze Boston, PDDL. Grid data: ISO New England.
+        Class load shapes: National Grid (Massachusetts Electric). Building templates: NREL ComStock.
+        Members other than HouseZero and the library's measured shape are simulated; batteries, tariffs and prices paid
+        are assumptions. Not an official release or endorsement by any of these organizations.</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>
