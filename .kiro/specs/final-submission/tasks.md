@@ -41,7 +41,7 @@ After each task: run `uv run pytest -q`, commit with a clear message, and add a 
 
 ## P0 — ship (7:15 PM onward, no exceptions)
 
-- [ ] 10. **Merge and publish** (5 min) — merge `kiro/commonwatt` into `main`, push. (Robyn: make the repo
+- [x] 10. **Merge and publish** (5 min) — merge `kiro/commonwatt` into `main`, push. (Robyn: make the repo
   public and enable Pages → Source: GitHub Actions. Check the site loads.)
 - [ ] 11. **Record the video** (20 min, Robyn) — follow the script in design.md, ≤ 3:00, upload to
   YouTube as Public. No brand names on screen.
