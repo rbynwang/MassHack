@@ -21,6 +21,7 @@ dependencies = [
     "matplotlib>=3.9",
     "pydantic>=2.14.1",
     "cryptography>=50.0.2",
+    "pytz>=2026.5",
 ]
 
 [project.scripts]

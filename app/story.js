@@ -641,7 +641,10 @@
       <div><dt>cost_per_kwh</dt><dd>$${fmt(m.cost_per_kwh, 2)}</dd></div>
       <div><dt>assets (agent card)</dt><dd>${esc((m.assets || []).join(', ').replace(/_/g, ' '))}</dd></div>`;
     const p = m.private;
-    $('stays').innerHTML = `
+    const mf = (D.model_forecasts || {})[id];
+    const fcRow = mf ? `<div><dt>trained model's forecast error today</dt><dd>${fmt(mf.day_error_pct, 1)} %</dd></div>`
+      : `<div><dt>forecast</dt><dd>stand-in</dd></div>`;
+    $('stays').innerHTML = fcRow + `
       <div><dt>owner's kW limit</dt><dd>${fmt(p.owner_limit_kw, 1)} kW</dd></div>
       <div><dt>comfort max</dt><dd>${p.comfort_max_c != null ? fmt(F(p.comfort_max_c), 1) + ' °F' : '—'}</dd></div>
       <div><dt>battery reserve</dt><dd>${p.battery_reserve_pct != null ? fmt(p.battery_reserve_pct) + ' %' : '—'}</dd></div>
@@ -690,7 +693,12 @@
 
   // ------------------------------------------------------------------ 3.7 methods
   $('labelLegend').innerHTML = Object.entries(D.labels).map(([k, v]) => `<div>${pill(k)} ${esc(v)}</div>`).join('');
-  $('toolLine').innerHTML = `Model tool used for these numbers: <b>${esc(D.tool)}</b>. Swap in a trained model with <code>COMMONWATT_TOOL=module:Class</code>.`;
+  const MD = S.model || {};
+  $('toolLine').innerHTML = `Model tool used for these numbers: <b>${esc(D.tool)}</b>. ` +
+    (MD.trained_members ? `The trained model forecast and priced decisions for ${MD.trained_members.length} members ` +
+      `(${MD.trained_members.map(esc).join(', ')}; mean day error ${fmt(MD.forecast_day_error_pct, 1)} %); ` +
+      `${MD.stand_in_members.length} members it was not trained on use the labeled stand-in. ${MD.tool_calls} tool calls this run. ` : '') +
+    `Choose a tool with <code>COMMONWATT_TOOL=module:Class</code>.`;
   $('srcTable').innerHTML = '<tr><th>member</th><th>kind</th><th>label</th><th>source</th></tr>' +
     D.members.map((m) => `<tr><td class="mono">${m.id}</td><td>${esc(m.kind_label)}</td><td>${pill(m.label)}</td><td>${esc(m.source)}</td></tr>`).join('');
 

@@ -2,7 +2,690 @@
  "version": "0.1.0",
  "day": "2025-06-24",
  "commons": "cambridge-commons-01",
- "tool": "mock (perfect-foresight twin + rules)",
+ "tool": "GridCollective trained model (0b73567): LightGBM forecasts + battery LP",
+ "model_forecasts": {
+  "housezero": {
+   "model_id": "hz_main",
+   "p50_kw": [
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.2,
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.4,
+    1.5,
+    1.5,
+    1.5,
+    1.5,
+    1.5,
+    1.4,
+    1.4,
+    1.3,
+    1.3,
+    1.4,
+    1.3,
+    1.3,
+    1.3,
+    1.3
+   ],
+   "actual_kw": [
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.4,
+    1.7,
+    1.8,
+    1.7,
+    1.7,
+    1.7,
+    1.7,
+    1.4,
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.3,
+    1.3
+   ],
+   "day_error_pct": 4.7
+  },
+  "office_01": {
+   "model_id": "cs_27764",
+   "p50_kw": [
+    43.8,
+    43.4,
+    41.2,
+    41.2,
+    42.1,
+    41.2,
+    46.3,
+    55.4,
+    68.5,
+    74.6,
+    75.5,
+    75.5,
+    75.1,
+    74.8,
+    74.5,
+    70.1,
+    66.1,
+    52.9,
+    50.0,
+    48.9,
+    49.3,
+    48.9,
+    47.9,
+    47.2
+   ],
+   "actual_kw": [
+    45.4,
+    43.6,
+    42.4,
+    42.1,
+    41.9,
+    40.6,
+    45.6,
+    60.1,
+    69.9,
+    76.0,
+    77.1,
+    77.2,
+    76.8,
+    77.1,
+    77.3,
+    75.3,
+    70.1,
+    57.7,
+    56.3,
+    53.4,
+    53.6,
+    52.4,
+    50.9,
+    49.4
+   ],
+   "day_error_pct": 4.3
+  },
+  "office_02": {
+   "model_id": "cs_54098",
+   "p50_kw": [
+    19.4,
+    20.0,
+    18.9,
+    18.2,
+    17.1,
+    16.0,
+    16.8,
+    26.1,
+    36.0,
+    48.6,
+    49.9,
+    49.3,
+    48.0,
+    47.0,
+    33.6,
+    27.6,
+    27.7,
+    27.8,
+    27.1,
+    27.0,
+    24.4,
+    24.8,
+    24.5,
+    24.5
+   ],
+   "actual_kw": [
+    20.0,
+    18.9,
+    18.6,
+    17.7,
+    17.0,
+    16.4,
+    19.2,
+    25.1,
+    35.3,
+    48.3,
+    49.5,
+    48.4,
+    47.9,
+    46.7,
+    38.0,
+    29.7,
+    29.7,
+    29.3,
+    30.3,
+    25.4,
+    23.4,
+    22.9,
+    23.1,
+    22.8
+   ],
+   "day_error_pct": 4.3
+  },
+  "office_03": {
+   "model_id": "cs_38689",
+   "p50_kw": [
+    64.2,
+    63.5,
+    63.6,
+    64.0,
+    61.5,
+    61.3,
+    69.2,
+    92.2,
+    119.8,
+    130.5,
+    135.8,
+    134.5,
+    132.8,
+    127.8,
+    116.0,
+    98.4,
+    91.0,
+    74.0,
+    74.5,
+    72.3,
+    71.3,
+    71.4,
+    71.4,
+    72.6
+   ],
+   "actual_kw": [
+    66.3,
+    64.3,
+    61.8,
+    59.9,
+    58.6,
+    59.4,
+    68.3,
+    110.4,
+    125.7,
+    133.9,
+    136.7,
+    135.7,
+    135.7,
+    134.5,
+    120.5,
+    107.0,
+    100.3,
+    76.5,
+    79.2,
+    71.1,
+    69.3,
+    70.1,
+    69.7,
+    68.5
+   ],
+   "day_error_pct": 4.3
+  },
+  "shop_01": {
+   "model_id": "cs_16530",
+   "p50_kw": [
+    3.5,
+    3.4,
+    3.2,
+    3.2,
+    3.1,
+    2.4,
+    2.4,
+    2.8,
+    4.1,
+    5.8,
+    9.3,
+    10.6,
+    11.6,
+    11.8,
+    11.8,
+    11.5,
+    11.0,
+    10.6,
+    10.1,
+    8.3,
+    6.9,
+    5.7,
+    5.2,
+    5.0
+   ],
+   "actual_kw": [
+    4.1,
+    4.0,
+    3.9,
+    3.8,
+    3.7,
+    3.1,
+    3.1,
+    3.6,
+    4.1,
+    5.3,
+    8.2,
+    10.1,
+    11.4,
+    11.7,
+    12.0,
+    11.9,
+    11.2,
+    10.2,
+    9.7,
+    7.9,
+    6.9,
+    5.6,
+    5.4,
+    5.3
+   ],
+   "day_error_pct": 6.2
+  },
+  "shop_02": {
+   "model_id": "cs_903",
+   "p50_kw": [
+    3.9,
+    3.6,
+    3.4,
+    3.1,
+    3.1,
+    2.4,
+    3.8,
+    10.7,
+    17.4,
+    20.1,
+    21.1,
+    21.4,
+    21.4,
+    21.4,
+    21.1,
+    20.1,
+    14.4,
+    10.4,
+    7.9,
+    8.0,
+    7.8,
+    8.6,
+    8.4,
+    8.1
+   ],
+   "actual_kw": [
+    4.4,
+    3.7,
+    3.1,
+    2.9,
+    2.8,
+    2.4,
+    4.6,
+    12.7,
+    17.3,
+    20.5,
+    21.3,
+    21.7,
+    21.8,
+    22.1,
+    21.7,
+    20.6,
+    16.6,
+    10.3,
+    9.8,
+    8.8,
+    8.0,
+    8.0,
+    7.6,
+    7.1
+   ],
+   "day_error_pct": 5.3
+  },
+  "restaurant_01": {
+   "model_id": "cs_25407",
+   "p50_kw": [
+    15.0,
+    10.4,
+    10.6,
+    11.5,
+    13.9,
+    17.7,
+    27.9,
+    40.5,
+    41.9,
+    47.1,
+    49.0,
+    45.6,
+    45.6,
+    49.6,
+    52.5,
+    49.2,
+    42.3,
+    31.6,
+    25.2,
+    17.7,
+    19.6,
+    19.7,
+    19.7,
+    19.0
+   ],
+   "actual_kw": [
+    15.5,
+    10.7,
+    10.8,
+    12.0,
+    14.2,
+    18.5,
+    28.7,
+    40.2,
+    42.2,
+    47.1,
+    49.0,
+    45.4,
+    45.4,
+    49.5,
+    52.7,
+    49.9,
+    42.9,
+    32.5,
+    25.7,
+    17.6,
+    19.6,
+    19.9,
+    19.9,
+    19.1
+   ],
+   "day_error_pct": 1.1
+  }
+ },
+ "tool_calls": [
+  {
+   "member": "housezero",
+   "model_id": "hz_main",
+   "method": "forecast",
+   "source": "trained model",
+   "summary": "LightGBM P50 peak 1.5 kW at 14:00, band 1.3-1.7 kW"
+  },
+  {
+   "member": "housezero",
+   "model_id": "hz_main",
+   "method": "flexibility",
+   "source": "trained model",
+   "summary": "can hold 4.5 kW for 2 h, cost $0.000/kWh (battery LP)"
+  },
+  {
+   "member": "office_01",
+   "model_id": "cs_27764",
+   "method": "forecast",
+   "source": "trained model",
+   "summary": "LightGBM P50 peak 75.5 kW at 11:00, band 42.0-76.2 kW"
+  },
+  {
+   "member": "office_01",
+   "model_id": "cs_27764",
+   "method": "flexibility",
+   "source": "trained model",
+   "summary": "can hold 24.2 kW for 2 h, cost $0.780/kWh (battery LP)"
+  },
+  {
+   "member": "office_02",
+   "model_id": "cs_54098",
+   "method": "forecast",
+   "source": "trained model",
+   "summary": "LightGBM P50 peak 49.9 kW at 10:00, band 28.5-53.9 kW"
+  },
+  {
+   "member": "office_03",
+   "model_id": "cs_38689",
+   "method": "forecast",
+   "source": "trained model",
+   "summary": "LightGBM P50 peak 135.8 kW at 10:00, band 83.8-141.2 kW"
+  },
+  {
+   "member": "shop_01",
+   "model_id": "cs_16530",
+   "method": "forecast",
+   "source": "trained model",
+   "summary": "LightGBM P50 peak 11.8 kW at 13:00, band 9.8-13.1 kW"
+  },
+  {
+   "member": "shop_02",
+   "model_id": "cs_903",
+   "method": "forecast",
+   "source": "trained model",
+   "summary": "LightGBM P50 peak 21.4 kW at 13:00, band 7.9-21.6 kW"
+  },
+  {
+   "member": "restaurant_01",
+   "model_id": "cs_25407",
+   "method": "forecast",
+   "source": "trained model",
+   "summary": "LightGBM P50 peak 52.5 kW at 14:00, band 43.0-53.6 kW"
+  },
+  {
+   "member": "home_01",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "home_02",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "home_03",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "home_04",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "home_05",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "home_06",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "home_07",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "home_08",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "home_09",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "home_10",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "school_01",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "housezero",
+   "model_id": "hz_main",
+   "method": "decide",
+   "source": "trained model",
+   "summary": "asked 5.00 kW: counter 4.48 kW; planner extra cost $9.25 ($0.925/kWh)"
+  },
+  {
+   "member": "school_01",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "counter 37.53 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_04",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.67 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "library_01",
+   "model_id": null,
+   "method": "forecast",
+   "source": "stand-in",
+   "summary": "stand-in: the building's own simulated day"
+  },
+  {
+   "member": "office_01",
+   "model_id": "cs_27764",
+   "method": "decide",
+   "source": "trained model",
+   "summary": "asked 4.93 kW: accept 4.93 kW; planner extra cost $7.69 ($0.780/kWh)"
+  },
+  {
+   "member": "office_02",
+   "model_id": "cs_54098",
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.75 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "office_03",
+   "model_id": "cs_38689",
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 2.27 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "shop_01",
+   "model_id": "cs_16530",
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.20 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "shop_02",
+   "model_id": "cs_903",
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.38 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "restaurant_01",
+   "model_id": "cs_25407",
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "decline 0.00 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_01",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 1.28 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_02",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 2.08 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_04",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 2.82 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_05",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 1.31 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_06",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.24 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_07",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.36 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_08",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.25 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_09",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.37 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "home_10",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.20 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "library_01",
+   "model_id": null,
+   "method": "decide",
+   "source": "stand-in",
+   "summary": "accept 0.35 kW (HVAC rule; no battery to plan)"
+  },
+  {
+   "member": "office_01",
+   "model_id": "cs_27764",
+   "method": "decide",
+   "source": "trained model",
+   "summary": "asked 5.15 kW: accept 5.15 kW; planner extra cost $8.06 ($0.782/kWh)"
+  }
+ ],
  "ask": {
   "type": "ask",
   "ask_id": "ask-2025-06-24",
@@ -118,15 +801,15 @@
    205.5,
    217.2,
    224.1,
-   249.5,
+   248.3,
    273.1,
-   210.0,
+   212.5,
    211.3,
-   283.0,
-   286.4,
-   282.1,
-   282.0,
-   282.1
+   282.7,
+   286.0,
+   280.3,
+   280.1,
+   276.3
   ],
   "lmp_usd_mwh": [
    58.0,
@@ -228,23 +911,23 @@
     "reserve_pct": 20.0,
     "label": "assumption"
    },
-   "cost_per_kwh": 0.06,
+   "cost_per_kwh": 0.0,
    "offer_window_kw": 5.0,
    "steps": [
     {
      "member": "housezero",
-     "asked_kw": 0.8,
-     "decision": "accept",
-     "kw": 0.8,
-     "reason": "within my limits for the whole window"
+     "asked_kw": 5.0,
+     "decision": "counter",
+     "kw": 4.48,
+     "reason": "I can hold 4.5 kW for all 2 h (battery planner: $0.93/kWh to hold it, incl. recharge and peak charge)"
     }
    ],
-   "committed_kw": 0.8,
+   "committed_kw": 4.48,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "housezero",
-    "reduce_kw": 0.8,
+    "reduce_kw": 4.48,
     "window": [
      17,
      18
@@ -262,17 +945,17 @@
      17,
      18
     ],
-    "committed_kw": 0.8,
-    "delivered_kwh": 1.6,
+    "committed_kw": 4.48,
+    "delivered_kwh": 8.96,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 1.51,
+    "payment_usd": 8.44,
     "indoor_f_range": null,
-    "battery_min_pct": 77.5,
-    "prev_hash": "sha256:e58b9828d392640416f041da0aff49e708b905f96ae4178ce7b7dd31ba79e54b",
-    "guard_public_key": "04b2b5f4b23a24f6e7c39621d31410764a9227604ef777f0b1184e60ca529688",
-    "signature": "160acbbe6757d1d99b05573a8b4e8b7d74e4f2d3f595384a51a6b669d88cb1aa14fdf9a9d1c98114c4ee332b69ae2fe9899ccbf1738fa1a7d94ddc683106e00a"
+    "battery_min_pct": 20.0,
+    "prev_hash": "sha256:genesis",
+    "guard_public_key": "8581503669fe2c239a2296579f1988be9509271b3cf88e1af79a1715d1612772",
+    "signature": "37b89d73cad9fef3e6f4594c04e6b24c3fece87a733e5bfd1340ea939be5ea034df74d17508d17b19e419b8f275ab63d8ec8cac9266f5698b27434858a7e5205"
    },
-   "phone": "Your building helped for 2 hours today. Earned $1.51. Battery stayed above 78%.",
+   "phone": "Your building helped for 2 hours today. Earned $8.44. Battery stayed above 20%.",
    "planned_kw": [
     1.3,
     1.3,
@@ -317,8 +1000,8 @@
     -7.4,
     -6.0,
     -4.7,
-    -4.6,
-    -2.9,
+    -8.3,
+    -6.6,
     0.8,
     1.3,
     1.3,
@@ -335,7 +1018,8 @@
      1.3,
      1.3
     ]
-   }
+   },
+   "model_source": "trained model"
   },
   {
    "id": "office_01",
@@ -357,30 +1041,30 @@
     "reserve_pct": 15.0,
     "label": "assumption"
    },
-   "cost_per_kwh": 0.12,
+   "cost_per_kwh": 0.78,
    "offer_window_kw": 29.84,
    "steps": [
     {
      "member": "office_01",
-     "asked_kw": 4.78,
+     "asked_kw": 4.93,
      "decision": "accept",
-     "kw": 4.78,
-     "reason": "within my limits for the whole window"
+     "kw": 4.93,
+     "reason": "battery planner: $0.78/kWh to hold it, incl. recharge and peak charge"
     },
     {
      "member": "office_01",
-     "asked_kw": 4.99,
+     "asked_kw": 5.15,
      "decision": "accept",
-     "kw": 4.99,
-     "reason": "within my limits for the whole window"
+     "kw": 5.15,
+     "reason": "battery planner: $0.78/kWh to hold it, incl. recharge and peak charge"
     }
    ],
-   "committed_kw": 4.99,
+   "committed_kw": 5.15,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "office_01",
-    "reduce_kw": 4.99,
+    "reduce_kw": 5.15,
     "window": [
      17,
      18
@@ -398,17 +1082,17 @@
      17,
      18
     ],
-    "committed_kw": 4.99,
-    "delivered_kwh": 9.98,
+    "committed_kw": 5.15,
+    "delivered_kwh": 10.3,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 9.4,
+    "payment_usd": 9.7,
     "indoor_f_range": null,
-    "battery_min_pct": 62.9,
-    "prev_hash": "sha256:a0283881f060715d0d172265d229c1d5699ad68d446151900dd73f2c119d3723",
-    "guard_public_key": "8ab2c2a8583545430aea3123f564270a907af0ab0f5da587b8422437b568525f",
-    "signature": "afeca500f67aa008c38d15a7307c56c4ffde12b3132b9bf3041ed80d3f9edf4b5ec80fa87567f1c91bc46d2eea824d9aeb6c0124a9f2fb87e233e72402108f02"
+    "battery_min_pct": 62.0,
+    "prev_hash": "sha256:c82db181e2c44949016d41cd89643a2ed5f47922a43848db9314ab396d6fc56f",
+    "guard_public_key": "211adbb6afb84557c1c4e243bf3303a0968778c02fed6ef8992256d6825f23f9",
+    "signature": "a80dc57312d1f5fc9ad6f64a55e5a73b9bb1dbb1d1a5ebbaca5b637130e53e9b2f9bf7a11cb9e952fea1f37708f6b63b29263f77f35628c1f37f8ca54c108503"
    },
-   "phone": "Your building helped for 2 hours today. Earned $9.40. Battery stayed above 63%.",
+   "phone": "Your building helped for 2 hours today. Earned $9.70. Battery stayed above 62%.",
    "planned_kw": [
     45.4,
     43.6,
@@ -453,8 +1137,8 @@
     57.8,
     59.4,
     59.5,
-    49.8,
-    48.2,
+    49.6,
+    48.1,
     52.7,
     53.5,
     52.4,
@@ -471,7 +1155,8 @@
      56.3,
      53.4
     ]
-   }
+   },
+   "model_source": "trained model"
   },
   {
    "id": "office_02",
@@ -491,18 +1176,18 @@
    "steps": [
     {
      "member": "office_02",
-     "asked_kw": 0.73,
+     "asked_kw": 0.75,
      "decision": "accept",
-     "kw": 0.73,
+     "kw": 0.75,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 0.73,
+   "committed_kw": 0.75,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "office_02",
-    "reduce_kw": 0.73,
+    "reduce_kw": 0.75,
     "window": [
      17,
      18
@@ -520,17 +1205,17 @@
      17,
      18
     ],
-    "committed_kw": 0.73,
-    "delivered_kwh": 1.46,
+    "committed_kw": 0.75,
+    "delivered_kwh": 1.5,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 1.38,
+    "payment_usd": 1.41,
     "indoor_f_range": null,
     "battery_min_pct": null,
-    "prev_hash": "sha256:d30bb81b36ccf705988eafbc86f0e2d76c9e9ce0d06a1e99c8f7c989a6d29ca9",
-    "guard_public_key": "fcceb043c9fbc8998df2ee4c3fe73db6f47ec8f3e7badb7217683162bf025cd1",
-    "signature": "f767c5c521fa40eaa50cb17df0024b47ea1cdbee5e2081b946ab66380888968208903f4889f89124adbd7b3db713862f940793749ff63ac8de7c594df0a33e03"
+    "prev_hash": "sha256:6f2d85fcd5abd4443408d11712afadc5bbcbdfbfd2fb59f9a31092fafa655537",
+    "guard_public_key": "c57ef5f932073ca9a343657d35a60a53e8fc06162bcf8f93036a3829bc50724d",
+    "signature": "b9fd2e37b7ddae5812ad0bd5b6f4724824f9d2c80edde02c7c3007e18df406e762c19d63b06a5a1dbc58f17ed4e5fdc4df1d23050d97a6445484d3f88d97a206"
    },
-   "phone": "Your building helped for 2 hours today. Earned $1.38.",
+   "phone": "Your building helped for 2 hours today. Earned $1.41.",
    "planned_kw": [
     20.0,
     18.9,
@@ -574,7 +1259,7 @@
     20.2,
     14.2,
     10.7,
-    17.1,
+    17.2,
     25.0,
     25.9,
     24.8,
@@ -593,7 +1278,8 @@
      30.3,
      25.4
     ]
-   }
+   },
+   "model_source": "trained model"
   },
   {
    "id": "office_03",
@@ -613,18 +1299,18 @@
    "steps": [
     {
      "member": "office_03",
-     "asked_kw": 2.21,
+     "asked_kw": 2.27,
      "decision": "accept",
-     "kw": 2.21,
+     "kw": 2.27,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 2.21,
+   "committed_kw": 2.27,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "office_03",
-    "reduce_kw": 2.21,
+    "reduce_kw": 2.27,
     "window": [
      17,
      18
@@ -642,17 +1328,17 @@
      17,
      18
     ],
-    "committed_kw": 2.21,
-    "delivered_kwh": 4.42,
+    "committed_kw": 2.27,
+    "delivered_kwh": 4.54,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 4.16,
+    "payment_usd": 4.28,
     "indoor_f_range": null,
     "battery_min_pct": null,
-    "prev_hash": "sha256:cb55fa01d8abfe6f96be9d963599d12b7fc4b1aa09cc5fab10783d26574e8b47",
-    "guard_public_key": "165f3fc6b67d9055727b8fc79e2c026be52bb886ccd14affabe4c721aacbbd8a",
-    "signature": "70c4ad1be303ab570b5f19465cd56adc4223153d4b2c440dd15e2ee589b13a9d861b55005281b704ecbe3ebce66736408658b25843d204b6b3c7d1f73741cd06"
+    "prev_hash": "sha256:b7799b306e75f0e0973b6071b8d58e9d0fe2b62770cb25592268909b98c7d094",
+    "guard_public_key": "00fee841068a6dec39e1897f27d1093589da7550912b6857a3aacd0c05c6341d",
+    "signature": "4607cf6b118d6d1e54027f2734d42fae4620447110e1ef0e921ac30d406ef95a0adb46b4ffa85ad5d32d88d1b65c8595caa1c4461090f167c8b582aec1386c06"
    },
-   "phone": "Your building helped for 2 hours today. Earned $4.16.",
+   "phone": "Your building helped for 2 hours today. Earned $4.28.",
    "planned_kw": [
     66.3,
     64.3,
@@ -697,9 +1383,9 @@
     80.1,
     75.2,
     79.6,
-    68.4,
+    68.3,
     70.7,
-    70.3,
+    70.4,
     69.9,
     70.8,
     70.4,
@@ -715,7 +1401,8 @@
      79.2,
      71.1
     ]
-   }
+   },
+   "model_source": "trained model"
   },
   {
    "id": "shop_01",
@@ -735,18 +1422,18 @@
    "steps": [
     {
      "member": "shop_01",
-     "asked_kw": 0.19,
+     "asked_kw": 0.2,
      "decision": "accept",
-     "kw": 0.19,
+     "kw": 0.2,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 0.19,
+   "committed_kw": 0.2,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "shop_01",
-    "reduce_kw": 0.19,
+    "reduce_kw": 0.2,
     "window": [
      17,
      18
@@ -764,17 +1451,17 @@
      17,
      18
     ],
-    "committed_kw": 0.19,
-    "delivered_kwh": 0.38,
+    "committed_kw": 0.2,
+    "delivered_kwh": 0.4,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 0.36,
+    "payment_usd": 0.38,
     "indoor_f_range": null,
     "battery_min_pct": null,
-    "prev_hash": "sha256:7aa21d655189a81bb33c917df5ec3c7fc3a6b3ecc5ede41d84dce8ab86083b56",
-    "guard_public_key": "38632736c9141fe7fb97023a518661fc94f71e05cc0503dfde45996e707cc689",
-    "signature": "ebcbcfe7e04f9a6ece7024fe771a7d807593a07bcfb35b1d3437cf9af59324e721e6805b1b728db5c00b2cca85d2db3fce2586577fd8b868be15b6e63c6ed509"
+    "prev_hash": "sha256:8dd39376f6c1d7057ef4670d5b08539623248604dda162413d6ce5e3de9585a1",
+    "guard_public_key": "6357b2386daf117630934c9b7ed0e4b387d081d57f1abe156c2ade82b089ca34",
+    "signature": "a161d2012113e66dffbc9beefbaa1ed19d59ea81ee775f5ce9803b1b9e8a3507bbf4edb4265fa5a4f31f2a211aec8f47b9ea49a393e654bb20dcbc303212c90a"
    },
-   "phone": "Your building helped for 2 hours today. Earned $0.36.",
+   "phone": "Your building helped for 2 hours today. Earned $0.38.",
    "planned_kw": [
     4.1,
     4.0,
@@ -820,7 +1507,7 @@
     -6.8,
     -1.2,
     6.6,
-    6.0,
+    5.9,
     7.2,
     6.9,
     5.7,
@@ -837,7 +1524,8 @@
      9.7,
      7.9
     ]
-   }
+   },
+   "model_source": "trained model"
   },
   {
    "id": "shop_02",
@@ -857,18 +1545,18 @@
    "steps": [
     {
      "member": "shop_02",
-     "asked_kw": 0.37,
+     "asked_kw": 0.38,
      "decision": "accept",
-     "kw": 0.37,
+     "kw": 0.38,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 0.37,
+   "committed_kw": 0.38,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "shop_02",
-    "reduce_kw": 0.37,
+    "reduce_kw": 0.38,
     "window": [
      17,
      18
@@ -886,17 +1574,17 @@
      17,
      18
     ],
-    "committed_kw": 0.37,
-    "delivered_kwh": 0.74,
+    "committed_kw": 0.38,
+    "delivered_kwh": 0.76,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 0.7,
+    "payment_usd": 0.72,
     "indoor_f_range": null,
     "battery_min_pct": null,
-    "prev_hash": "sha256:dbb26612165c57de765f30fcd12e9a6587057ac25f0e4c9c03ebf6cd43c1c338",
-    "guard_public_key": "c8183978918600e8c2cbd06f16567cb6125d1afaf85a72052af07bf2b691e358",
-    "signature": "39ed6904181f2bbc31cff6d9a1c06dee10289e4d1f9f9cb73a6fc281cb006f60af6fe8549d2b12c84e15634c7fbe25f45e6b9351d6eb24eaf5acec1cc7d6f80c"
+    "prev_hash": "sha256:8fae7b33e0a15f1fbcfb21ccd70d5ed59db2da23187dfad3d727da4efcd0cc7c",
+    "guard_public_key": "c4f4c2c363e5c5a43fb736dfe714f275dbc72beedad0de6f5978be0c795e5fdb",
+    "signature": "ecbeb72314e6249afb2475dd36dc5cb2c4851a10559477454364d5d4a18304436552ba8812019ed7068d0a72ccedd550eaeba36bea8b7d1a721942175a9dec03"
    },
-   "phone": "Your building helped for 2 hours today. Earned $0.70.",
+   "phone": "Your building helped for 2 hours today. Earned $0.72.",
    "planned_kw": [
     4.4,
     3.7,
@@ -959,7 +1647,8 @@
      9.8,
      8.8
     ]
-   }
+   },
+   "model_source": "trained model"
   },
   {
    "id": "restaurant_01",
@@ -979,7 +1668,7 @@
    "steps": [
     {
      "member": "restaurant_01",
-     "asked_kw": 0.37,
+     "asked_kw": 0.38,
      "decision": "decline",
      "kw": 0.0,
      "reason": "price $0.94/kWh is below my cost $1.50/kWh"
@@ -1051,7 +1740,8 @@
      25.7,
      17.6
     ]
-   }
+   },
+   "model_source": "trained model"
   },
   {
    "id": "home_01",
@@ -1078,18 +1768,18 @@
    "steps": [
     {
      "member": "home_01",
-     "asked_kw": 1.24,
+     "asked_kw": 1.28,
      "decision": "accept",
-     "kw": 1.24,
+     "kw": 1.28,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 1.24,
+   "committed_kw": 1.28,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "home_01",
-    "reduce_kw": 1.24,
+    "reduce_kw": 1.28,
     "window": [
      17,
      18
@@ -1107,20 +1797,20 @@
      17,
      18
     ],
-    "committed_kw": 1.24,
-    "delivered_kwh": 2.48,
+    "committed_kw": 1.28,
+    "delivered_kwh": 2.56,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 2.34,
+    "payment_usd": 2.41,
     "indoor_f_range": [
      76.1,
      76.1
     ],
-    "battery_min_pct": 76.4,
-    "prev_hash": "sha256:ed51fe054ab5a0e6285a3b2523dedb46cde531892068aef11e69eb5638b564b4",
-    "guard_public_key": "87e9f117bc40ed12431aa74479624c7b8ea6eb54a78ace7602381a2af93d7c5a",
-    "signature": "8e0485d422d75126929cf3c29a1eec7750864eae9fd154ccad2928019fd1d7077aa86248b29b8d67f2ea1b7159cb7480d7cde8bfae8ae38e0d58d6e0c45b9b02"
+    "battery_min_pct": 75.9,
+    "prev_hash": "sha256:cfcd6064c9d599c06e77e37d9ff1b4074e4711768984feffda475a58ac67bc85",
+    "guard_public_key": "6de925465396961e306e8899f6dd7ea6b7e7ae2ba8de8174e65934aa086b773f",
+    "signature": "017de0c0f6fe829b530293693ece8b6e728aad9a39386f90e00c8e71870fbdaed8342453d27ae67d62dfe4409e2fc774a9b8a3711e357165735c5546054a0600"
    },
-   "phone": "Your home helped for 2 hours today. Earned $2.34. Stayed at 76-76\u00b0F. Battery stayed above 76%.",
+   "phone": "Your home helped for 2 hours today. Earned $2.41. Stayed at 76-76\u00b0F. Battery stayed above 76%.",
    "planned_kw": [
     0.8,
     0.7,
@@ -1165,8 +1855,8 @@
     -0.6,
     0.1,
     0.6,
-    -0.0,
-    4.2,
+    -0.1,
+    4.1,
     2.3,
     4.1,
     2.8,
@@ -1183,7 +1873,8 @@
      6.4,
      2.5
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "home_02",
@@ -1210,18 +1901,18 @@
    "steps": [
     {
      "member": "home_02",
-     "asked_kw": 2.02,
+     "asked_kw": 2.08,
      "decision": "accept",
-     "kw": 2.02,
+     "kw": 2.08,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 2.02,
+   "committed_kw": 2.08,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "home_02",
-    "reduce_kw": 2.02,
+    "reduce_kw": 2.08,
     "window": [
      17,
      18
@@ -1239,20 +1930,20 @@
      17,
      18
     ],
-    "committed_kw": 2.02,
-    "delivered_kwh": 4.04,
+    "committed_kw": 2.08,
+    "delivered_kwh": 4.16,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 3.81,
+    "payment_usd": 3.92,
     "indoor_f_range": [
      74.9,
      74.9
     ],
-    "battery_min_pct": 65.9,
-    "prev_hash": "sha256:99703b921b2fa59dbad2d1a9268a7aa10e20a37be749188f56aac17e5094c5a7",
-    "guard_public_key": "b453be9af64bf5d5e3fc7e811e7ff884db524d03bf0b9fe3f4ef3e74f507a25d",
-    "signature": "ce229b8f816f84eb4230b67b8c5ac34086534c4456ccfaeadb59f6ed516019ffb30681340fd25dbe4c1dc9a03fd619f78fdfd3909a3abe1e2f99678369aa7f05"
+    "battery_min_pct": 65.2,
+    "prev_hash": "sha256:3cd211effa92fdb4ccf3d06b0841fdc52bc73660a97057e6f0137857f2639a8f",
+    "guard_public_key": "997789b916866f28fa6e7d9e0fbd0919513b1772b70fe48c94da572aa4d00b8f",
+    "signature": "192da582a45cb1fafdcfae9e3ccae638ffd3db4cda13a5b80610eb1ee91953e4135519b0b558d1e078c88b9ce5dc305e951ede24f993e64284cddd2d42232d00"
    },
-   "phone": "Your home helped for 2 hours today. Earned $3.81. Stayed at 75-75\u00b0F. Battery stayed above 66%.",
+   "phone": "Your home helped for 2 hours today. Earned $3.92. Stayed at 75-75\u00b0F. Battery stayed above 65%.",
    "planned_kw": [
     1.1,
     1.1,
@@ -1297,7 +1988,7 @@
     1.1,
     1.0,
     1.6,
-    0.4,
+    0.3,
     0.7,
     2.7,
     3.6,
@@ -1315,7 +2006,8 @@
      4.1,
      2.9
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "home_03",
@@ -1342,7 +2034,7 @@
    "steps": [
     {
      "member": "home_03",
-     "asked_kw": 1.5,
+     "asked_kw": 1.55,
      "decision": "blocked",
      "kw": 0.0,
      "reason": "trust guard: exceeds home_03's limit"
@@ -1414,7 +2106,8 @@
      3.9,
      2.6
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "home_04",
@@ -1441,25 +2134,25 @@
    "steps": [
     {
      "member": "home_04",
-     "asked_kw": 5.67,
+     "asked_kw": 0.67,
      "decision": "accept",
-     "kw": 5.67,
+     "kw": 0.67,
      "reason": "within my limits for the whole window"
     },
     {
      "member": "home_04",
-     "asked_kw": 6.95,
+     "asked_kw": 2.82,
      "decision": "accept",
-     "kw": 6.95,
+     "kw": 2.82,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 6.95,
+   "committed_kw": 2.82,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "home_04",
-    "reduce_kw": 6.95,
+    "reduce_kw": 2.82,
     "window": [
      17,
      18
@@ -1477,20 +2170,20 @@
      17,
      18
     ],
-    "committed_kw": 6.95,
-    "delivered_kwh": 13.9,
+    "committed_kw": 2.82,
+    "delivered_kwh": 5.64,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 13.09,
+    "payment_usd": 5.31,
     "indoor_f_range": [
-     75.6,
-     76.9
+     76.2,
+     76.2
     ],
-    "battery_min_pct": 13.8,
-    "prev_hash": "sha256:5e62900b32ca056843eb475398e7ac1c2064bedc02247cdd9b7242b4c16c81aa",
-    "guard_public_key": "287a272ee9fbaa083d3edaec03fa1b56804ebb73b963105dfd55c518c61c4608",
-    "signature": "29ebd5a622151fcc57b155bc8c52050cddab25d0296964b385005b228b568e38489d37d25588bc60e29129451e854067999b2894c1f4a2d74902ff899e11970f"
+    "battery_min_pct": 58.5,
+    "prev_hash": "sha256:8007f173cd1773b7b84ebd0920672cf81831155ba27ede2d38ed98e71ddba30c",
+    "guard_public_key": "3a0053975f888f8dfea16ccd49900b1f5820f9256aa0bdba4179e7475f68a854",
+    "signature": "d21039bf96b67b127b6f38e4832d94b543b1d57baf124d67c9acaf1aeba396976fa7d9432eff95e004efc8340112fb8d489d5d5137a978bb5d16c2df2590dd06"
    },
-   "phone": "Your home helped for 2 hours today. Earned $13.09. Stayed at 76-77\u00b0F. Battery stayed above 14%.",
+   "phone": "Your home helped for 2 hours today. Earned $5.31. Stayed at 76-76\u00b0F. Battery stayed above 58%.",
    "planned_kw": [
     0.8,
     0.7,
@@ -1533,13 +2226,13 @@
     -4.5,
     -4.2,
     -3.5,
-    -1.0,
-    0.3,
-    -10.2,
-    -6.6,
-    3.6,
-    2.9,
-    2.4,
+    -2.4,
+    0.2,
+    -3.6,
+    -2.4,
+    3.3,
+    2.6,
+    2.0,
     1.4,
     1.2
    ],
@@ -1553,7 +2246,8 @@
      3.1,
      3.7
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "home_05",
@@ -1580,18 +2274,18 @@
    "steps": [
     {
      "member": "home_05",
-     "asked_kw": 1.28,
+     "asked_kw": 1.31,
      "decision": "accept",
-     "kw": 1.28,
+     "kw": 1.31,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 1.28,
+   "committed_kw": 1.31,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "home_05",
-    "reduce_kw": 1.28,
+    "reduce_kw": 1.31,
     "window": [
      17,
      18
@@ -1609,20 +2303,20 @@
      17,
      18
     ],
-    "committed_kw": 1.28,
-    "delivered_kwh": 2.56,
+    "committed_kw": 1.31,
+    "delivered_kwh": 2.62,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 2.41,
+    "payment_usd": 2.47,
     "indoor_f_range": [
      77.8,
      79.5
     ],
-    "battery_min_pct": 66.9,
-    "prev_hash": "sha256:81cf43de10422fcde197f04c79f6e86d1b813b90aea52d29c19fb555fcc1a3a8",
-    "guard_public_key": "74ac018e4fb739ee7a155d0ae5c508882b6f242fb7b14ff4a3a9d30f88663b2d",
-    "signature": "4f71bbb80de70fea5db3be4b8660a301e832f9f2f5629c451d4f332d229770887eb04ac50e8f21fad7d5a351268a2c1595ca3424bd1cf7bdb7c4e21b12d1ee0f"
+    "battery_min_pct": 66.4,
+    "prev_hash": "sha256:33508d997110174c6921a88e3e71f8bef076699b727ad99720ddc31e784f1ef6",
+    "guard_public_key": "35c2fb8d44545748de44c36babac6fb8845cc922effc02a73f4058fbe8702b73",
+    "signature": "1635216eab747520a66569b1bc7a6e129722c25a7bebae07f92248ccf901412578044a964c6a1d63f0470d7383bb4bcc6dde1e1f3d0aea5598311157ac1c9305"
    },
-   "phone": "Your home helped for 2 hours today. Earned $2.41. Stayed at 78-80\u00b0F. Battery stayed above 67%.",
+   "phone": "Your home helped for 2 hours today. Earned $2.47. Stayed at 78-80\u00b0F. Battery stayed above 66%.",
    "planned_kw": [
     0.9,
     0.6,
@@ -1667,7 +2361,7 @@
     -2.6,
     -1.8,
     -1.1,
-    -1.8,
+    -1.9,
     -1.1,
     4.5,
     3.0,
@@ -1685,7 +2379,8 @@
      1.9,
      4.7
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "home_06",
@@ -1742,9 +2437,9 @@
      74.2
     ],
     "battery_min_pct": null,
-    "prev_hash": "sha256:b4161803e67daf0b10db9f84e0d4898f76650e6b6be7d968321cc22557a44d54",
-    "guard_public_key": "5c550b5ef18f5b7e609b86305a8aba3f055a85e718817a2b520e2d55459d09bc",
-    "signature": "8f8106c4262cd4faa729bfa68f4454863159b2e62b8537a945990d417ec712bdadb6e518a2e437671595d4a1e759c97fe3d45db07d2cb0252c885c10af4b2a08"
+    "prev_hash": "sha256:0a668c6190ff79914ac9977a05e28fa6305639ef08d3a9ded906316efcffaa42",
+    "guard_public_key": "79549e656ebb770c1697d4bbbb6332d93b8781fd5e29c5abfcd285418333ad97",
+    "signature": "6903e05cb3896485d27a5a04aee111e9f33543d3cf30b3ff15fbb755f6828cee7b92794c2c4583e3799ebcc104e133389377fe19e0b025517244fa6f729a3101"
    },
    "phone": "Your home helped for 2 hours today. Earned $0.45. Stayed at 73-74\u00b0F.",
    "planned_kw": [
@@ -1809,7 +2504,8 @@
      2.1,
      1.8
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "home_07",
@@ -1828,18 +2524,18 @@
    "steps": [
     {
      "member": "home_07",
-     "asked_kw": 0.35,
+     "asked_kw": 0.36,
      "decision": "accept",
-     "kw": 0.35,
+     "kw": 0.36,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 0.35,
+   "committed_kw": 0.36,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "home_07",
-    "reduce_kw": 0.35,
+    "reduce_kw": 0.36,
     "window": [
      17,
      18
@@ -1857,20 +2553,20 @@
      17,
      18
     ],
-    "committed_kw": 0.35,
-    "delivered_kwh": 0.7,
+    "committed_kw": 0.36,
+    "delivered_kwh": 0.72,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 0.66,
+    "payment_usd": 0.68,
     "indoor_f_range": [
      77.0,
      78.5
     ],
     "battery_min_pct": null,
-    "prev_hash": "sha256:6057cfc4678cca74ac3f2e4abdf69d14df1a6814ddfba7ca874a20535707756e",
-    "guard_public_key": "0a7d2de3fbdd9bcc7f318a2e031ec595906cf14ffa498d028ba0b4d9f1dad9d5",
-    "signature": "7df1a455c87eedd24b2a0895c05da749db6ffaf4a9d5daa72a2fe068c2c8b3d205392a04ebf3c00b87e2de43083c2cb4073cd27d7da805cdceacb9c63ff2270c"
+    "prev_hash": "sha256:713decc90f5a5517e41b58402ea82a016dc1bd0b5ae3f1ecc803572e014dc5be",
+    "guard_public_key": "351580b547728a0a020af0e4d4437de02f1600298e631a5e70f58a62b2071a25",
+    "signature": "b5fbfd93ee108726198d17a16bfef0da640400b4220014551dd15d8909e6d0d76d0cd41999cf34298d2ea4072e06be6522f2b9118c9828a195f05da2720ee807"
    },
-   "phone": "Your home helped for 2 hours today. Earned $0.66. Stayed at 77-78\u00b0F.",
+   "phone": "Your home helped for 2 hours today. Earned $0.68. Stayed at 77-78\u00b0F.",
    "planned_kw": [
     0.9,
     0.9,
@@ -1933,7 +2629,8 @@
      3.2,
      3.3
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "home_08",
@@ -1952,18 +2649,18 @@
    "steps": [
     {
      "member": "home_08",
-     "asked_kw": 0.24,
+     "asked_kw": 0.25,
      "decision": "accept",
-     "kw": 0.24,
+     "kw": 0.25,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 0.24,
+   "committed_kw": 0.25,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "home_08",
-    "reduce_kw": 0.24,
+    "reduce_kw": 0.25,
     "window": [
      17,
      18
@@ -1981,20 +2678,20 @@
      17,
      18
     ],
-    "committed_kw": 0.24,
-    "delivered_kwh": 0.48,
+    "committed_kw": 0.25,
+    "delivered_kwh": 0.5,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 0.45,
+    "payment_usd": 0.47,
     "indoor_f_range": [
      72.9,
      74.4
     ],
     "battery_min_pct": null,
-    "prev_hash": "sha256:66bec41a759c019ee15cdce065215b6e4701abf7d4eb4b69502e6438d8e316be",
-    "guard_public_key": "6c10486b12d260014b238f50a6335827f9ef081185c7958c28510b1347ebe85b",
-    "signature": "e8b6b418b30a9a59dabf0a1bf70a435929a8018908dab23bc8139bfff2d67779e5032b950d5b65ead7430993ee351b9e5bcf6dda3c186531a7565efdb5a5760f"
+    "prev_hash": "sha256:573c85846f33f342de258f6c092006dc08b449e63c9bb4c3f31b4ec076c31e3c",
+    "guard_public_key": "f798c7be87ae309e44689a9071abf597bc33cf801615dc3761c8badd1c41788b",
+    "signature": "63294ccd1be0521205135465f0332ef05a1d829ddbe0084fd87c7190f6546e609070fb236bedad211b5ea325105a4436236e7340eec1d7701d7b38a081a29a01"
    },
-   "phone": "Your home helped for 2 hours today. Earned $0.45. Stayed at 73-74\u00b0F.",
+   "phone": "Your home helped for 2 hours today. Earned $0.47. Stayed at 73-74\u00b0F.",
    "planned_kw": [
     1.0,
     0.9,
@@ -2057,7 +2754,8 @@
      2.0,
      2.1
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "home_09",
@@ -2076,18 +2774,18 @@
    "steps": [
     {
      "member": "home_09",
-     "asked_kw": 0.36,
+     "asked_kw": 0.37,
      "decision": "accept",
-     "kw": 0.36,
+     "kw": 0.37,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 0.36,
+   "committed_kw": 0.37,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "home_09",
-    "reduce_kw": 0.36,
+    "reduce_kw": 0.37,
     "window": [
      17,
      18
@@ -2105,20 +2803,20 @@
      17,
      18
     ],
-    "committed_kw": 0.36,
-    "delivered_kwh": 0.72,
+    "committed_kw": 0.37,
+    "delivered_kwh": 0.74,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 0.68,
+    "payment_usd": 0.7,
     "indoor_f_range": [
      75.7,
      76.8
     ],
     "battery_min_pct": null,
-    "prev_hash": "sha256:81c9e506e0727599d702ba755b9067da33cab307278516472c6c53a1c49860bb",
-    "guard_public_key": "ea91a96cbe3566208aec9b20031eb2b0e3d7a8ffaa742f62f7cb44f26e7a0d63",
-    "signature": "da26ef7a2ef2af0df2b44de1114a4794e9078b6cfbd8b8c1a481e9bd0443806219b49e9723515a52eb9922afd8a34e70c46416b91aaced7514cfe08e5c96a103"
+    "prev_hash": "sha256:ab344b46d7051a11c99b8251554a487f9990bb9cb71414a9f4f5e4929059563f",
+    "guard_public_key": "2f22e6fcb16fc88daf0830aa23ac22da716cc90518905f340fff85cb6958ea37",
+    "signature": "6cbc236289133f74143614a201a3e4bbd75a8a799879c8dbe0b425da14ab7e13d2e8b9630625883ade59f24b1b55106ce2f1fdfa253852ace40004a57d0a1108"
    },
-   "phone": "Your home helped for 2 hours today. Earned $0.68. Stayed at 76-77\u00b0F.",
+   "phone": "Your home helped for 2 hours today. Earned $0.70. Stayed at 76-77\u00b0F.",
    "planned_kw": [
     0.9,
     0.8,
@@ -2181,7 +2879,8 @@
      3.8,
      2.4
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "home_10",
@@ -2200,18 +2899,18 @@
    "steps": [
     {
      "member": "home_10",
-     "asked_kw": 0.19,
+     "asked_kw": 0.2,
      "decision": "accept",
-     "kw": 0.19,
+     "kw": 0.2,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 0.19,
+   "committed_kw": 0.2,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "home_10",
-    "reduce_kw": 0.19,
+    "reduce_kw": 0.2,
     "window": [
      17,
      18
@@ -2229,20 +2928,20 @@
      17,
      18
     ],
-    "committed_kw": 0.19,
-    "delivered_kwh": 0.38,
+    "committed_kw": 0.2,
+    "delivered_kwh": 0.4,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 0.36,
+    "payment_usd": 0.38,
     "indoor_f_range": [
      73.7,
      74.6
     ],
     "battery_min_pct": null,
-    "prev_hash": "sha256:ccf777b5792f3248f81202a21951fee461677e9f46422d7100960b45dfefd53f",
-    "guard_public_key": "1add606e56fa3641360b217b101fc0773ed0667892c869ef82c42522bd666bb8",
-    "signature": "b1f6c0d191e6bb1fed048e6eea1f6991257a7c370f33783d79aaed17fab38ababae6313084d2904d332b6287160b9dd3b948eb1bea4477ff9c4681609cff440c"
+    "prev_hash": "sha256:06d952ce16b0dd32343affd3b18b76cb6a5b5ac4a13587001ee4076defcbbf6f",
+    "guard_public_key": "4c3f64371c57a5738588ac676fefc804cccd862de9370603150f8a7c8d429fb7",
+    "signature": "992046852dd36bde49068d38117bc5d2def1a29436a8cc516f150f02452e421686f7e86a6babb1955779000367cf1fe8e3b3e835ffc2444a2a1717dd3ef73009"
    },
-   "phone": "Your home helped for 2 hours today. Earned $0.36. Stayed at 74-75\u00b0F.",
+   "phone": "Your home helped for 2 hours today. Earned $0.38. Stayed at 74-75\u00b0F.",
    "planned_kw": [
     0.7,
     0.7,
@@ -2305,7 +3004,8 @@
      1.9,
      1.8
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "school_01",
@@ -2350,9 +3050,9 @@
     ],
     "prep_kw": {},
     "recovery_kw": {
-     "23": 23.86,
-     "22": 12.982,
-     "21": 2.254
+     "23": 18.11,
+     "22": 11.026,
+     "21": 0.833
     },
     "price_usd_per_kwh": 0.942
    },
@@ -2371,9 +3071,9 @@
     "payment_usd": 70.71,
     "indoor_f_range": null,
     "battery_min_pct": 20.0,
-    "prev_hash": "sha256:genesis",
-    "guard_public_key": "067ed704008bd502a4ef2f5d6153b8c537d9b61c27dc7da100d05e0d19339a22",
-    "signature": "c14019a4cbc2e301d9263e124971814e9597848b233879c62e79bc8da0e93b22dfeee75e533ce0a6c6741c7dc255d2b9064374a5590c3576b6c1562325d98f02"
+    "prev_hash": "sha256:3410b0ba1f7b7cefaebd2d72bc4d651f5fa4449f44902f76d48bb07247436e4b",
+    "guard_public_key": "389fc9c1fd6caba665c4dc9fcc304c082c777fbffcf5ba75dd8395c3d101be02",
+    "signature": "a8b5b7fa46a8ef20e0846374a315a2df1d46cad4d9f689954c6ce6713232847fcdd4591e1f3413c7ed5a93789a671b8daab56e06e2536a9f7cf4c50b78344500"
    },
    "phone": "Your building helped for 2 hours today. Earned $70.71. Battery stayed above 20%.",
    "planned_kw": [
@@ -2424,9 +3124,9 @@
     5.9,
     51.9,
     48.8,
-    46.1,
-    54.7,
-    65.9
+    44.7,
+    52.7,
+    60.1
    ],
    "private": {
     "owner_limit_kw": 200.0,
@@ -2438,7 +3138,8 @@
      47.0,
      51.4
     ]
-   }
+   },
+   "model_source": "stand-in"
   },
   {
    "id": "library_01",
@@ -2457,18 +3158,18 @@
    "steps": [
     {
      "member": "library_01",
-     "asked_kw": 0.33,
+     "asked_kw": 0.35,
      "decision": "accept",
-     "kw": 0.33,
+     "kw": 0.35,
      "reason": "within my limits for the whole window"
     }
    ],
-   "committed_kw": 0.33,
+   "committed_kw": 0.35,
    "assignment": {
     "type": "assignment",
     "ask_id": "ask-2025-06-24",
     "member_id": "library_01",
-    "reduce_kw": 0.33,
+    "reduce_kw": 0.35,
     "window": [
      17,
      18
@@ -2486,17 +3187,17 @@
      17,
      18
     ],
-    "committed_kw": 0.33,
-    "delivered_kwh": 0.66,
+    "committed_kw": 0.35,
+    "delivered_kwh": 0.7,
     "price_usd_per_kwh": 0.942,
-    "payment_usd": 0.62,
+    "payment_usd": 0.66,
     "indoor_f_range": null,
     "battery_min_pct": null,
-    "prev_hash": "sha256:a32bf4d4cdd664bf29205890204f16f05784f2af371d7c3dd40e3f937dc140d5",
-    "guard_public_key": "b0d4b730fc5990fb2eb3f559984c090b61ce177d97fcffb75376d0ced2339802",
-    "signature": "7f155c1d7410edc4c71a31734af6f2986a76d5c3dca7493363e9a44c26a7ec80ba85e6b9fcf9844774b148919179c40a71b4424bae61ca603b3aae5e56d31505"
+    "prev_hash": "sha256:267a31c25cb05256b9ebcd445eec51cf69735ca953eb16cd5c026b6a8257eb62",
+    "guard_public_key": "2e670133ae0cb9bc718b64fe636fb8cabc81e67802bb9bac94aeabc3fd5795bb",
+    "signature": "a1c7392c86652ad660aa666505cb25050fd3717a4c80b4af6ffd40d1776be9dd81ec15f40aea575c0abb4d3fa97c1a690eb37131f0558fd5f0ed220fe54c1a04"
    },
-   "phone": "Your building helped for 2 hours today. Earned $0.62.",
+   "phone": "Your building helped for 2 hours today. Earned $0.66.",
    "planned_kw": [
     32.0,
     31.8,
@@ -2559,7 +3260,8 @@
      23.2,
      22.7
     ]
-   }
+   },
+   "model_source": "stand-in"
   }
  ],
  "rounds": [
@@ -2567,6 +3269,13 @@
    "round": 1,
    "need_kw": 60.0,
    "requests": [
+    {
+     "member": "housezero",
+     "asked_kw": 5.0,
+     "decision": "counter",
+     "kw": 4.48,
+     "reason": "I can hold 4.5 kW for all 2 h (battery planner: $0.93/kWh to hold it, incl. recharge and peak charge)"
+    },
     {
      "member": "school_01",
      "asked_kw": 54.33,
@@ -2576,100 +3285,93 @@
     },
     {
      "member": "home_04",
-     "asked_kw": 5.67,
+     "asked_kw": 0.67,
      "decision": "accept",
-     "kw": 5.67,
+     "kw": 0.67,
      "reason": "within my limits for the whole window"
     }
    ],
-   "pooled_kw": 43.2
+   "pooled_kw": 42.68
   },
   {
    "round": 2,
-   "need_kw": 16.8,
+   "need_kw": 17.32,
    "requests": [
     {
-     "member": "housezero",
-     "asked_kw": 0.8,
-     "decision": "accept",
-     "kw": 0.8,
-     "reason": "within my limits for the whole window"
-    },
-    {
      "member": "office_01",
-     "asked_kw": 4.78,
+     "asked_kw": 4.93,
      "decision": "accept",
-     "kw": 4.78,
-     "reason": "within my limits for the whole window"
+     "kw": 4.93,
+     "reason": "battery planner: $0.78/kWh to hold it, incl. recharge and peak charge"
     },
     {
      "member": "office_02",
-     "asked_kw": 0.73,
+     "asked_kw": 0.75,
      "decision": "accept",
-     "kw": 0.73,
+     "kw": 0.75,
      "reason": "within my limits for the whole window"
     },
     {
      "member": "office_03",
-     "asked_kw": 2.21,
+     "asked_kw": 2.27,
      "decision": "accept",
-     "kw": 2.21,
+     "kw": 2.27,
      "reason": "within my limits for the whole window"
     },
     {
      "member": "shop_01",
-     "asked_kw": 0.19,
+     "asked_kw": 0.2,
      "decision": "accept",
-     "kw": 0.19,
+     "kw": 0.2,
      "reason": "within my limits for the whole window"
     },
     {
      "member": "shop_02",
-     "asked_kw": 0.37,
+     "asked_kw": 0.38,
      "decision": "accept",
-     "kw": 0.37,
+     "kw": 0.38,
      "reason": "within my limits for the whole window"
     },
     {
      "member": "restaurant_01",
-     "asked_kw": 0.37,
+     "asked_kw": 0.38,
      "decision": "decline",
      "kw": 0.0,
      "reason": "price $0.94/kWh is below my cost $1.50/kWh"
     },
     {
      "member": "home_01",
-     "asked_kw": 1.24,
+     "asked_kw": 1.28,
      "decision": "accept",
-     "kw": 1.24,
+     "kw": 1.28,
      "reason": "within my limits for the whole window"
     },
     {
      "member": "home_02",
-     "asked_kw": 2.02,
+     "asked_kw": 2.08,
      "decision": "accept",
-     "kw": 2.02,
+     "kw": 2.08,
      "reason": "within my limits for the whole window"
     },
     {
      "member": "home_03",
-     "asked_kw": 1.5,
+     "asked_kw": 1.55,
      "decision": "blocked",
      "kw": 0.0,
      "reason": "trust guard: exceeds home_03's limit"
     },
     {
      "member": "home_04",
-     "asked_kw": 6.95,
+     "asked_kw": 2.82,
      "decision": "accept",
-     "kw": 6.95,
+     "kw": 2.82,
      "reason": "within my limits for the whole window"
     },
     {
      "member": "home_05",
-     "asked_kw": 1.28,
+     "asked_kw": 1.31,
      "decision": "accept",
-     "kw": 1.28,
+     "kw": 1.31,
      "reason": "within my limits for the whole window"
     },
     {
@@ -2681,52 +3383,52 @@
     },
     {
      "member": "home_07",
-     "asked_kw": 0.35,
-     "decision": "accept",
-     "kw": 0.35,
-     "reason": "within my limits for the whole window"
-    },
-    {
-     "member": "home_08",
-     "asked_kw": 0.24,
-     "decision": "accept",
-     "kw": 0.24,
-     "reason": "within my limits for the whole window"
-    },
-    {
-     "member": "home_09",
      "asked_kw": 0.36,
      "decision": "accept",
      "kw": 0.36,
      "reason": "within my limits for the whole window"
     },
     {
-     "member": "home_10",
-     "asked_kw": 0.19,
+     "member": "home_08",
+     "asked_kw": 0.25,
      "decision": "accept",
-     "kw": 0.19,
+     "kw": 0.25,
+     "reason": "within my limits for the whole window"
+    },
+    {
+     "member": "home_09",
+     "asked_kw": 0.37,
+     "decision": "accept",
+     "kw": 0.37,
+     "reason": "within my limits for the whole window"
+    },
+    {
+     "member": "home_10",
+     "asked_kw": 0.2,
+     "decision": "accept",
+     "kw": 0.2,
      "reason": "within my limits for the whole window"
     },
     {
      "member": "library_01",
-     "asked_kw": 0.33,
+     "asked_kw": 0.35,
      "decision": "accept",
-     "kw": 0.33,
+     "kw": 0.35,
      "reason": "within my limits for the whole window"
     }
    ],
-   "pooled_kw": 59.81
+   "pooled_kw": 59.8
   },
   {
    "round": 3,
-   "need_kw": 0.19,
+   "need_kw": 0.2,
    "requests": [
     {
      "member": "office_01",
-     "asked_kw": 4.99,
+     "asked_kw": 5.15,
      "decision": "accept",
-     "kw": 4.99,
-     "reason": "within my limits for the whole window"
+     "kw": 5.15,
+     "reason": "battery planner: $0.78/kWh to hold it, incl. recharge and peak charge"
     }
    ],
    "pooled_kw": 60.02
@@ -2740,7 +3442,7 @@
    "type": "agent_card",
    "text": "housezero joined the commons (agent card registered)",
    "msg_id": "m0001",
-   "sig": "b8f1335bde60debd"
+   "sig": "a54bed86ed463d26"
   },
   {
    "t": "09:55",
@@ -2749,7 +3451,7 @@
    "type": "agent_card",
    "text": "office_01 joined the commons (agent card registered)",
    "msg_id": "m0002",
-   "sig": "ce41ea6f5db7dc79"
+   "sig": "911acb4bda242702"
   },
   {
    "t": "09:55",
@@ -2758,7 +3460,7 @@
    "type": "agent_card",
    "text": "office_02 joined the commons (agent card registered)",
    "msg_id": "m0003",
-   "sig": "e6b3d415fd48e452"
+   "sig": "9d7c7c85daeb3624"
   },
   {
    "t": "09:55",
@@ -2767,7 +3469,7 @@
    "type": "agent_card",
    "text": "office_03 joined the commons (agent card registered)",
    "msg_id": "m0004",
-   "sig": "93fb0c320f9169db"
+   "sig": "88389ef79a1b6865"
   },
   {
    "t": "09:55",
@@ -2776,7 +3478,7 @@
    "type": "agent_card",
    "text": "shop_01 joined the commons (agent card registered)",
    "msg_id": "m0005",
-   "sig": "7ef6f930effe2ee1"
+   "sig": "f039edd3996c61d2"
   },
   {
    "t": "09:55",
@@ -2785,7 +3487,7 @@
    "type": "agent_card",
    "text": "shop_02 joined the commons (agent card registered)",
    "msg_id": "m0006",
-   "sig": "be869e73cb644e1d"
+   "sig": "3c0894b5f736fb5b"
   },
   {
    "t": "09:55",
@@ -2794,7 +3496,7 @@
    "type": "agent_card",
    "text": "restaurant_01 joined the commons (agent card registered)",
    "msg_id": "m0007",
-   "sig": "d51e2a9dab03b294"
+   "sig": "770a0e25c8e58324"
   },
   {
    "t": "09:55",
@@ -2803,7 +3505,7 @@
    "type": "agent_card",
    "text": "home_01 joined the commons (agent card registered)",
    "msg_id": "m0008",
-   "sig": "cffa9ca28db5b5c9"
+   "sig": "cbcf04106ee755ba"
   },
   {
    "t": "09:55",
@@ -2812,7 +3514,7 @@
    "type": "agent_card",
    "text": "home_02 joined the commons (agent card registered)",
    "msg_id": "m0009",
-   "sig": "b8e3089a732518d3"
+   "sig": "aa5f7b6a5c011b1d"
   },
   {
    "t": "09:55",
@@ -2821,7 +3523,7 @@
    "type": "agent_card",
    "text": "home_03 joined the commons (agent card registered)",
    "msg_id": "m0010",
-   "sig": "83e8b9c2b9b13017"
+   "sig": "2de4bf563b162cfb"
   },
   {
    "t": "09:55",
@@ -2830,7 +3532,7 @@
    "type": "agent_card",
    "text": "home_04 joined the commons (agent card registered)",
    "msg_id": "m0011",
-   "sig": "6dd9312f399df0eb"
+   "sig": "0872b76a89a13644"
   },
   {
    "t": "09:55",
@@ -2839,7 +3541,7 @@
    "type": "agent_card",
    "text": "home_05 joined the commons (agent card registered)",
    "msg_id": "m0012",
-   "sig": "ab928ed396e27dad"
+   "sig": "c0d0d1b1e5a63e88"
   },
   {
    "t": "09:55",
@@ -2848,7 +3550,7 @@
    "type": "agent_card",
    "text": "home_06 joined the commons (agent card registered)",
    "msg_id": "m0013",
-   "sig": "fdc367cb68b27391"
+   "sig": "5364607ea6549161"
   },
   {
    "t": "09:55",
@@ -2857,7 +3559,7 @@
    "type": "agent_card",
    "text": "home_07 joined the commons (agent card registered)",
    "msg_id": "m0014",
-   "sig": "e83501cf1da6f4fc"
+   "sig": "1e77cb9be485d1f6"
   },
   {
    "t": "09:55",
@@ -2866,7 +3568,7 @@
    "type": "agent_card",
    "text": "home_08 joined the commons (agent card registered)",
    "msg_id": "m0015",
-   "sig": "959b3f016113cead"
+   "sig": "d427191a60315403"
   },
   {
    "t": "09:55",
@@ -2875,7 +3577,7 @@
    "type": "agent_card",
    "text": "home_09 joined the commons (agent card registered)",
    "msg_id": "m0016",
-   "sig": "db6236c29bfc0722"
+   "sig": "012d38b539ee694b"
   },
   {
    "t": "09:55",
@@ -2884,7 +3586,7 @@
    "type": "agent_card",
    "text": "home_10 joined the commons (agent card registered)",
    "msg_id": "m0017",
-   "sig": "57f85ea4f07d13e2"
+   "sig": "3360d94275008113"
   },
   {
    "t": "09:55",
@@ -2893,7 +3595,7 @@
    "type": "agent_card",
    "text": "school_01 joined the commons (agent card registered)",
    "msg_id": "m0018",
-   "sig": "90a1aae9b0eefe52"
+   "sig": "4f572cfdaeee048b"
   },
   {
    "t": "10:00",
@@ -2902,7 +3604,7 @@
    "type": "ask",
    "text": "Ask: reduce 60 kW, 5 PM to 7 PM at $0.94/kWh (ISO-NE system load peaks at 25,882 MW at 18:00; Boston-zone real-time price $755-1,129/MWh)",
    "msg_id": "m0019",
-   "sig": "c823e70a500988ac"
+   "sig": "da5e03ab70bf24f2"
   },
   {
    "t": "10:01",
@@ -2911,16 +3613,16 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0020",
-   "sig": "9b5ae2f6bece394a"
+   "sig": "46f8568df80d0bd8"
   },
   {
    "t": "10:01",
    "from": "housezero",
    "to": "coordinator",
    "type": "offer",
-   "text": "Offer: up to 5.0 kW less, at $0.06/kWh",
+   "text": "Offer: up to 5.0 kW less, at $0.00/kWh",
    "msg_id": "m0021",
-   "sig": "446b140a90e203ca"
+   "sig": "64c870ece89d1d52"
   },
   {
    "t": "10:01",
@@ -2929,16 +3631,16 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0022",
-   "sig": "0593d9f92aee9d65"
+   "sig": "31c0884ae223cbd4"
   },
   {
    "t": "10:01",
    "from": "office_01",
    "to": "coordinator",
    "type": "offer",
-   "text": "Offer: up to 29.8 kW less, at $0.12/kWh",
+   "text": "Offer: up to 29.8 kW less, at $0.78/kWh",
    "msg_id": "m0023",
-   "sig": "32dda07bafa9ac5b"
+   "sig": "1c18630862f3535c"
   },
   {
    "t": "10:01",
@@ -2947,7 +3649,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0024",
-   "sig": "d9848bd265e1b994"
+   "sig": "dcc2ce3577cb5bc0"
   },
   {
    "t": "10:01",
@@ -2956,7 +3658,7 @@
    "type": "offer",
    "text": "Offer: up to 4.5 kW less, at $0.12/kWh",
    "msg_id": "m0025",
-   "sig": "8eecf3660c19d3e1"
+   "sig": "781c43f89a192f67"
   },
   {
    "t": "10:01",
@@ -2965,7 +3667,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0026",
-   "sig": "3f585828c69d6743"
+   "sig": "f4283fedc4c730ea"
   },
   {
    "t": "10:01",
@@ -2974,7 +3676,7 @@
    "type": "offer",
    "text": "Offer: up to 13.8 kW less, at $0.12/kWh",
    "msg_id": "m0027",
-   "sig": "c2c7622042cad95b"
+   "sig": "470569696fc623c5"
   },
   {
    "t": "10:01",
@@ -2983,7 +3685,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0028",
-   "sig": "05b001ed8c79a9d1"
+   "sig": "f0ebd476fcd81d6b"
   },
   {
    "t": "10:01",
@@ -2992,7 +3694,7 @@
    "type": "offer",
    "text": "Offer: up to 1.2 kW less, at $0.20/kWh",
    "msg_id": "m0029",
-   "sig": "8b885b8d8e2621de"
+   "sig": "19cc1fc7b3520c09"
   },
   {
    "t": "10:01",
@@ -3001,7 +3703,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0030",
-   "sig": "74b5aa325c5e00df"
+   "sig": "96cfe485007f2e7e"
   },
   {
    "t": "10:01",
@@ -3010,7 +3712,7 @@
    "type": "offer",
    "text": "Offer: up to 2.3 kW less, at $0.20/kWh",
    "msg_id": "m0031",
-   "sig": "d06f7ff3248cd29a"
+   "sig": "eae298f23307353f"
   },
   {
    "t": "10:01",
@@ -3019,7 +3721,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0032",
-   "sig": "b237ec39085dfa03"
+   "sig": "de261f29f67735c4"
   },
   {
    "t": "10:01",
@@ -3028,7 +3730,7 @@
    "type": "offer",
    "text": "Offer: up to 2.3 kW less, at $1.50/kWh",
    "msg_id": "m0033",
-   "sig": "be9476cbdb871fc8"
+   "sig": "5340233c9b30d028"
   },
   {
    "t": "10:01",
@@ -3037,7 +3739,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0034",
-   "sig": "360c2c30c71d6b36"
+   "sig": "f1e5aa8ce1a97813"
   },
   {
    "t": "10:01",
@@ -3046,7 +3748,7 @@
    "type": "offer",
    "text": "Offer: up to 7.8 kW less, at $0.06/kWh",
    "msg_id": "m0035",
-   "sig": "ea3e6580df162dee"
+   "sig": "4602bf79b9b8af4d"
   },
   {
    "t": "10:01",
@@ -3055,7 +3757,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0036",
-   "sig": "ee233e6bd0510cf3"
+   "sig": "2e6a1cac66bbeb7a"
   },
   {
    "t": "10:01",
@@ -3064,7 +3766,7 @@
    "type": "offer",
    "text": "Offer: up to 12.6 kW less, at $0.06/kWh",
    "msg_id": "m0037",
-   "sig": "899649d2d33b53fe"
+   "sig": "646629179b269877"
   },
   {
    "t": "10:01",
@@ -3073,7 +3775,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0038",
-   "sig": "d3a1c5a4c6f7c54b"
+   "sig": "31320f4206168a2b"
   },
   {
    "t": "10:01",
@@ -3082,7 +3784,7 @@
    "type": "offer",
    "text": "Offer: up to 9.4 kW less, at $0.06/kWh",
    "msg_id": "m0039",
-   "sig": "581647f8dd62f0a4"
+   "sig": "571fa96ff96b59fd"
   },
   {
    "t": "10:01",
@@ -3091,7 +3793,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0040",
-   "sig": "79f8f8237205690c"
+   "sig": "e8ae261cf196db2f"
   },
   {
    "t": "10:01",
@@ -3100,7 +3802,7 @@
    "type": "offer",
    "text": "Offer: up to 13.7 kW less, at $0.06/kWh",
    "msg_id": "m0041",
-   "sig": "f9869b6f42c9b2c7"
+   "sig": "9286a766b7312e62"
   },
   {
    "t": "10:01",
@@ -3109,7 +3811,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0042",
-   "sig": "768eb1eee06722eb"
+   "sig": "507e3a76b930b459"
   },
   {
    "t": "10:01",
@@ -3118,7 +3820,7 @@
    "type": "offer",
    "text": "Offer: up to 8.0 kW less, at $0.06/kWh",
    "msg_id": "m0043",
-   "sig": "9c62fe14eb5dbcb4"
+   "sig": "f82e55b3436e0899"
   },
   {
    "t": "10:01",
@@ -3127,7 +3829,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0044",
-   "sig": "488775f9db4c4918"
+   "sig": "7d32114303f1af4e"
   },
   {
    "t": "10:01",
@@ -3136,7 +3838,7 @@
    "type": "offer",
    "text": "Offer: up to 1.5 kW less, at $0.15/kWh",
    "msg_id": "m0045",
-   "sig": "626df1e8ff1d0428"
+   "sig": "c4c25572cc9b33fb"
   },
   {
    "t": "10:01",
@@ -3145,7 +3847,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0046",
-   "sig": "740a49c8898b1fe7"
+   "sig": "d01e1def35f9ba92"
   },
   {
    "t": "10:01",
@@ -3154,7 +3856,7 @@
    "type": "offer",
    "text": "Offer: up to 2.2 kW less, at $0.15/kWh",
    "msg_id": "m0047",
-   "sig": "5a065ae6bfd41bf1"
+   "sig": "a1595ebf8b0906a7"
   },
   {
    "t": "10:01",
@@ -3163,7 +3865,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0048",
-   "sig": "ac9c0d29a1d22c68"
+   "sig": "1c0d3eeba88d20b6"
   },
   {
    "t": "10:01",
@@ -3172,7 +3874,7 @@
    "type": "offer",
    "text": "Offer: up to 1.5 kW less, at $0.15/kWh",
    "msg_id": "m0049",
-   "sig": "0a27c86deb2aac71"
+   "sig": "291c2009e31589ed"
   },
   {
    "t": "10:01",
@@ -3181,7 +3883,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0050",
-   "sig": "ef220ec2e5907d4f"
+   "sig": "d8d0783634b9e5f6"
   },
   {
    "t": "10:01",
@@ -3190,7 +3892,7 @@
    "type": "offer",
    "text": "Offer: up to 2.2 kW less, at $0.15/kWh",
    "msg_id": "m0051",
-   "sig": "8270139b210dffff"
+   "sig": "3e681c54f2515745"
   },
   {
    "t": "10:01",
@@ -3199,7 +3901,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0052",
-   "sig": "af80c24bda4bcc4a"
+   "sig": "7954585779f6ea10"
   },
   {
    "t": "10:01",
@@ -3208,7 +3910,7 @@
    "type": "offer",
    "text": "Offer: up to 1.2 kW less, at $0.15/kWh",
    "msg_id": "m0053",
-   "sig": "9db7b7df89e256a2"
+   "sig": "e6e7149c536070ec"
   },
   {
    "t": "10:01",
@@ -3217,7 +3919,7 @@
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
    "msg_id": "m0054",
-   "sig": "4e58f14196e2f5d7"
+   "sig": "e95b396e0b2e8513"
   },
   {
    "t": "10:01",
@@ -3226,7 +3928,7 @@
    "type": "offer",
    "text": "Offer: up to 54.3 kW less, at $0.05/kWh",
    "msg_id": "m0055",
-   "sig": "e839b9aba3d15476"
+   "sig": "8ecac022f6b183e8"
   },
   {
    "t": "10:02",
@@ -3240,7 +3942,34 @@
    "from": "coordinator",
    "to": "",
    "type": "round",
-   "text": "Round 1: 60.0 kW still needed, asking 2 members"
+   "text": "Round 1: 60.0 kW still needed, asking 3 members"
+  },
+  {
+   "t": "10:03",
+   "from": "coordinator",
+   "to": "guard:housezero",
+   "type": "request",
+   "text": "Request housezero: minus 5.0 kW",
+   "msg_id": "m0056",
+   "sig": "000919e685389079"
+  },
+  {
+   "t": "10:03",
+   "from": "guard:housezero",
+   "to": "housezero",
+   "type": "request",
+   "text": "Request (within limits)",
+   "msg_id": "m0057",
+   "sig": "3cde5ba9837472c4"
+  },
+  {
+   "t": "10:03",
+   "from": "housezero",
+   "to": "coordinator",
+   "type": "response",
+   "text": "Counter: minus 4.5 kW (I can hold 4.5 kW for all 2 h (battery planner: $0.93/kWh to hold it, incl. recharge and peak charge))",
+   "msg_id": "m0058",
+   "sig": "87cfe114cb7bdbe5"
   },
   {
    "t": "10:03",
@@ -3248,8 +3977,8 @@
    "to": "guard:school_01",
    "type": "request",
    "text": "Request school_01: minus 54.3 kW",
-   "msg_id": "m0056",
-   "sig": "d6e60730bc739b91"
+   "msg_id": "m0059",
+   "sig": "96f09f82fcb99d44"
   },
   {
    "t": "10:03",
@@ -3257,8 +3986,8 @@
    "to": "school_01",
    "type": "request",
    "text": "Request (within limits)",
-   "msg_id": "m0057",
-   "sig": "be161869ac5bc97d"
+   "msg_id": "m0060",
+   "sig": "249494890135eeef"
   },
   {
    "t": "10:03",
@@ -3266,17 +3995,17 @@
    "to": "coordinator",
    "type": "response",
    "text": "Counter: minus 37.5 kW (I can hold 37.5 kW for all 2 h (comfort band))",
-   "msg_id": "m0058",
-   "sig": "b33ebeb6132933e4"
+   "msg_id": "m0061",
+   "sig": "585a0066b8e07a67"
   },
   {
    "t": "10:03",
    "from": "coordinator",
    "to": "guard:home_04",
    "type": "request",
-   "text": "Request home_04: minus 5.7 kW",
-   "msg_id": "m0059",
-   "sig": "811aca58c7113514"
+   "text": "Request home_04: minus 0.7 kW",
+   "msg_id": "m0062",
+   "sig": "20c24a6a22bf25f2"
   },
   {
    "t": "10:03",
@@ -3284,8 +4013,8 @@
    "to": "home_04",
    "type": "request",
    "text": "Request (within limits)",
-   "msg_id": "m0060",
-   "sig": "b986e0437da79485"
+   "msg_id": "m0063",
+   "sig": "30a419a66596647d"
   },
   {
    "t": "10:03",
@@ -3293,8 +4022,8 @@
    "to": "coordinator",
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
-   "msg_id": "m0061",
-   "sig": "74fdc8df5aaff2f0"
+   "msg_id": "m0064",
+   "sig": "58063126a0d5d250"
   },
   {
    "t": "10:04",
@@ -3302,8 +4031,8 @@
    "to": "registry",
    "type": "agent_card",
    "text": "library_01 joined the commons (agent card registered, no coordinator change)",
-   "msg_id": "m0062",
-   "sig": "3c80a0cf9e0ac63c"
+   "msg_id": "m0065",
+   "sig": "030e35ceaa405d55"
   },
   {
    "t": "10:04",
@@ -3311,8 +4040,8 @@
    "to": "library_01",
    "type": "ask",
    "text": "Call for offers: 5 PM to 7 PM",
-   "msg_id": "m0063",
-   "sig": "64d3d1083c3da808"
+   "msg_id": "m0066",
+   "sig": "3d12ffce9c512325"
   },
   {
    "t": "10:04",
@@ -3320,51 +4049,24 @@
    "to": "coordinator",
    "type": "offer",
    "text": "Offer: up to 2.1 kW less, at $0.08/kWh",
-   "msg_id": "m0064",
-   "sig": "b6b2acd8638f2124"
+   "msg_id": "m0067",
+   "sig": "30777ab0e10a097c"
   },
   {
    "t": "10:05",
    "from": "coordinator",
    "to": "",
    "type": "round",
-   "text": "Round 2: 16.8 kW still needed, asking 18 members"
-  },
-  {
-   "t": "10:05",
-   "from": "coordinator",
-   "to": "guard:housezero",
-   "type": "request",
-   "text": "Request housezero: minus 0.8 kW",
-   "msg_id": "m0065",
-   "sig": "2eda7fbc23025657"
-  },
-  {
-   "t": "10:05",
-   "from": "guard:housezero",
-   "to": "housezero",
-   "type": "request",
-   "text": "Request (within limits)",
-   "msg_id": "m0066",
-   "sig": "fee19607f38ba4ec"
-  },
-  {
-   "t": "10:05",
-   "from": "housezero",
-   "to": "coordinator",
-   "type": "response",
-   "text": "Accept (within my limits for the whole window)",
-   "msg_id": "m0067",
-   "sig": "fa41b65ec3c2d3e1"
+   "text": "Round 2: 17.3 kW still needed, asking 17 members"
   },
   {
    "t": "10:05",
    "from": "coordinator",
    "to": "guard:office_01",
    "type": "request",
-   "text": "Request office_01: minus 4.8 kW",
+   "text": "Request office_01: minus 4.9 kW",
    "msg_id": "m0068",
-   "sig": "58eb8cf5639b0f74"
+   "sig": "b93958ff93e1a746"
   },
   {
    "t": "10:05",
@@ -3373,25 +4075,25 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0069",
-   "sig": "40dd7cbe88df0096"
+   "sig": "08d0aec6baae7e8d"
   },
   {
    "t": "10:05",
    "from": "office_01",
    "to": "coordinator",
    "type": "response",
-   "text": "Accept (within my limits for the whole window)",
+   "text": "Accept (battery planner: $0.78/kWh to hold it, incl. recharge and peak charge)",
    "msg_id": "m0070",
-   "sig": "d506d6ac2b4dd4cf"
+   "sig": "5d2b51b10532d34c"
   },
   {
    "t": "10:05",
    "from": "coordinator",
    "to": "guard:office_02",
    "type": "request",
-   "text": "Request office_02: minus 0.7 kW",
+   "text": "Request office_02: minus 0.8 kW",
    "msg_id": "m0071",
-   "sig": "49aae611e1057fde"
+   "sig": "1552216488a7ba74"
   },
   {
    "t": "10:05",
@@ -3400,7 +4102,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0072",
-   "sig": "65bdb90ca3f5c65c"
+   "sig": "57df11f99ec1e0a3"
   },
   {
    "t": "10:05",
@@ -3409,16 +4111,16 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0073",
-   "sig": "2390c07fc3641e24"
+   "sig": "a9154043e2f4f5b0"
   },
   {
    "t": "10:05",
    "from": "coordinator",
    "to": "guard:office_03",
    "type": "request",
-   "text": "Request office_03: minus 2.2 kW",
+   "text": "Request office_03: minus 2.3 kW",
    "msg_id": "m0074",
-   "sig": "2348fa1aaea39529"
+   "sig": "4bf657c7c4f04c65"
   },
   {
    "t": "10:05",
@@ -3427,7 +4129,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0075",
-   "sig": "94ada562de929b24"
+   "sig": "3e42ba904f9c0903"
   },
   {
    "t": "10:05",
@@ -3436,7 +4138,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0076",
-   "sig": "d82e1a19b7c237b0"
+   "sig": "d16ca1784800c38d"
   },
   {
    "t": "10:05",
@@ -3445,7 +4147,7 @@
    "type": "request",
    "text": "Request shop_01: minus 0.2 kW",
    "msg_id": "m0077",
-   "sig": "076b7e04d531e038"
+   "sig": "896b0f9c3cba2759"
   },
   {
    "t": "10:05",
@@ -3454,7 +4156,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0078",
-   "sig": "62c2719898d651d7"
+   "sig": "07d3221b11509fc8"
   },
   {
    "t": "10:05",
@@ -3463,7 +4165,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0079",
-   "sig": "0713f115e28f26b8"
+   "sig": "16808b27a018ffdf"
   },
   {
    "t": "10:05",
@@ -3472,7 +4174,7 @@
    "type": "request",
    "text": "Request shop_02: minus 0.4 kW",
    "msg_id": "m0080",
-   "sig": "6c6258dc9e1460c5"
+   "sig": "691c39fde80da8cf"
   },
   {
    "t": "10:05",
@@ -3481,7 +4183,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0081",
-   "sig": "2600c12fb2300893"
+   "sig": "a91ade0e48b88e51"
   },
   {
    "t": "10:05",
@@ -3490,7 +4192,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0082",
-   "sig": "44c730997dcfd8d9"
+   "sig": "955149a6a91b8be2"
   },
   {
    "t": "10:05",
@@ -3499,7 +4201,7 @@
    "type": "request",
    "text": "Request restaurant_01: minus 0.4 kW",
    "msg_id": "m0083",
-   "sig": "22574dc79cf60bd8"
+   "sig": "df1f44f28f5575c6"
   },
   {
    "t": "10:05",
@@ -3508,7 +4210,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0084",
-   "sig": "265599bc21481da0"
+   "sig": "59155c98666a0d45"
   },
   {
    "t": "10:05",
@@ -3517,16 +4219,16 @@
    "type": "response",
    "text": "Decline (price $0.94/kWh is below my cost $1.50/kWh)",
    "msg_id": "m0085",
-   "sig": "e2da42a29d8c69bc"
+   "sig": "cb3ce73b89135a1e"
   },
   {
    "t": "10:05",
    "from": "coordinator",
    "to": "guard:home_01",
    "type": "request",
-   "text": "Request home_01: minus 1.2 kW",
+   "text": "Request home_01: minus 1.3 kW",
    "msg_id": "m0086",
-   "sig": "f735b7d1bf19648a"
+   "sig": "5c9107a082573f2e"
   },
   {
    "t": "10:05",
@@ -3535,7 +4237,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0087",
-   "sig": "d61eb969e8300441"
+   "sig": "4ea1504961b8da40"
   },
   {
    "t": "10:05",
@@ -3544,16 +4246,16 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0088",
-   "sig": "2b78fd34a2cc286f"
+   "sig": "eabc95886a60b7d1"
   },
   {
    "t": "10:05",
    "from": "coordinator",
    "to": "guard:home_02",
    "type": "request",
-   "text": "Request home_02: minus 2.0 kW",
+   "text": "Request home_02: minus 2.1 kW",
    "msg_id": "m0089",
-   "sig": "0acc5c1a6d1a0963"
+   "sig": "6f4bac480e4dde3a"
   },
   {
    "t": "10:05",
@@ -3562,7 +4264,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0090",
-   "sig": "4678b26bc61c68cc"
+   "sig": "803fcfd6571222e1"
   },
   {
    "t": "10:05",
@@ -3571,16 +4273,16 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0091",
-   "sig": "71fbbef64fc79dcf"
+   "sig": "46c2b75e608cd78d"
   },
   {
    "t": "10:05",
    "from": "coordinator",
    "to": "guard:home_03",
    "type": "request",
-   "text": "Request home_03: minus 1.5 kW",
+   "text": "Request home_03: minus 1.6 kW",
    "msg_id": "m0092",
-   "sig": "737e9990f5250de6"
+   "sig": "7902f630b11883f9"
   },
   {
    "t": "10:05",
@@ -3589,16 +4291,16 @@
    "type": "response",
    "text": "Blocked: request to home_03 exceeds home_03's limit",
    "msg_id": "m0093",
-   "sig": "edcf52c1c3242c7d"
+   "sig": "233c876c40d2499f"
   },
   {
    "t": "10:05",
    "from": "coordinator",
    "to": "guard:home_04",
    "type": "request",
-   "text": "Request home_04: minus 7.0 kW",
+   "text": "Request home_04: minus 2.8 kW",
    "msg_id": "m0094",
-   "sig": "63c1ab28f1b98fbf"
+   "sig": "24c87061131fa809"
   },
   {
    "t": "10:05",
@@ -3607,7 +4309,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0095",
-   "sig": "3a15ea6f68f347af"
+   "sig": "e35fa00959e0b487"
   },
   {
    "t": "10:05",
@@ -3616,7 +4318,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0096",
-   "sig": "cc9514b8662f15d2"
+   "sig": "455dbd4b5cddb8d5"
   },
   {
    "t": "10:05",
@@ -3625,7 +4327,7 @@
    "type": "request",
    "text": "Request home_05: minus 1.3 kW",
    "msg_id": "m0097",
-   "sig": "4546c3c1b46c249b"
+   "sig": "5689e2b14996065f"
   },
   {
    "t": "10:05",
@@ -3634,7 +4336,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0098",
-   "sig": "b2f0502644462d7f"
+   "sig": "228ecf4b2b0ab1be"
   },
   {
    "t": "10:05",
@@ -3643,7 +4345,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0099",
-   "sig": "2f166ed5a2fc77d3"
+   "sig": "7ee7a4a5cef6f88f"
   },
   {
    "t": "10:05",
@@ -3652,7 +4354,7 @@
    "type": "request",
    "text": "Request home_06: minus 0.2 kW",
    "msg_id": "m0100",
-   "sig": "3912fce51ab758e7"
+   "sig": "c07206bdcc07de9d"
   },
   {
    "t": "10:05",
@@ -3661,7 +4363,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0101",
-   "sig": "7c58094bfc367d68"
+   "sig": "6bac2111ee0a8cf6"
   },
   {
    "t": "10:05",
@@ -3670,16 +4372,16 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0102",
-   "sig": "cfe394972ad673bf"
+   "sig": "eb2461b9b23882a8"
   },
   {
    "t": "10:05",
    "from": "coordinator",
    "to": "guard:home_07",
    "type": "request",
-   "text": "Request home_07: minus 0.3 kW",
+   "text": "Request home_07: minus 0.4 kW",
    "msg_id": "m0103",
-   "sig": "982fe1909b0a82d7"
+   "sig": "a26d1ce3b0db50d6"
   },
   {
    "t": "10:05",
@@ -3688,7 +4390,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0104",
-   "sig": "93d3d5a38284705e"
+   "sig": "2009f803081614b5"
   },
   {
    "t": "10:05",
@@ -3697,7 +4399,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0105",
-   "sig": "8ab308e3af7e83f2"
+   "sig": "0fd0aa07007d6348"
   },
   {
    "t": "10:05",
@@ -3706,7 +4408,7 @@
    "type": "request",
    "text": "Request home_08: minus 0.2 kW",
    "msg_id": "m0106",
-   "sig": "ac20901b9dc341ad"
+   "sig": "bd5f8759cfad668a"
   },
   {
    "t": "10:05",
@@ -3715,7 +4417,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0107",
-   "sig": "0b04aff78007e0f9"
+   "sig": "58f6b60ef2cbe2c8"
   },
   {
    "t": "10:05",
@@ -3724,7 +4426,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0108",
-   "sig": "f0f5371db1da2741"
+   "sig": "73ea6bcb00b890bf"
   },
   {
    "t": "10:05",
@@ -3733,7 +4435,7 @@
    "type": "request",
    "text": "Request home_09: minus 0.4 kW",
    "msg_id": "m0109",
-   "sig": "a725c362c58cc1ef"
+   "sig": "647315e1cf952102"
   },
   {
    "t": "10:05",
@@ -3742,7 +4444,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0110",
-   "sig": "4f91295a97ec0f14"
+   "sig": "b9212e393619adda"
   },
   {
    "t": "10:05",
@@ -3751,7 +4453,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0111",
-   "sig": "6f5fa56503b5e74f"
+   "sig": "4a7f42c4b3835b29"
   },
   {
    "t": "10:05",
@@ -3760,7 +4462,7 @@
    "type": "request",
    "text": "Request home_10: minus 0.2 kW",
    "msg_id": "m0112",
-   "sig": "5feab124a24321a1"
+   "sig": "703fbf12b72d17da"
   },
   {
    "t": "10:05",
@@ -3769,7 +4471,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0113",
-   "sig": "27d91358845e7343"
+   "sig": "a42d178fee7173f4"
   },
   {
    "t": "10:05",
@@ -3778,7 +4480,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0114",
-   "sig": "e1bc4a464ed022b3"
+   "sig": "a9e8993cc1e3c305"
   },
   {
    "t": "10:05",
@@ -3787,7 +4489,7 @@
    "type": "request",
    "text": "Request library_01: minus 0.3 kW",
    "msg_id": "m0115",
-   "sig": "ebda6a417f57472d"
+   "sig": "d15305cf4340f397"
   },
   {
    "t": "10:05",
@@ -3796,7 +4498,7 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0116",
-   "sig": "6c2f3d08f648a5ce"
+   "sig": "6307e7279bef36fb"
   },
   {
    "t": "10:05",
@@ -3805,7 +4507,7 @@
    "type": "response",
    "text": "Accept (within my limits for the whole window)",
    "msg_id": "m0117",
-   "sig": "bf8dd920abc5c139"
+   "sig": "ea584dc7b5bf5f0f"
   },
   {
    "t": "10:06",
@@ -3819,9 +4521,9 @@
    "from": "coordinator",
    "to": "guard:office_01",
    "type": "request",
-   "text": "Request office_01: minus 5.0 kW",
+   "text": "Request office_01: minus 5.2 kW",
    "msg_id": "m0118",
-   "sig": "f916733818bc7b71"
+   "sig": "4e0324a61030d7ca"
   },
   {
    "t": "10:06",
@@ -3830,16 +4532,16 @@
    "type": "request",
    "text": "Request (within limits)",
    "msg_id": "m0119",
-   "sig": "fbac99993b71b6ae"
+   "sig": "e0a504200f036901"
   },
   {
    "t": "10:06",
    "from": "office_01",
    "to": "coordinator",
    "type": "response",
-   "text": "Accept (within my limits for the whole window)",
+   "text": "Accept (battery planner: $0.78/kWh to hold it, incl. recharge and peak charge)",
    "msg_id": "m0120",
-   "sig": "97a6fd0c71ba51e3"
+   "sig": "14905ad6f764e14e"
   },
   {
    "t": "10:07",
@@ -3848,7 +4550,16 @@
    "type": "response",
    "text": "Pooled: 60.0 kW committed",
    "msg_id": "m0121",
-   "sig": "0bdeb914fc8f323a"
+   "sig": "da1906bb445d1ea9"
+  },
+  {
+   "t": "10:07",
+   "from": "coordinator",
+   "to": "housezero",
+   "type": "assignment",
+   "text": "Assignment housezero: minus 4.5 kW",
+   "msg_id": "m0122",
+   "sig": "faa94c4752b40f78"
   },
   {
    "t": "10:07",
@@ -3856,53 +4567,44 @@
    "to": "school_01",
    "type": "assignment",
    "text": "Assignment school_01: minus 37.5 kW, recharge in 3 staggered hours",
-   "msg_id": "m0122",
-   "sig": "2dad0fd31088a08d"
+   "msg_id": "m0124",
+   "sig": "b7106305cfdafa72"
   },
   {
    "t": "10:07",
    "from": "coordinator",
    "to": "home_04",
    "type": "assignment",
-   "text": "Assignment home_04: minus 7.0 kW",
-   "msg_id": "m0124",
-   "sig": "30b3a7cb638eb117"
-  },
-  {
-   "t": "10:07",
-   "from": "coordinator",
-   "to": "housezero",
-   "type": "assignment",
-   "text": "Assignment housezero: minus 0.8 kW",
+   "text": "Assignment home_04: minus 2.8 kW",
    "msg_id": "m0126",
-   "sig": "771960434903dd6e"
+   "sig": "d7910cb50695b21f"
   },
   {
    "t": "10:07",
    "from": "coordinator",
    "to": "office_01",
    "type": "assignment",
-   "text": "Assignment office_01: minus 5.0 kW",
+   "text": "Assignment office_01: minus 5.2 kW",
    "msg_id": "m0128",
-   "sig": "1895653451cb512e"
+   "sig": "d1afe5ddd5f22b29"
   },
   {
    "t": "10:07",
    "from": "coordinator",
    "to": "office_02",
    "type": "assignment",
-   "text": "Assignment office_02: minus 0.7 kW",
+   "text": "Assignment office_02: minus 0.8 kW",
    "msg_id": "m0130",
-   "sig": "1ecf13fc2810a85f"
+   "sig": "f0e612ded5b5efd0"
   },
   {
    "t": "10:07",
    "from": "coordinator",
    "to": "office_03",
    "type": "assignment",
-   "text": "Assignment office_03: minus 2.2 kW",
+   "text": "Assignment office_03: minus 2.3 kW",
    "msg_id": "m0132",
-   "sig": "9aeb4ae644e5b56a"
+   "sig": "3ed0198d8e6778be"
   },
   {
    "t": "10:07",
@@ -3911,7 +4613,7 @@
    "type": "assignment",
    "text": "Assignment shop_01: minus 0.2 kW",
    "msg_id": "m0134",
-   "sig": "f6838b733abc79dc"
+   "sig": "912ff6a6f9a8d41c"
   },
   {
    "t": "10:07",
@@ -3920,25 +4622,25 @@
    "type": "assignment",
    "text": "Assignment shop_02: minus 0.4 kW",
    "msg_id": "m0136",
-   "sig": "87b24c84f373e52e"
+   "sig": "c9e1bad3287dcde7"
   },
   {
    "t": "10:07",
    "from": "coordinator",
    "to": "home_01",
    "type": "assignment",
-   "text": "Assignment home_01: minus 1.2 kW",
+   "text": "Assignment home_01: minus 1.3 kW",
    "msg_id": "m0138",
-   "sig": "af3f4cc51b227655"
+   "sig": "427947de76d2a84a"
   },
   {
    "t": "10:07",
    "from": "coordinator",
    "to": "home_02",
    "type": "assignment",
-   "text": "Assignment home_02: minus 2.0 kW",
+   "text": "Assignment home_02: minus 2.1 kW",
    "msg_id": "m0140",
-   "sig": "01ccb952a8207442"
+   "sig": "0107dc958175e565"
   },
   {
    "t": "10:07",
@@ -3947,7 +4649,7 @@
    "type": "assignment",
    "text": "Assignment home_05: minus 1.3 kW",
    "msg_id": "m0142",
-   "sig": "5fbdadae762220b7"
+   "sig": "02198b08e69f1faf"
   },
   {
    "t": "10:07",
@@ -3956,16 +4658,16 @@
    "type": "assignment",
    "text": "Assignment home_06: minus 0.2 kW",
    "msg_id": "m0144",
-   "sig": "3eb89678e7e2208f"
+   "sig": "76c5e32744a9ee27"
   },
   {
    "t": "10:07",
    "from": "coordinator",
    "to": "home_07",
    "type": "assignment",
-   "text": "Assignment home_07: minus 0.3 kW",
+   "text": "Assignment home_07: minus 0.4 kW",
    "msg_id": "m0146",
-   "sig": "e9e10f8c45961a86"
+   "sig": "e1e00dd6d000b7ab"
   },
   {
    "t": "10:07",
@@ -3974,7 +4676,7 @@
    "type": "assignment",
    "text": "Assignment home_08: minus 0.2 kW",
    "msg_id": "m0148",
-   "sig": "24657aeafe44377a"
+   "sig": "643d07e464792514"
   },
   {
    "t": "10:07",
@@ -3983,7 +4685,7 @@
    "type": "assignment",
    "text": "Assignment home_09: minus 0.4 kW",
    "msg_id": "m0150",
-   "sig": "0cd5ec834bc732f1"
+   "sig": "711bd0c759a2f1c6"
   },
   {
    "t": "10:07",
@@ -3992,7 +4694,7 @@
    "type": "assignment",
    "text": "Assignment home_10: minus 0.2 kW",
    "msg_id": "m0152",
-   "sig": "706c1dc8cb947759"
+   "sig": "0dc0a2a92634459c"
   },
   {
    "t": "10:07",
@@ -4001,7 +4703,16 @@
    "type": "assignment",
    "text": "Assignment library_01: minus 0.3 kW",
    "msg_id": "m0154",
-   "sig": "9ca5d997adf45098"
+   "sig": "54a65794be89e902"
+  },
+  {
+   "t": "19:05",
+   "from": "guard:housezero",
+   "to": "housezero",
+   "type": "receipt",
+   "text": "Receipt signed: housezero, 9.0 kWh, $8.44",
+   "msg_id": "m0156",
+   "sig": "f0bc9bf972172421"
   },
   {
    "t": "19:05",
@@ -4009,98 +4720,89 @@
    "to": "school_01",
    "type": "receipt",
    "text": "Receipt signed: school_01, 75.1 kWh, $70.71",
-   "msg_id": "m0156",
-   "sig": "2bcf277c6054d52d"
+   "msg_id": "m0157",
+   "sig": "369c77677e34cff1"
   },
   {
    "t": "19:05",
    "from": "guard:home_04",
    "to": "home_04",
    "type": "receipt",
-   "text": "Receipt signed: home_04, 13.9 kWh, $13.09",
-   "msg_id": "m0157",
-   "sig": "3661445465afe226"
-  },
-  {
-   "t": "19:05",
-   "from": "guard:housezero",
-   "to": "housezero",
-   "type": "receipt",
-   "text": "Receipt signed: housezero, 1.6 kWh, $1.51",
+   "text": "Receipt signed: home_04, 5.6 kWh, $5.31",
    "msg_id": "m0158",
-   "sig": "689cc4a9b8303003"
+   "sig": "a55dfcf6e063be73"
   },
   {
    "t": "19:05",
    "from": "guard:office_01",
    "to": "office_01",
    "type": "receipt",
-   "text": "Receipt signed: office_01, 10.0 kWh, $9.40",
+   "text": "Receipt signed: office_01, 10.3 kWh, $9.70",
    "msg_id": "m0159",
-   "sig": "3399d501d9a6f135"
+   "sig": "f2b9db9d2bdd1b55"
   },
   {
    "t": "19:05",
    "from": "guard:office_02",
    "to": "office_02",
    "type": "receipt",
-   "text": "Receipt signed: office_02, 1.5 kWh, $1.38",
+   "text": "Receipt signed: office_02, 1.5 kWh, $1.41",
    "msg_id": "m0160",
-   "sig": "9ee0a280514cad28"
+   "sig": "bde7d845c73427c0"
   },
   {
    "t": "19:05",
    "from": "guard:office_03",
    "to": "office_03",
    "type": "receipt",
-   "text": "Receipt signed: office_03, 4.4 kWh, $4.16",
+   "text": "Receipt signed: office_03, 4.5 kWh, $4.28",
    "msg_id": "m0161",
-   "sig": "fd6b0c117c8aaf28"
+   "sig": "e325b656fc5c4db3"
   },
   {
    "t": "19:05",
    "from": "guard:shop_01",
    "to": "shop_01",
    "type": "receipt",
-   "text": "Receipt signed: shop_01, 0.4 kWh, $0.36",
+   "text": "Receipt signed: shop_01, 0.4 kWh, $0.38",
    "msg_id": "m0162",
-   "sig": "b3bb5610d97add98"
+   "sig": "3afb70fb39840494"
   },
   {
    "t": "19:05",
    "from": "guard:shop_02",
    "to": "shop_02",
    "type": "receipt",
-   "text": "Receipt signed: shop_02, 0.7 kWh, $0.70",
+   "text": "Receipt signed: shop_02, 0.8 kWh, $0.72",
    "msg_id": "m0163",
-   "sig": "dc5d380d43e843c0"
+   "sig": "e550fa7ca3eaeb04"
   },
   {
    "t": "19:05",
    "from": "guard:home_01",
    "to": "home_01",
    "type": "receipt",
-   "text": "Receipt signed: home_01, 2.5 kWh, $2.34",
+   "text": "Receipt signed: home_01, 2.6 kWh, $2.41",
    "msg_id": "m0164",
-   "sig": "2d5599001c8e3845"
+   "sig": "74930aae50c82e37"
   },
   {
    "t": "19:05",
    "from": "guard:home_02",
    "to": "home_02",
    "type": "receipt",
-   "text": "Receipt signed: home_02, 4.0 kWh, $3.81",
+   "text": "Receipt signed: home_02, 4.2 kWh, $3.92",
    "msg_id": "m0165",
-   "sig": "974e165e23f74b9e"
+   "sig": "620053df0b4db3dc"
   },
   {
    "t": "19:05",
    "from": "guard:home_05",
    "to": "home_05",
    "type": "receipt",
-   "text": "Receipt signed: home_05, 2.6 kWh, $2.41",
+   "text": "Receipt signed: home_05, 2.6 kWh, $2.47",
    "msg_id": "m0166",
-   "sig": "63c5aa8eb61c58e5"
+   "sig": "d6104315ea9e7116"
   },
   {
    "t": "19:05",
@@ -4109,52 +4811,52 @@
    "type": "receipt",
    "text": "Receipt signed: home_06, 0.5 kWh, $0.45",
    "msg_id": "m0167",
-   "sig": "5f61482f56915dd5"
+   "sig": "a143ce4c0dadd924"
   },
   {
    "t": "19:05",
    "from": "guard:home_07",
    "to": "home_07",
    "type": "receipt",
-   "text": "Receipt signed: home_07, 0.7 kWh, $0.66",
+   "text": "Receipt signed: home_07, 0.7 kWh, $0.68",
    "msg_id": "m0168",
-   "sig": "85bfd6ff94c681fb"
+   "sig": "4d374ba014d4a31b"
   },
   {
    "t": "19:05",
    "from": "guard:home_08",
    "to": "home_08",
    "type": "receipt",
-   "text": "Receipt signed: home_08, 0.5 kWh, $0.45",
+   "text": "Receipt signed: home_08, 0.5 kWh, $0.47",
    "msg_id": "m0169",
-   "sig": "65145011c823516a"
+   "sig": "f7b92dc671962cee"
   },
   {
    "t": "19:05",
    "from": "guard:home_09",
    "to": "home_09",
    "type": "receipt",
-   "text": "Receipt signed: home_09, 0.7 kWh, $0.68",
+   "text": "Receipt signed: home_09, 0.7 kWh, $0.70",
    "msg_id": "m0170",
-   "sig": "6b7e27e2ed55f5da"
+   "sig": "b0a34a71326835e5"
   },
   {
    "t": "19:05",
    "from": "guard:home_10",
    "to": "home_10",
    "type": "receipt",
-   "text": "Receipt signed: home_10, 0.4 kWh, $0.36",
+   "text": "Receipt signed: home_10, 0.4 kWh, $0.38",
    "msg_id": "m0171",
-   "sig": "43a8c714b9602b15"
+   "sig": "bf6392cfb7f33a45"
   },
   {
    "t": "19:05",
    "from": "guard:library_01",
    "to": "library_01",
    "type": "receipt",
-   "text": "Receipt signed: library_01, 0.7 kWh, $0.62",
+   "text": "Receipt signed: library_01, 0.7 kWh, $0.66",
    "msg_id": "m0172",
-   "sig": "590ac06c0258456a"
+   "sig": "dca9c4fec49bbe5a"
   },
   {
    "t": "19:05",
@@ -4168,25 +4870,25 @@
   "Large buildings": {
    "members": 4,
    "earning_members": 4,
-   "usd": 16.45,
-   "kwh": 17.5
+   "usd": 23.83,
+   "kwh": 25.3
   },
   "Small businesses": {
    "members": 3,
    "earning_members": 2,
-   "usd": 1.06,
-   "kwh": 1.1
+   "usd": 1.1,
+   "kwh": 1.2
   },
   "Households": {
    "members": 10,
    "earning_members": 9,
-   "usd": 24.25,
-   "kwh": 25.8
+   "usd": 16.79,
+   "kwh": 17.8
   },
   "Public institutions": {
    "members": 2,
    "earning_members": 2,
-   "usd": 71.33,
+   "usd": 71.37,
    "kwh": 75.8
   }
  },
@@ -4194,7 +4896,7 @@
   "peak_kw": {
    "no_opt": 285.3,
    "alone": 398.3,
-   "network": 286.4
+   "network": 286.0
   },
   "peak_hour": {
    "no_opt": 7,
@@ -4204,12 +4906,12 @@
   "window_kw_mean": {
    "no_opt": 276.0,
    "alone": 250.7,
-   "network": 210.6
+   "network": 211.9
   },
   "after_window_peak_kw": {
    "no_opt": 282.0,
    "alone": 398.3,
-   "network": 286.4
+   "network": 286.0
   },
   "ask_kw": 60.0,
   "pooled_kw": 60.02,
@@ -4221,10 +4923,37 @@
   "hp_only_homes": 5,
   "ledger": "17 receipts verified",
   "stagger": {
-   "cap_after_kw": 282.1,
-   "cap_before_kw": 285.3,
+   "cap_after_kw": 280.4,
+   "cap_before_kw": 280.4,
    "unplaced_prep_kwh": 0.0,
-   "deferred_to_overnight_kwh": 73.0
+   "deferred_to_overnight_kwh": 82.0
+  },
+  "model": {
+   "trained_members": [
+    "housezero",
+    "office_01",
+    "office_02",
+    "office_03",
+    "restaurant_01",
+    "shop_01",
+    "shop_02"
+   ],
+   "stand_in_members": [
+    "home_01",
+    "home_02",
+    "home_03",
+    "home_04",
+    "home_05",
+    "home_06",
+    "home_07",
+    "home_08",
+    "home_09",
+    "home_10",
+    "school_01",
+    "library_01"
+   ],
+   "tool_calls": 41,
+   "forecast_day_error_pct": 4.3
   }
  },
  "labels": {

@@ -24,7 +24,17 @@ Open `app/index.html#all` to show the whole day at once.
 Messages: `src/commonwatt/protocol.py` (7 types, JSON Schemas in `protocol/schemas/`). Every message is an
 Ed25519-signed envelope checked on arrival (`network.py`).
 
-## Plug in the trained model
+## The trained model is the default tool
+
+`commonwatt.tools.gridcollective:GridCollectiveTool` (default) wraps the GridCollective model from branch
+`model/gridcollective` (commit 0b73567): its calibrated LightGBM P10/P50/P90 forecasts for June 24, 2025
+(`data/gridcollective/forecast_cache.pkl`) and its battery planner (`src/gridcollective/optimizer.py`, HiGHS LP
+with the G-2 demand charge). Member agents that exist in the trained model (HouseZero, the three offices, the two
+shops, the restaurant) forecast and price every request with it; homes, the school and library_01 are not in the
+trained model and use the labeled stand-in. Every call is listed in `demo.json` under `tool_calls`.
+Use the stand-in only: `COMMONWATT_TOOL=commonwatt.tools.mock:MockModelTool uv run commonwatt-demo`.
+
+## Plug in another model
 
 Write a class with the four methods in `src/commonwatt/tools/contract.py` and run with it:
 

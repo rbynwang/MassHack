@@ -164,7 +164,7 @@ def _export(twins, agents, weather, grid, ask, neg, receipts, no_opt, alone, net
         members.append({
             "id": m, "name": t.display_name, "kind": t.kind, "kind_label": KIND_LABEL[t.kind], "label": t.label,
             "source": t.source, "assets": t.assets, "late_joiner": m == LATE_JOINER,
-            "battery": t.battery, "cost_per_kwh": t.cost_per_kwh,
+            "battery": t.battery, "cost_per_kwh": (o.cost_per_kwh if o else t.cost_per_kwh),
             "offer_window_kw": (min(o.hours[h].can_reduce_kw for h in w) if o else None),
             "steps": steps, "committed_kw": neg.committed.get(m, 0.0),
             "assignment": (neg.assignments[m].model_dump(mode="json") if m in neg.assignments else None),
@@ -200,8 +200,22 @@ def _export(twins, agents, weather, grid, ask, neg, receipts, no_opt, alone, net
         "hp_only_homes_paid": sum(1 for mm in hp_only if mm["receipt"]), "hp_only_homes": len(hp_only),
         "ledger": ledger.verify()[1], "stagger": neg.stagger,
     }
+    trained = sorted(getattr(tool, "trained_members", set()))
+    model_fc = {}
+    for t in twins:
+        if t.member_id in trained:
+            p50 = tool._quantiles(t.model_id)[1]
+            err = float(np.abs(p50 - t.load_kw).sum() / max(t.load_kw.sum(), 1e-6) * 100)
+            model_fc[t.member_id] = {"model_id": t.model_id, "p50_kw": r1(p50), "actual_kw": r1(t.load_kw),
+                                     "day_error_pct": round(err, 1)}
+    for mm in members:
+        mm["model_source"] = "trained model" if mm["id"] in trained else "stand-in"
+    summary["model"] = {"trained_members": trained, "stand_in_members": [t.member_id for t in twins if t.member_id not in trained],
+                        "tool_calls": len(getattr(tool, "calls", [])),
+                        "forecast_day_error_pct": model_fc and round(float(np.mean([v["day_error_pct"] for v in model_fc.values()])), 1)}
     out = {
         "version": __version__, "day": EVENT_DAY, "commons": COMMONS, "tool": tool.name,
+        "model_forecasts": model_fc, "tool_calls": getattr(tool, "calls", []),
         "ask": ask.model_dump(mode="json"), "window_label": hours_label(w), "tou_peak": TOU_PEAK,
         "hours": list(range(24)),
         "series": {"no_opt": r1(no_opt), "alone": r1(alone), "network": r1(network),

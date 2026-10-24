@@ -94,6 +94,7 @@ class Twin:
     precool_delta_kw: np.ndarray | None = None   # business pre-cool mode minus baseline (training data)
     cost_per_kwh: float = 0.10   # member's own cost of shifting a kWh (assumption)
     assets: list[str] = field(default_factory=list)
+    model_id: str | None = None  # the building's id in the trained GridCollective model, if it has one
 
     # ---------------------------------------------------------------- basics
     @property
@@ -289,7 +290,7 @@ def _business_twins(weather: pd.DataFrame) -> list[Twin]:
         cooling_kw=np.zeros(24), t_out_c=t_out,
         battery={"kwh": float(m.battery_kwh), "kw": float(m.battery_kw), "eff_rt": 0.90, "reserve_pct": 20.0,
                  "label": "assumption"},
-        cost_per_kwh=0.06, assets=["pv", "battery", "heat_pump"]))
+        cost_per_kwh=0.06, assets=["pv", "battery", "heat_pump"], model_id="hz_main"))
     for mid, name, kind, has_bat, cost in BUSINESS:
         d, m = data[mid], meta.loc[mid]
         base = d["baseline"].copy()
@@ -305,7 +306,7 @@ def _business_twins(weather: pd.DataFrame) -> list[Twin]:
             battery=({"kwh": float(m.battery_kwh), "kw": float(m.battery_kw), "eff_rt": 0.90, "reserve_pct": 15.0,
                       "label": "assumption"} if has_bat else None),
             precool_delta_kw=(pre["demand_kw"] - base["demand_kw"]).to_numpy() if pre is not None else None,
-            cost_per_kwh=cost, assets=(["pv", "battery", "hvac"] if has_bat else ["pv", "hvac"])))
+            cost_per_kwh=cost, assets=(["pv", "battery", "hvac"] if has_bat else ["pv", "hvac"]), model_id=mid))
     return twins
 
 

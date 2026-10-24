@@ -7,7 +7,7 @@ import os
 
 from commonwatt.tools.contract import EnergyModelTool
 
-DEFAULT_TOOL = "commonwatt.tools.mock:MockModelTool"
+DEFAULT_TOOL = "commonwatt.tools.gridcollective:GridCollectiveTool"   # the team's trained model (stand-in fallback)
 
 
 def load_tool(spec: str | None = None) -> EnergyModelTool:

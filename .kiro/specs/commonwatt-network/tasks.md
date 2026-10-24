@@ -13,4 +13,5 @@
 - [x] 11. Property-based tests: guard never passes a request over the limit; pooled ≤ accepted; payouts sum to
       settlement; tampered receipt detected — R3, R4.3, R4.6
 - [x] 12. Hook: rerun the network tests when `src/commonwatt` changes (`.kiro/hooks/commonwatt-tests-on-save.json`)
-- [ ] 13. Plug in the trained model (`COMMONWATT_TOOL=...`) and re-run the demo — R2.1
+- [x] 13. Plug in the trained model: `tools/gridcollective.py` (default tool) calls the GridCollective forecasts and
+      battery LP from branch `model/gridcollective`; members it was not trained on fall back to the stand-in — R2.1
