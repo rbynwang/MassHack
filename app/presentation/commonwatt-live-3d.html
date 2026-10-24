@@ -173,7 +173,9 @@ body.hero .hud,body.hero .pill,body.hero .card,body.hero .log,body.hero .stat,bo
 </style>
 </head>
 <body>
-<script src="../nav.js" data-root="../"></script>
+<script>if (/[?&]embed=1(&|$)/.test(location.search)) document.documentElement.classList.add("embed");</script>
+<style>html.embed .cw-nav{display:none!important}</style>
+<script src="../nav.js?v=1940" data-root="../"></script>
 <div class="wrap">
 
   <div class="viewport" id="viewport">

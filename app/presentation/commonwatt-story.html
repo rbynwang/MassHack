@@ -200,7 +200,9 @@ html.embed .viewport{width:min(100%,calc((100vh - 64px) * 16 / 9));margin-inline
 html.embed .controls{justify-content:center}
 @media (max-width:640px){html.embed .viewport{width:min(100%,calc((100vh - 110px) * 16 / 9))}}
 </style>
-<script src="../nav.js" data-root="../"></script>
+<script>if (/[?&]embed=1(&|$)/.test(location.search)) document.documentElement.classList.add("embed");</script>
+<style>html.embed .cw-nav{display:none!important}</style>
+<script src="../nav.js?v=1940" data-root="../"></script>
 <div class="wrap">
   <div class="viewport" id="viewport">
     <div class="canvas" id="canvas">
