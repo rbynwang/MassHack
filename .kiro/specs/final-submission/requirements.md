@@ -8,7 +8,7 @@ Track: **Climate Tech (Energy & Climate), challenge C3**: "clean power still has
 1. WHEN judges open the GitHub link THE repository SHALL be **public**, contain all source, assets and
    instructions to run the project, and keep `/.kiro` at the root (never gitignored).
 2. THE submission SHALL include a **demo video under 3 minutes**, public on YouTube or Vimeo, with no
-   third-party trademarks or copyrighted music (no Tesla, no "Powerwall", no commercial songs).
+   third-party trademarks, battery or device brand names, or copyrighted music.
 3. THE submission SHALL link to a **working demo** (GitHub Pages site of `app/`).
 4. THE submission SHALL name the track and include a **write-up of how Kiro was used** (IDE/CLI/Web/Crew,
    specs, hooks, steering, MCP, property-based tests, powers).

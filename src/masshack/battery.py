@@ -17,7 +17,7 @@ import numpy as np
 # ---------------------------------------------------------------------------
 # Battery parameters (Harvard CGBC HouseZero demo assumptions)
 # ---------------------------------------------------------------------------
-CAPACITY_KWH: float = 13.5       # usable capacity (LFP cell, e.g. Tesla Powerwall 2)
+CAPACITY_KWH: float = 13.5       # assumed usable capacity of the demo home battery
 MAX_POWER_KW: float = 5.0        # charge / discharge power limit
 ROUND_TRIP_EFF: float = 0.92     # √η applied to each half of the round trip
 SOC_MIN_KWH: float = 0.0

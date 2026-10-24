@@ -20,7 +20,7 @@ After each task: run `uv run pytest -q`, commit with a clear message, and add a 
 - [x] 3. **Kiro write-up** (10 min) — fill every section under "Write-up sections" in `KIRO_USAGE.md`
   from the log: steering (fileMatch data rules), spec-driven agent network (13 tasks), hooks (tests on
   save, usage log on stop), PBT (the 4.53 vs 4.529 kW rounding bug), MCP (say honestly if none were
-  used), Kiro + Claude workflow (Claude drafted steering/specs/3D scenes; Kiro executed specs and owns
+  used), team + Kiro workflow (Robyn drafted steering/specs/3D scenes; Kiro executed specs and owns
   git). Rename the heading to `## Write-up` so the README can link to it.
 - [x] 4. **GitHub Pages workflow** (5 min) — add `.github/workflows/pages.yml` that uploads `app/` with
   `actions/upload-pages-artifact` and deploys with `actions/deploy-pages` on push to `main`.

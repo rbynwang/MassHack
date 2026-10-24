@@ -1,6 +1,6 @@
 # Commonwatt Presentation Scenes: Handoff
 
-Context for continuing work on the Commonwatt presentation in an AI coding tool. Save this file as `CLAUDE.md` (Claude Code) or `.kiro/steering/presentation.md` (Kiro) next to the HTML.
+Context for continuing work on the Commonwatt presentation in an AI coding tool. Keep this file beside the HTML and include it from `.kiro/steering/presentation.md` when working in Kiro.
 
 ## What It Is
 
@@ -12,7 +12,7 @@ An animated, recordable presentation for the Commonwatt hackathon pitch (Hackach
 4. **Public library** (public institution): double-height reading hall behind white fins, roof PV, rooftop HVAC, shared community battery
 5. **The network** (evening, 5–7 PM): every building pulls power at once, agents negotiate, the peak flattens
 
-The visual style is a white-clay architectural model after the Tesla Home / VPP visuals: charcoal roofs and solar panels, warm cutaway interiors, white context massing, soft long shadows and ambient occlusion, no trees, with glowing energy-flow lines and node dots on top.
+The visual style is a white-clay architectural model inspired by clean home-energy visualizations: charcoal roofs and solar panels, warm cutaway interiors, white context massing, soft long shadows and ambient occlusion, no trees, with glowing energy-flow lines and node dots on top.
 
 ## Files
 
