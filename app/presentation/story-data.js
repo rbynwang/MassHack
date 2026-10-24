@@ -1,4 +1,4 @@
-/* Commonwatt story data, shared by the player (commonwatt-story.html), the live 3D view
+/* MassWatt story data, shared by the player (commonwatt-story.html), the live 3D view
    (commonwatt-live-3d.html) and the renderer (commonwatt-bake.html). */
 /* =====================================================================
    STORY: every word and number on screen lives here.

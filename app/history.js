@@ -42,7 +42,7 @@
     yaxis2: { title: '$', overlaying: 'y', side: 'right', showgrid: false, rangemode: 'tozero' } }), { displayModeBar: false, responsive: true });
   Plotly.newPlot('chPeak', [
     { type: 'bar', x: X, y: days.map(function (d) { return d.peak_kw.alone; }), name: 'Each member alone', marker: { color: C.strain } },
-    { type: 'bar', x: X, y: days.map(function (d) { return d.peak_kw.network; }), name: 'Commonwatt network (ask days)', marker: { color: C.solar } },
+    { type: 'bar', x: X, y: days.map(function (d) { return d.peak_kw.network; }), name: 'MassWatt network (ask days)', marker: { color: C.solar } },
     { type: 'scatter', mode: 'markers', x: X, y: days.map(function (d) { return d.peak_kw.no_opt; }), name: 'No optimization',
       marker: { color: C.ink3, symbol: 'line-ew-open', size: 22, line: { width: 2 } } },
   ], Object.assign({}, base, { barmode: 'group', yaxis: { title: 'peak kW', gridcolor: '#eef0ed', rangemode: 'tozero' } }),

@@ -1,7 +1,7 @@
 /* =====================================================================
-   Commonwatt 3D kit
+   MassWatt 3D kit
    Reusable white-clay architecture, energy-flow lines and lighting for
-   Commonwatt visuals (story scenes, system diagrams, stills, GLB export).
+   MassWatt visuals (story scenes, system diagrams, stills, GLB export).
 
    Classic script: defines window.CommonwattKit(THREE, X). The page imports
    three.js and passes the addons it needs in X:
@@ -883,7 +883,7 @@ function createStage(canvas, opts){
   const _tmpSmoke = new THREE.Color();
 
   /* ---------- camera rig ---------- */
-  let lastRad = 0;
+  let lastRad = 0, freeCam = false;
   let cam = { at: V3(0,0,0), dist: 300, az: 22, el: 30, fx: 800, fy: 450 }, camFrom = null, camTo = null, camT = 0, drift = 0, driftAcc = 0;
   const CAM_DUR = 2.3;
   const ease = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
@@ -926,7 +926,7 @@ function createStage(canvas, opts){
       if(camT >= 1){ cam = { ...camTo, at: camTo.at.clone() }; camTo = null; }
     }
     if(!rm) driftAcc += drift*dt;
-    applyCamera();
+    if(!freeCam) applyCamera();
     mood += (moodTarget - mood) * Math.min(1, dt*1.6); applyMood();
     const dScale = 60/cam.dist;
     for(const id in F){
@@ -977,6 +977,7 @@ function createStage(canvas, opts){
     smokeSources, place, finishLeaves, addFlow, setFlow, allFlowsOff, addWire, catenary, groundGlow, addSmoke,
     setSmoke(l){ smokeTarget = l; }, setMood(m){ moodTarget = (m === 'evening' || m === 1) ? 1 : 0; }, snapMood(){ mood = moodTarget; applyMood(); },
     composer, gtao, markShadows(){ shadowDirty = true; },
+    setFreeCam(on){ freeCam = !!on; if(!on) shadowDirty = true; }, isFreeCam: () => freeCam,
     setSunOffset(dx, dz){ sunOff.set(dx || 0, 0, dz || 0); shadowDirty = true; applyCamera(); },
     setCamera, update, render, project, setPixelRatio, getPixelRatio: () => pr, saveStill, exportGLB,
     anchor(b, name){ const bd = B[b]; if(!bd) return null; if(Array.isArray(name)) return bd.toW ? bd.toW(name) : V3(bd.x+name[0], name[1], bd.z+name[2]); return bd.anchors[name] ? bd.anchors[name].clone() : null; },
@@ -985,7 +986,7 @@ function createStage(canvas, opts){
 }
 
 /* =====================================================================
-   NEIGHBORHOOD: the Commonwatt demo blocks in Cambridge, MA.
+   NEIGHBORHOOD: the MassWatt demo blocks in Cambridge, MA.
    Laid out like a real distribution grid: the substation feeds an
    underground primary feeder along the commercial street (Main St);
    a residential side street (Elm St) gets an overhead lateral on wood

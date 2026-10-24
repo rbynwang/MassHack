@@ -1,6 +1,6 @@
-/* Commonwatt demo: replays the recorded day (app/data/demo.js, written by `uv run commonwatt-demo`). */
+/* MassWatt demo: replays the recorded day (app/data/demo.js, written by `uv run commonwatt-demo`). */
 (function () {
-  const D = window.COMMONWATT;
+  const D = window.MASSWATT;
   if (!D) { document.body.innerHTML = "<p style='padding:24px'>Run <code>uv run commonwatt-demo</code> first.</p>"; return; }
   const $ = (id) => document.getElementById(id);
   const S = D.summary, A = D.ask, W = A.window;
@@ -119,7 +119,7 @@
       { x: H, y: s.no_opt, name: "No optimization", line: { color: "#8b98a5", width: 2, dash: "dot" } },
       { x: H, y: s.alone, name: "Each member alone (same 4-9 PM price)", line: { color: "#f0883e", width: 3 } },
     ];
-    if (showNetwork) tr.push({ x: H, y: s.network, name: "Commonwatt network", line: { color: "#3fb950", width: 3.5 } });
+    if (showNetwork) tr.push({ x: H, y: s.network, name: "MassWatt network", line: { color: "#3fb950", width: 3.5 } });
     tr.push({ x: H, y: s.lmp_usd_mwh, name: "ISO-NE Boston price ($/MWh)", yaxis: "y2",
               line: { color: "#f2cc60", width: 1, dash: "dash" }, opacity: 0.7 });
     const shapes = [
@@ -160,7 +160,7 @@
   sel.value = byId.home_07 ? "home_07" : ordered[0].id;
   function showMember() {
     const m = byId[sel.value], r = m.receipt;
-    $("phone").innerHTML = `<div class="app">Commonwatt · ${m.name}</div>
+    $("phone").innerHTML = `<div class="app">MassWatt · ${m.name}</div>
       <div class="big">${r ? "$" + r.payment_usd.toFixed(2) : "—"}</div>
       <div class="msg">${m.phone || (m.steps.length ? "Not part of today's event: " + m.steps[m.steps.length - 1].reason
         : "No request today.")}</div>

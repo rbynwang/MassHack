@@ -1,8 +1,8 @@
-/* Commonwatt story page. Everything on screen is derived from window.COMMONWATT (app/data/demo.js,
+/* MassWatt story page. Everything on screen is derived from window.MASSWATT (app/data/demo.js,
    written by `uv run commonwatt-demo`). Only the copy is written here. */
 (() => {
   'use strict';
-  const D = window.COMMONWATT;
+  const D = window.MASSWATT;
   const $ = (id) => document.getElementById(id);
   if (!D) { $('app').hidden = true; $('missing').hidden = false; return; }
 
@@ -193,7 +193,7 @@
         hovertemplate: 'No optimization %{y:.0f} kW<extra></extra>' },
       { x: X, y: SER.alone, name: 'Each member alone', mode: 'lines', line: { color: C.strain, width: 4 },
         hovertemplate: 'Alone %{y:.0f} kW<extra></extra>' },
-      { x: X, y: SER.network, name: 'Commonwatt network', mode: 'lines', line: { color: C.solar, width: 4 },
+      { x: X, y: SER.network, name: 'MassWatt network', mode: 'lines', line: { color: C.solar, width: 4 },
         hovertemplate: 'Network %{y:.0f} kW<extra></extra>' },
     ];
     const wx0 = W[0], wx1 = W[W.length - 1] + 1, mid = (wx0 + wx1) / 2;
@@ -238,7 +238,7 @@
     $('mainChart').setAttribute('aria-label', alt);
     $('chartSub').innerHTML = `Neighborhood load, ${dayLabel}. ${pill('simulated')}`;
     $('chartLegend').innerHTML = `<span class="alone">Each member alone, reacting to the same ${touLabel} price</span>
-      <span class="net">Commonwatt network</span><span class="ref">No optimization</span>
+      <span class="net">MassWatt network</span><span class="ref">No optimization</span>
       <span class="win">Grid's ask, ${winLabel}</span><span class="tou">Time-of-use peak, ${touLabel}</span>`;
   })();
 
@@ -659,7 +659,7 @@
     if (r && r.battery_min_pct != null) facts.push(`battery ≥ ${fmt(r.battery_min_pct)} %`);
     if (r) facts.push(`${fmt(r.delivered_kwh, 1)} kWh`);
     const last = steps[steps.length - 1];
-    $('phone').innerHTML = `<div class="app">Commonwatt · ${esc(m.name)}</div>
+    $('phone').innerHTML = `<div class="app">MassWatt · ${esc(m.name)}</div>
       <div class="pay">${r ? '$' + fmt(r.payment_usd, 2) : '$0.00'}</div>
       <div class="msg">${esc(m.phone || (last ? `Not part of today's event. ${last.decision === 'blocked' ? 'Your guard blocked a request over your limit.' : last.reason}` : 'No request today.'))}</div>
       <div class="facts">${facts.map((f) => `<span>${f}</span>`).join('')}</div>

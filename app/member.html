@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Commonwatt · Member app</title>
+<title>MassWatt · Member app</title>
 <link rel="stylesheet" href="story.css">
 <script src="data/demo.js"></script>
 <script src="data/week.js"></script>
@@ -73,7 +73,7 @@
 <script>
 (function () {
   'use strict';
-  var D = window.COMMONWATT, W = window.CW_WEEK, $ = function (id) { return document.getElementById(id); };
+  var D = window.MASSWATT, W = window.CW_WEEK, $ = function (id) { return document.getElementById(id); };
   if (!D || !W) { $('app').hidden = true; $('missing').hidden = false; return; }
   var fmt = function (x, d) { return Number(x).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
@@ -134,7 +134,7 @@
       '<div class="hdr"><h3>' + esc(m.name) + '</h3><div style="color:#565d65;font-size:13px">' + esc(m.kind_label) + ' · ' + esc(m.assets.join(', ').replace(/_/g, ' ')) +
       ' ' + pill(m.label) + '</div><span class="status ' + status[0] + '">' + status[1] + '</span></div>' +
       '<div class="sec"><h4>Power now ' + pill('simulated') + '</h4><div class="pw"><b>' + fmt(Math.abs(net), 1) + ' kW</b><span>' +
-      (importing ? 'from the grid' : 'to the grid') + '</span></div><p style="margin:4px 0 0;font-size:13px;color:#565d65">Without Commonwatt: ' +
+      (importing ? 'from the grid' : 'to the grid') + '</span></div><p style="margin:4px 0 0;font-size:13px;color:#565d65">Without MassWatt: ' +
       fmt(Math.abs(planned), 1) + ' kW ' + (planned >= 0 ? 'from' : 'to') + ' the grid.</p></div>' + batt +
       '<div class="sec"><h4>Today\'s request</h4>' + nego + '</div>' +
       '<div class="sec"><h4>Your limits</h4>' + lim + '</div>' +
