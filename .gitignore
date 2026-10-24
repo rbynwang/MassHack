@@ -11,3 +11,7 @@ data/synthetic/*/hourly/
 
 # Large baseline download (44 MB): re-fetch with `uv run homesim-baseline`
 data/baseline/raw/resstock_*.csv
+
+# Test caches
+.hypothesis/
+.pytest_cache/

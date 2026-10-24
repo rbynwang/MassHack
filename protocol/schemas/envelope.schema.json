@@ -1,0 +1,41 @@
+{
+  "description": "Every message travels in an envelope signed by its sender.",
+  "properties": {
+    "msg_id": {
+      "title": "Msg Id",
+      "type": "string"
+    },
+    "sender": {
+      "title": "Sender",
+      "type": "string"
+    },
+    "to": {
+      "title": "To",
+      "type": "string"
+    },
+    "sent_at": {
+      "description": "Local time of the event day, HH:MM",
+      "title": "Sent At",
+      "type": "string"
+    },
+    "body": {
+      "additionalProperties": true,
+      "title": "Body",
+      "type": "object"
+    },
+    "signature": {
+      "title": "Signature",
+      "type": "string"
+    }
+  },
+  "required": [
+    "msg_id",
+    "sender",
+    "to",
+    "sent_at",
+    "body",
+    "signature"
+  ],
+  "title": "Envelope",
+  "type": "object"
+}

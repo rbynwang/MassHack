@@ -1,0 +1,97 @@
+{
+  "$defs": {
+    "OfferHour": {
+      "properties": {
+        "hour": {
+          "maximum": 23,
+          "minimum": 0,
+          "title": "Hour",
+          "type": "integer"
+        },
+        "planned_kw": {
+          "description": "The member's own plan for grid draw this hour",
+          "title": "Planned Kw",
+          "type": "number"
+        },
+        "can_reduce_kw": {
+          "description": "How much less it could draw in this hour alone",
+          "minimum": 0,
+          "title": "Can Reduce Kw",
+          "type": "number"
+        },
+        "can_increase_kw": {
+          "description": "How much more it could draw in this hour alone",
+          "minimum": 0,
+          "title": "Can Increase Kw",
+          "type": "number"
+        }
+      },
+      "required": [
+        "hour",
+        "planned_kw",
+        "can_reduce_kw",
+        "can_increase_kw"
+      ],
+      "title": "OfferHour",
+      "type": "object"
+    }
+  },
+  "description": "Member -> coordinator: what I can spare, and what it costs me. Never raw data or private limits.",
+  "properties": {
+    "type": {
+      "const": "offer",
+      "default": "offer",
+      "title": "Type",
+      "type": "string"
+    },
+    "ask_id": {
+      "title": "Ask Id",
+      "type": "string"
+    },
+    "member_id": {
+      "title": "Member Id",
+      "type": "string"
+    },
+    "hours": {
+      "items": {
+        "$ref": "#/$defs/OfferHour"
+      },
+      "title": "Hours",
+      "type": "array"
+    },
+    "cost_per_kwh": {
+      "description": "Lost savings / comfort cost per kWh shifted",
+      "minimum": 0,
+      "title": "Cost Per Kwh",
+      "type": "number"
+    },
+    "prep_kwh_per_kwh": {
+      "description": "Energy needed before the window per kWh reduced",
+      "minimum": 0,
+      "title": "Prep Kwh Per Kwh",
+      "type": "number"
+    },
+    "rebound_kwh_per_kwh": {
+      "description": "Extra energy drawn after the window per kWh reduced",
+      "minimum": 0,
+      "title": "Rebound Kwh Per Kwh",
+      "type": "number"
+    },
+    "max_recovery_kw": {
+      "minimum": 0,
+      "title": "Max Recovery Kw",
+      "type": "number"
+    }
+  },
+  "required": [
+    "ask_id",
+    "member_id",
+    "hours",
+    "cost_per_kwh",
+    "prep_kwh_per_kwh",
+    "rebound_kwh_per_kwh",
+    "max_recovery_kw"
+  ],
+  "title": "Offer",
+  "type": "object"
+}

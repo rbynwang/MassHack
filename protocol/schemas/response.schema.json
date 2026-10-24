@@ -1,0 +1,72 @@
+{
+  "description": "Member -> coordinator: accept, counter (with a new amount) or decline. `blocked` comes from the guard.",
+  "properties": {
+    "type": {
+      "const": "response",
+      "default": "response",
+      "title": "Type",
+      "type": "string"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "member_id": {
+      "title": "Member Id",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "accept",
+        "counter",
+        "decline",
+        "blocked"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "kw": {
+      "minimum": 0,
+      "title": "Kw",
+      "type": "number"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    },
+    "prep_kwh": {
+      "default": 0.0,
+      "description": "Schedulable energy needed before the window (battery pre-charge)",
+      "title": "Prep Kwh",
+      "type": "number"
+    },
+    "rebound_kwh": {
+      "default": 0.0,
+      "description": "Schedulable energy after the window (battery recharge)",
+      "title": "Rebound Kwh",
+      "type": "number"
+    },
+    "max_recovery_kw": {
+      "default": 0.0,
+      "title": "Max Recovery Kw",
+      "type": "number"
+    },
+    "fixed_kw": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "Changes outside the window it cannot move (pre-cool, rebound)",
+      "title": "Fixed Kw",
+      "type": "object"
+    }
+  },
+  "required": [
+    "request_id",
+    "member_id",
+    "decision",
+    "kw",
+    "reason"
+  ],
+  "title": "Response",
+  "type": "object"
+}

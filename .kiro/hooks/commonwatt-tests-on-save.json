@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "commonwatt-tests-on-save",
+      "trigger": "PostFileSave",
+      "description": "Rerun the agent network's property-based tests (limits, pooling, payouts, tampering) whenever a Commonwatt module changes.",
+      "matcher": "src/commonwatt/.*\\.py$",
+      "action": {
+        "type": "command",
+        "command": "uv run pytest -q tests/test_commonwatt.py -W ignore -x -p no:cacheprovider 2>&1 | tail -3",
+        "timeout": 120
+      }
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "description": "Coordinator -> member (through its trust guard): a specific change asked of one member.",
+  "properties": {
+    "type": {
+      "const": "request",
+      "default": "request",
+      "title": "Type",
+      "type": "string"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "ask_id": {
+      "title": "Ask Id",
+      "type": "string"
+    },
+    "member_id": {
+      "title": "Member Id",
+      "type": "string"
+    },
+    "round": {
+      "title": "Round",
+      "type": "integer"
+    },
+    "reduce_kw": {
+      "description": "Held for every hour of the window",
+      "exclusiveMinimum": 0,
+      "title": "Reduce Kw",
+      "type": "number"
+    },
+    "window": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Window",
+      "type": "array"
+    },
+    "price_usd_per_kwh": {
+      "title": "Price Usd Per Kwh",
+      "type": "number"
+    }
+  },
+  "required": [
+    "request_id",
+    "ask_id",
+    "member_id",
+    "round",
+    "reduce_kw",
+    "window",
+    "price_usd_per_kwh"
+  ],
+  "title": "Request",
+  "type": "object"
+}
