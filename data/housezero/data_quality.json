@@ -1,0 +1,103 @@
+{
+  "energy": {
+    "minute_rows": 570240,
+    "hourly_rows": 9504,
+    "source_timestamp_backsteps_sorted": 59,
+    "missing_minutes": {
+      "Heat_pump (kW)": 833,
+      "Heat_pump_electric (kW)": 829,
+      "Cooling_pump (kW)": 831,
+      "Domestic_hot_water_electric (kW)": 828,
+      "Domestic_hot_water_solar (kW)": 824,
+      "Lighting_basement (kW)": 630,
+      "Lighting_1st (kW)": 629,
+      "Lighting_2nd (kW)": 629,
+      "Lighting_3rd (kW)": 629,
+      "Emergency_lighting (kW)": 819,
+      "Plug_basement (kW)": 831,
+      "Plug_1st (kW)": 824,
+      "Plug_2nd (kW)": 824,
+      "Plug_3rd (kW)": 824,
+      "Control (kW)": 806,
+      "IT (kW)": 831,
+      "Fire_alarm (kW)": 634,
+      "Elevator (kW)": 836,
+      "Elevator_exhaust_fan (kW)": 828,
+      "Elevator_sump_pump (kW)": 632,
+      "Battery_cabinet (kW)": 879,
+      "Solar_rapid_shutdown (kW)": 826,
+      "PV_meter_1 (kW)": 792,
+      "PV_meter_2 (kW)": 791,
+      "Net (kW)": 774,
+      "In (kW)": 774,
+      "Out (kW)": 774
+    },
+    "incomplete_hours": {
+      "Heat_pump (kW)": 117,
+      "Heat_pump_electric (kW)": 113,
+      "Cooling_pump (kW)": 117,
+      "Domestic_hot_water_electric (kW)": 113,
+      "Domestic_hot_water_solar (kW)": 109,
+      "Lighting_basement (kW)": 112,
+      "Lighting_1st (kW)": 111,
+      "Lighting_2nd (kW)": 111,
+      "Lighting_3rd (kW)": 111,
+      "Emergency_lighting (kW)": 116,
+      "Plug_basement (kW)": 111,
+      "Plug_1st (kW)": 108,
+      "Plug_2nd (kW)": 108,
+      "Plug_3rd (kW)": 109,
+      "Control (kW)": 105,
+      "IT (kW)": 115,
+      "Fire_alarm (kW)": 116,
+      "Elevator (kW)": 120,
+      "Elevator_exhaust_fan (kW)": 117,
+      "Elevator_sump_pump (kW)": 114,
+      "Battery_cabinet (kW)": 164,
+      "Solar_rapid_shutdown (kW)": 110,
+      "PV_meter_1 (kW)": 163,
+      "PV_meter_2 (kW)": 166,
+      "Net (kW)": 143,
+      "In (kW)": 143,
+      "Out (kW)": 143
+    }
+  },
+  "weather": {
+    "minute_rows": 570240,
+    "hourly_rows": 9504,
+    "source_timestamp_backsteps_sorted": 0,
+    "missing_minutes": {
+      "Outdoor_air_temp (\u00b0F)": 18335,
+      "Wind_speed (m_s)": 8452,
+      "Wind_dir (\u00b0)": 48068,
+      "Rain (Boolean)": 18335,
+      "Relative_humidity (%)": 456229
+    },
+    "incomplete_hours": {
+      "Outdoor_air_temp (\u00b0F)": 353,
+      "Wind_speed (m_s)": 198,
+      "Wind_dir (\u00b0)": 857,
+      "Rain (Boolean)": 353,
+      "Relative_humidity (%)": 9504
+    }
+  },
+  "radiation": {
+    "minute_rows": 570240,
+    "hourly_rows": 9504,
+    "source_timestamp_backsteps_sorted": 0,
+    "missing_minutes": {
+      "HZ_solar_radiation (W_m^2)": 735
+    },
+    "incomplete_hours": {
+      "HZ_solar_radiation (W_m^2)": 97
+    }
+  },
+  "coverage": {
+    "local_start": "2025-05-01T00:00:00-04:00",
+    "local_end_exclusive": "2026-06-01T00:00:00-04:00",
+    "timezone": "America/New_York",
+    "months": 13,
+    "minute_rows_per_table": 570240,
+    "hours_per_table": 9504
+  }
+}

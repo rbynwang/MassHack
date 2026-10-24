@@ -1,0 +1,7 @@
+{
+  "hourly_rows": 9504,
+  "first_utc": "2025-05-01T04:00:00Z",
+  "last_utc": "2026-06-01T03:00:00Z",
+  "complete_energy_temperature_radiation_hours": 8879,
+  "checks": "All minute timestamp sequences unique and ordered; all hourly intervals present; PV sums verified."
+}
