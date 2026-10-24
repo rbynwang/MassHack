@@ -8,54 +8,110 @@
 <script src="data/demo.js"></script>
 <script src="nav.js"></script>
 <style>
-.land-links { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; }
-.land-links a { display:block; background:#fff; border-radius:16px; padding:18px 20px; text-decoration:none; color:var(--ink);
-  box-shadow:var(--shadow); transition:transform .15s ease; }
-.land-links a:hover { transform:translateY(-2px); }
-.land-links b { display:block; font-size:18px; font-stretch:112%; margin-bottom:4px; }
-.land-links span { color:var(--ink-2); font-size:14px; }
-.pitch { font-size:clamp(16px, 2vw, 19px); color:var(--ink-2); max-width:62ch; margin:14px 0 0; }
+html { scroll-behavior:smooth; }
+body { background:var(--page); }
+.cw-nav { position:fixed; left:0; right:0; background:rgba(243,244,241,.72); border-bottom-color:transparent; }
+/* a. hero */
+.hero-full { position:relative; height:100vh; min-height:560px; overflow:hidden; background:#dfdfdc; }
+.hero-full img { position:absolute; left:0; right:0; bottom:0; top:clamp(150px, 26vh, 300px); width:100%; height:calc(100% - clamp(150px, 26vh, 300px)); object-fit:cover; object-position:50% 0; }
+.hero-full::after { content:""; position:absolute; left:0; right:0; top:clamp(150px, 26vh, 300px); height:60px; background:linear-gradient(#dfdfdc, rgba(223,223,220,0)); pointer-events:none; }
+.hero-copy { position:absolute; z-index:2; left:0; right:0; top:clamp(70px, 9vh, 96px); text-align:center; padding:0 20px; }
+.hero-copy h1 { font-size:clamp(44px, 6.2vw, 92px); line-height:.95; font-weight:680; font-stretch:118%; letter-spacing:-.03em; margin:0; }
+.hero-copy p { font-size:clamp(16px, 1.6vw, 21px); color:var(--ink-2); margin:10px auto 0; max-width:60ch; }
+.btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+.btn { font:650 15px var(--display); text-decoration:none; border-radius:999px; padding:12px 22px; }
+.btn.dark { background:var(--ink); color:#fff; }
+.btn.light { background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(20,24,28,.12); }
+/* b. numbers */
+.band { background:#fff; }
+.band-in { max-width:1280px; margin:0 auto; padding:26px 20px; display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; }
+.band .n { font:650 clamp(30px, 3.6vw, 44px)/1.05 var(--mono); letter-spacing:-.02em; }
+.band .n.g { color:var(--solar); }
+.band .l { font-weight:600; margin:4px 0 6px; }
+.band .d { color:var(--ink-2); font-size:13.5px; margin:0 0 8px; }
+/* c. story */
+.sec { max-width:1280px; margin:0 auto; padding:56px 20px 8px; }
+.sec h2 { font-size:clamp(28px, 3.4vw, 42px); font-weight:650; font-stretch:115%; letter-spacing:-.02em; }
+.sec .sub { display:block; margin:6px 0 18px; font-size:16px; color:var(--ink-2); font-weight:400; font-stretch:100%; letter-spacing:0; }
+.player { position:relative; width:100%; aspect-ratio:16/9; border-radius:18px; overflow:hidden; background:#e2e4e0; box-shadow:var(--shadow); }
+.player iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
+.fs { display:inline-block; margin-top:12px; font-weight:650; color:var(--ink); }
+/* d. cards */
+.cards { display:grid; grid-template-columns:repeat(2, 1fr); gap:20px; }
+.cards a { display:block; background:#fff; border-radius:20px; overflow:hidden; text-decoration:none; color:var(--ink); box-shadow:var(--shadow); transition:transform .15s ease; }
+.cards a:hover { transform:translateY(-3px); }
+.cards img { display:block; width:100%; aspect-ratio:16/10; object-fit:cover; object-position:50% 0; background:#eef0ed; }
+.cards .tx { padding:18px 22px 22px; }
+.cards b { display:block; font-size:22px; font-stretch:112%; }
+.cards span { color:var(--ink-2); font-size:15px; }
+/* e. footer */
+.foot { max-width:1280px; margin:56px auto 0; padding:26px 20px 40px; border-top:1px solid var(--hair); color:var(--ink-2); font-size:13.5px; display:flex; flex-wrap:wrap; gap:8px 28px; justify-content:space-between; }
+.foot a { color:var(--ink); }
+.foot p { margin:0; max-width:80ch; }
+@media (max-width:900px) {
+  .band-in { grid-template-columns:1fr; gap:14px; }
+  .cards { grid-template-columns:1fr; }
+  .hero-full img { object-position:30% 0; }
+}
+@media (max-width:640px) { .cw-nav { position:sticky; } .hero-copy { top:60px; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
 </style>
 </head>
 <body>
-<div class="wrap" id="app">
-  <section class="card hero" aria-labelledby="heroTitle">
-    <h1 id="heroTitle">Every building gets an agent. Every neighborhood gets a network.</h1>
-    <p class="pitch">Commonwatt turns a Massachusetts neighborhood's homes, businesses and public buildings into an
-      energy commons. Each building's agent keeps its owner's limits private, negotiates with a coordinator when the
-      grid asks for help, and gets paid against a signed receipt.</p>
-    <div class="hero-stats" id="heroStats"></div>
-  </section>
-  <nav class="land-links" aria-label="Explore">
-    <a href="presentation/commonwatt-story.html"><b>Scenes</b><span>The 1-minute story: four buildings, then the network they form.</span></a>
-    <a href="story.html"><b>Network</b><span>Replay the June 24, 2025 negotiation message by message.</span></a>
-    <a href="history.html"><b>Trading history</b><span>Seven days of asks, payments and a verifiable receipt chain.</span></a>
-    <a href="member.html"><b>Member app</b><span>What one owner sees on their phone.</span></a>
-    <a href="about.html"><b>About</b><span>The problem, the architecture, the data.</span></a>
-  </nav>
-  <p class="footnote" id="landNote"></p>
-</div>
-<div class="missing" id="missing" hidden>Run <code>uv run commonwatt-demo</code> first.</div>
+<header class="hero-full">
+  <img src="presentation/renders/hero.webp" alt="White-clay model of a Cambridge neighborhood: homes, shops, an office building and a library with rooftop solar, a substation and transmission towers">
+  <div class="hero-copy">
+    <h1>Commonwatt</h1>
+    <p>Every building gets an agent. Every neighborhood gets a network.</p>
+    <div class="btns">
+      <a class="btn dark" href="#story">Watch the story</a>
+      <a class="btn light" href="story.html">See the network</a>
+    </div>
+  </div>
+</header>
+
+<section class="band" aria-label="June 24, 2025 results">
+  <div class="band-in" id="band"></div>
+</section>
+
+<section class="sec" id="story" aria-labelledby="storyTitle">
+  <h2 id="storyTitle">The story<span class="sub">Four buildings, then the network they form, on the evening of the ISO-NE peak.</span></h2>
+  <div class="player">
+    <iframe src="presentation/commonwatt-story.html?embed=1" title="Commonwatt story: four buildings and the agent network" loading="lazy" allowfullscreen></iframe>
+  </div>
+  <a class="fs" href="presentation/commonwatt-story.html">Open full screen →</a>
+</section>
+
+<section class="sec" aria-labelledby="exploreTitle">
+  <h2 id="exploreTitle">Explore<span class="sub">The simulation behind the story, page by page.</span></h2>
+  <div class="cards">
+    <a href="story.html"><img src="img/card-network.jpg" alt="" loading="lazy"><div class="tx"><b>Network</b><span>Replay the June 24, 2025 negotiation, one signed message at a time.</span></div></a>
+    <a href="history.html"><img src="img/card-history.jpg" alt="" loading="lazy"><div class="tx"><b>Trading history</b><span>Seven days of asks and payments, with a receipt chain you can verify.</span></div></a>
+    <a href="member.html"><img src="img/card-member.jpg" alt="" loading="lazy"><div class="tx"><b>Member app</b><span>What one owner sees on their phone, limits kept private.</span></div></a>
+    <a href="about.html"><img src="img/card-about.jpg" alt="" loading="lazy"><div class="tx"><b>About</b><span>The problem, the architecture, and the Massachusetts data behind it.</span></div></a>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Data: HouseZero, Harvard Center for Green Buildings and Cities (CC BY 4.0; DOIs 10.6084/m9.figshare.30260233.v1 and
+    10.6084/m9.figshare.32790984.v1) · ISO New England · City of Boston, Analyze Boston (PDDL). Members, batteries and payments
+    are simulated or assumptions.</p>
+  <p><a href="https://github.com/rbynwang/MassHack">GitHub</a> · Built with Kiro</p>
+</footer>
 <script>
 (function () {
-  var D = window.COMMONWATT;
-  if (!D) { document.getElementById('app').hidden = true; document.getElementById('missing').hidden = false; return; }
+  var D = window.COMMONWATT, el = document.getElementById('band');
+  if (!D) { el.innerHTML = '<p>Run <code>uv run commonwatt-demo</code> first.</p>'; return; }
   var S = D.summary, fmt = function (x, d) { return Number(x).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
-  var drop = 100 * (1 - S.peak_kw.network / S.peak_kw.alone);
   var pill = '<span class="pill simulated">simulated</span>';
-  document.getElementById('heroStats').innerHTML =
-    '<div class="stat s2"><div class="num"><span class="to">−' + fmt(drop) + '</span><span class="unit">%</span></div>' +
-    '<div class="lab">evening peak on June 24, 2025</div><p>' + fmt(S.peak_kw.alone) + ' kW when every member acts alone, ' +
-    fmt(S.peak_kw.network) + ' kW with the network.</p>' + pill + '</div>' +
-    '<div class="stat s1"><div class="num">' + fmt(S.pooled_kw) + '<span class="unit">kW</span></div>' +
-    '<div class="lab">delivered on the grid\'s request</div><p>' + D.members.length + ' members, ' + S.rounds +
-    ' negotiation rounds, ' + D.window_label + '.</p>' + pill + '</div>' +
-    '<div class="stat s3"><div class="num">$' + fmt(S.paid_usd) + '</div><div class="lab">to ' + S.members_paid +
-    ' members</div><p>' + S.ledger + '; ' + S.hp_only_homes_paid + ' of ' + S.hp_only_homes +
-    ' heat-pump-only homes paid.</p>' + pill + '</div>';
-  document.getElementById('landNote').textContent = 'June 24, 2025 was the ISO-NE peak day. Inputs are measured ' +
-    'Massachusetts data (HouseZero, Boston Public Library, ISO-NE); members, batteries and payments are simulated or ' +
-    'assumptions, labeled on every page. Model tool: ' + D.tool + '.';
+  var drop = 100 * (1 - S.peak_kw.network / S.peak_kw.alone);
+  el.innerHTML =
+    '<div><div class="n g">−' + fmt(drop) + '%</div><div class="l">evening peak on June 24, 2025</div><p class="d">' +
+      fmt(S.peak_kw.alone) + ' kW when every member acts alone, ' + fmt(S.peak_kw.network) + ' kW with the network.</p>' + pill + '</div>' +
+    '<div><div class="n">' + fmt(S.pooled_kw) + ' kW</div><div class="l">delivered on the grid\'s request</div><p class="d">' +
+      D.members.length + ' members, ' + S.rounds + ' negotiation rounds, ' + D.window_label + '.</p>' + pill + '</div>' +
+    '<div><div class="n">$' + fmt(S.paid_usd) + '</div><div class="l">to ' + S.members_paid + ' members</div><p class="d">' +
+      S.ledger + '; ' + S.hp_only_homes_paid + ' of ' + S.hp_only_homes + ' heat-pump-only homes paid.</p>' + pill + '</div>';
 })();
 </script>
 </body>

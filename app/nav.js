@@ -4,6 +4,7 @@
    It injects a <nav> at the top of <body> and highlights the current page. No dependencies, works from file://. */
 (function () {
   'use strict';
+  if (/[?&]embed=1(&|$)/.test(location.search)) return;   // embedded in another page: no site nav
   var me = document.currentScript;
   var root = (me && me.getAttribute('data-root')) || '';
   var PAGES = [
