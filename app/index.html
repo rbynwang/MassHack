@@ -4,21 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MassWatt · an energy commons for Massachusetts neighborhoods</title>
-<link rel="stylesheet" href="story.css">
-<script src="data/demo.js"></script>
-<script src="nav.js"></script>
+<link rel="stylesheet" href="story.css?v=1940">
+<script src="data/demo.js?v=1940"></script>
+<script src="nav.js?v=1940"></script>
 <style>
 html { scroll-behavior:smooth; }
 body { background:var(--page); }
 .cw-nav { position:fixed; left:0; right:0; background:rgba(243,244,241,.72); border-bottom-color:transparent; }
-/* a. hero */
-.hero-full { position:relative; height:100vh; min-height:560px; overflow:hidden; background:#dfdfdc; }
-.hero-full iframe { position:absolute; left:0; right:0; bottom:0; top:clamp(150px, 26vh, 300px); width:100%; height:calc(100% - clamp(150px, 26vh, 300px)); border:0; pointer-events:none; }
-.hero-full img { position:absolute; left:0; right:0; bottom:0; top:clamp(150px, 26vh, 300px); width:100%; height:calc(100% - clamp(150px, 26vh, 300px)); object-fit:cover; object-position:50% 0; }
-.hero-full::after { content:""; position:absolute; left:0; right:0; top:clamp(150px, 26vh, 300px); height:60px; background:linear-gradient(#dfdfdc, rgba(223,223,220,0)); pointer-events:none; }
-.hero-copy { position:absolute; z-index:2; left:0; right:0; top:clamp(70px, 9vh, 96px); text-align:center; padding:0 20px; }
+/* a. hero: title block on top, 3D stage fills the remaining height (never overlaps) */
+.hero-full { position:relative; height:100vh; min-height:600px; display:flex; flex-direction:column; overflow:hidden; background:#dfdfdc; }
+.hero-copy { position:relative; z-index:2; flex:none; text-align:center; padding:clamp(76px, 11vh, 120px) 20px 6px; }
 .hero-copy h1 { font-size:clamp(44px, 6.2vw, 92px); line-height:.95; font-weight:680; font-stretch:118%; letter-spacing:-.03em; margin:0; }
 .hero-copy p { font-size:clamp(16px, 1.6vw, 21px); color:var(--ink-2); margin:10px auto 0; max-width:60ch; }
+.hero-stage { position:relative; flex:1 1 auto; min-height:0; }
+.hero-stage iframe, .hero-stage img { position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; object-position:50% 0; }
+.hero-stage iframe { pointer-events:none; }
+.hero-stage::after { content:""; position:absolute; left:0; right:0; top:0; height:48px; background:linear-gradient(#dfdfdc, rgba(223,223,220,0)); pointer-events:none; }
 .btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
 .btn { font:650 15px var(--display); text-decoration:none; border-radius:999px; padding:12px 22px; }
 .btn.dark { background:var(--ink); color:#fff; }
@@ -52,16 +53,13 @@ body { background:var(--page); }
 @media (max-width:900px) {
   .band-in { grid-template-columns:1fr; gap:14px; }
   .cards { grid-template-columns:1fr; }
-  .hero-full img { object-position:30% 0; }
 }
-@media (max-width:640px) { .cw-nav { position:sticky; } .hero-copy { top:60px; } }
+@media (max-width:640px) { .cw-nav { position:sticky; } .hero-copy { padding-top:22px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
 </style>
 </head>
 <body>
 <header class="hero-full">
-  <iframe src="presentation/commonwatt-live-3d.html?embed=1&amp;hero=1" title="3D tour of the neighborhood: from the whole neighborhood down to one building" tabindex="-1" aria-hidden="true"></iframe>
-  <noscript><img src="presentation/renders/hero.webp" alt="White-clay model of a Cambridge neighborhood"></noscript>
   <div class="hero-copy">
     <h1>MassWatt</h1>
     <p>Every building gets an agent. Every neighborhood gets a network.</p>
@@ -69,6 +67,10 @@ body { background:var(--page); }
       <a class="btn dark" href="#story">Watch the story</a>
       <a class="btn light" href="story.html">See the network</a>
     </div>
+  </div>
+  <div class="hero-stage">
+    <iframe src="presentation/commonwatt-live-3d.html?embed=1&amp;hero=1&amp;v=1940" title="3D tour of the neighborhood: from the whole neighborhood down to one building" tabindex="-1" aria-hidden="true"></iframe>
+    <noscript><img src="presentation/renders/hero.webp" alt="White-clay model of a Cambridge neighborhood"></noscript>
   </div>
 </header>
 
@@ -79,7 +81,7 @@ body { background:var(--page); }
 <section class="sec" id="story" aria-labelledby="storyTitle">
   <h2 id="storyTitle">The story<span class="sub">Four buildings, then the network they form, on the evening of the ISO-NE peak.</span></h2>
   <div class="player">
-    <iframe src="presentation/commonwatt-story.html?embed=1" title="MassWatt story: four buildings and the agent network" loading="lazy" allowfullscreen></iframe>
+    <iframe src="presentation/commonwatt-story.html?embed=1&amp;v=1940" title="MassWatt story: four buildings and the agent network" loading="lazy" allowfullscreen></iframe>
   </div>
   <a class="fs" href="presentation/commonwatt-live-3d.html">Explore it in 3D →</a>
 </section>
