@@ -8,7 +8,9 @@ Hackachusetts 2026 · **Climate Tech track, challenge C3**: "clean power still h
 - **How we used Kiro:** [KIRO_USAGE.md → Write-up](KIRO_USAGE.md#write-up)
 - **Submission statement:** [docs/submission-statement.md](docs/submission-statement.md)
 
-![Network replay](docs/story-1440.png)
+| Network replay | Trading history | Member app |
+|---|---|---|
+| ![Network replay](docs/story-1440.png) | ![Trading history](docs/history-1440.png) | ![Member app](docs/member-1440.png) |
 
 ## The problem
 

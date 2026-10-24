@@ -11,7 +11,8 @@ src/masshack/       Python package
   world_model.py    Path 2 latent model
 src/commonwatt/     Agent network: protocol, network (bus/registry), trust (guards/ledger), agents/, tools/
   tools/contract.py The only interface between agents and the ML model (EnergyModelTool)
-app/                Static demo page (reads app/data/demo.js from `uv run commonwatt-demo`)
+app/                Static site: index (landing), story (network replay), history, member, about, presentation/ (3D scenes);
+                    shared nav in app/nav.js; data in app/data/demo.js (`uv run commonwatt-demo`) and week.js (`uv run commonwatt-week`)
 protocol/schemas/   JSON Schemas of the 7 protocol messages (generated)
 src/homesim/        Synthetic single-family home generator (config.yaml + seed; `uv run homesim`)
 data/baseline/      Public calibration baselines (National Grid R-1, Eversource, ResStock, EIA)
