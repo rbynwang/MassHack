@@ -1,0 +1,506 @@
+<title>MassHack World Model</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single proposal column (max ~1180px). Thesis, then the model diagram, then five demo ideas with live
+   mock-ups, then three build paths, the scoring plan and the 8-hour clock. Dark first, like the team's FlexGrid talk.
+   Colour rule kept from FlexGrid: grey = without the AI, amber = with it, violet = the vendor default battery. */
+:root{
+  color-scheme:dark;
+  --bg:#0b1014; --bg-2:#10181e; --bg-3:#172229; --line:rgba(214,232,238,.09); --line-2:rgba(214,232,238,.17); --line-3:rgba(214,232,238,.3);
+  --ink:#e6eef0; --ink-2:#a3b3ba; --ink-3:#73878f; --emph:#f1e5c6;
+  --accent:#67dabb; --accent-wash:rgba(103,218,187,.10);
+  --with:#e6b56d; --without:#83817a; --vendor:#9a8ff0; --heat:#e9785a; --solar:#d9a21b; --good:#4fcf8a; --warn:#e6b56d; --bad:#e66767;
+  --f-sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  color-scheme:light;
+  --bg:#f3f5f2; --bg-2:#ffffff; --bg-3:#e9eee9; --line:rgba(16,24,28,.08); --line-2:rgba(16,24,28,.16); --line-3:rgba(16,24,28,.32);
+  --ink:#11181c; --ink-2:#47535a; --ink-3:#6a777e; --emph:#11181c;
+  --accent:#0b7d64; --accent-wash:rgba(14,143,114,.09);
+  --with:#a76a06; --without:#9c9a94; --vendor:#6250d6; --heat:#c4482a; --solar:#b07c00; --good:#1e8a4b; --warn:#8a5d00; --bad:#d13c3b;
+}}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f3f5f2; --bg-2:#ffffff; --bg-3:#e9eee9; --line:rgba(16,24,28,.08); --line-2:rgba(16,24,28,.16); --line-3:rgba(16,24,28,.32);
+  --ink:#11181c; --ink-2:#47535a; --ink-3:#6a777e; --emph:#11181c;
+  --accent:#0b7d64; --accent-wash:rgba(14,143,114,.09);
+  --with:#a76a06; --without:#9c9a94; --vendor:#6250d6; --heat:#c4482a; --solar:#b07c00; --good:#1e8a4b; --warn:#8a5d00; --bad:#d13c3b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--f-sans);-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;padding-block:40px 80px;display:flex;flex-direction:column;gap:64px}
+section{display:flex;flex-direction:column;gap:20px;min-width:0}
+h1,h2,h3,h4,p{margin:0}
+h1,h2,h3{text-wrap:balance}
+h1{font-size:clamp(36px,5.2vw,68px);line-height:1;font-weight:500;letter-spacing:-.035em}
+h2{font-size:clamp(28px,3.4vw,44px);line-height:1.05;font-weight:500;letter-spacing:-.03em}
+h1 em,h2 em{font-family:var(--f-serif);font-style:italic;font-weight:400;letter-spacing:-.01em;color:var(--emph)}
+h3{font-size:18px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.eyebrow{font:500 11.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--line-3)}
+.lead{font-size:clamp(17px,1.35vw,19.5px);color:var(--ink-2);max-width:72ch;line-height:1.55}
+.lead b,.note b,li b{color:var(--ink);font-weight:600}
+.note{font-size:14px;color:var(--ink-2);max-width:80ch}
+.mono{font-family:var(--f-mono);font-size:.86em}
+code{font-family:var(--f-mono);font-size:.86em;color:var(--ink)}
+.panel{background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,1.8vw,22px);min-width:0}
+.mock{font:500 10.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--warn);border:1px dashed currentColor;border-radius:999px;padding:4px 8px;width:max-content}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px 44px;align-items:end}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}}
+.hero-txt{display:flex;flex-direction:column;gap:18px;min-width:0}
+.q{border-left:2px solid var(--accent);padding:4px 0 4px 14px;font-size:15.5px;color:var(--ink);max-width:62ch}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line-2)}
+.facts>div{padding:14px 16px 0 0;min-width:0}
+.facts>div+div{padding-left:16px;border-left:1px solid var(--line)}
+.facts b{display:block;font:300 clamp(26px,2.6vw,38px)/1.05 var(--f-sans);letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin-top:6px}
+.facts small{display:block;font-size:12.5px;color:var(--ink-2);margin-top:6px;line-height:1.4}
+.lbl{font:500 10.5px/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+@media (max-width:520px){.facts{grid-template-columns:minmax(0,1fr)}.facts>div{padding-left:0!important;border-left:0!important}}
+
+/* diagram */
+.dgm{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dgm svg{display:block;width:100%;min-width:820px;height:auto}
+.dgm text{fill:var(--ink);font-family:var(--f-sans);font-size:13px}
+.dgm .s{fill:var(--ink-2);font-size:12px}
+.dgm .m{font-family:var(--f-mono);font-size:11.5px;fill:var(--accent)}
+.dgm .h{font-weight:600;font-size:14.5px}
+.dgm .bx{fill:var(--bg-2);stroke:var(--line-3)}
+.dgm .bx.learn{fill:var(--accent-wash);stroke:var(--accent)}
+.dgm .bx.phys{stroke:var(--with);stroke-dasharray:5 4}
+.dgm .w{stroke:var(--ink-3);stroke-width:1.5;fill:none}
+.dgm .w.loop{stroke:var(--with);stroke-width:1.8;stroke-dasharray:6 5}
+.dgm .ah{fill:var(--ink-3)} .dgm .ah.loop{fill:var(--with)}
+.keys{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--ink-2)}
+.keys span{display:inline-flex;align-items:center;gap:8px}
+.sw{width:16px;height:11px;border-radius:3px;border:1px solid var(--line-3);flex:none}
+.sw.learn{background:var(--accent-wash);border-color:var(--accent)} .sw.phys{border:1.5px dashed var(--with)}
+.ln{display:inline-block;width:18px;border-top:2.5px solid;flex:none}
+.ln.wo{border-color:var(--without)} .ln.w{border-color:var(--with)} .ln.v{border-color:var(--vendor)} .ln.t{border-color:var(--heat)} .ln.s{border-color:var(--solar)} .ln.d{border-top-style:dashed}
+.truth{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.truth{grid-template-columns:minmax(0,1fr)}}
+.truth>div{border-top:1px solid var(--line-2);padding-top:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.truth p{font-size:14px;color:var(--ink-2)}
+
+/* ideas */
+.ideas{display:flex;flex-direction:column;gap:18px}
+.idea{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px 28px;align-items:start}
+@media (max-width:960px){.idea{grid-template-columns:minmax(0,1fr)}}
+.idea.rec{border-color:var(--with)}
+.idea-txt{display:flex;flex-direction:column;gap:12px;min-width:0}
+.idea-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.letter{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--line-3);font:600 13px/1 var(--f-mono);flex:none}
+.idea.rec .letter{background:var(--with);border-color:var(--with);color:var(--bg)}
+.badge{font:600 10.5px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.badge.rec{color:var(--with)}
+.idea-txt p{font-size:14.5px;color:var(--ink-2)}
+.idea-txt ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--ink-2)}
+.score{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;font-size:13px;align-items:center;border-top:1px solid var(--line);padding-top:10px}
+.score span:nth-child(odd){font:500 10.5px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.dots{display:inline-flex;gap:4px;align-items:center}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
+.dots i.on{background:var(--ink-2)}
+.dots em{font-style:normal;margin-left:8px;color:var(--ink-2)}
+.viz{display:flex;flex-direction:column;gap:10px;min-width:0}
+.viz-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 14px}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
+.ctl input[type=range]{width:min(220px,60vw);accent-color:var(--heat)}
+.ctl output{font:600 13px/1 var(--f-mono);color:var(--ink);min-width:52px;font-variant-numeric:tabular-nums}
+.seg{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line-2);border-radius:999px;background:var(--bg)}
+.seg button{border:0;background:transparent;color:var(--ink-2);font:500 12.5px/1 var(--f-sans);padding:7px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ch{display:block;width:100%;height:auto;overflow:visible}
+.ch .g{stroke:var(--line);stroke-width:1}
+.ch .ax{stroke:var(--line-3);stroke-width:1}
+.ch .tk{fill:var(--ink-3);font:400 10.5px var(--f-sans);font-variant-numeric:tabular-nums}
+.ch .at{fill:var(--ink-2);font:500 10.5px var(--f-sans)}
+.ch .lbl2{font:600 11px var(--f-sans);paint-order:stroke;stroke:var(--bg-2);stroke-width:4px;stroke-linejoin:round}
+.readout{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13px;color:var(--ink-2)}
+.readout b{font:600 15px/1.2 var(--f-sans);font-variant-numeric:tabular-nums;color:var(--ink);margin-left:4px}
+.readout .w b{color:var(--with)} .readout .v b{color:var(--vendor)}
+.chat{display:flex;flex-direction:column;gap:8px;font-size:13.5px}
+.msg{max-width:88%;padding:9px 12px;border-radius:12px;line-height:1.45}
+.msg.u{align-self:flex-end;background:var(--bg-3);color:var(--ink)}
+.msg.a{align-self:flex-start;border:1px solid var(--line-2);color:var(--ink-2)}
+.msg.a b{color:var(--with)}
+.msg .tool{display:block;margin-top:6px;font:400 11.5px/1.45 var(--f-mono);color:var(--ink-3)}
+
+/* paths table */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg-2)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th,td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font:600 12px/1.3 var(--f-sans);color:var(--ink-2);background:var(--bg-2)}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600;min-width:150px}
+td small{display:block;color:var(--ink-3);font-weight:400;font-size:12px;margin-top:3px}
+tr.rec td{background:var(--accent-wash)}
+.pill{display:inline-block;font:500 11px/1 var(--f-mono);padding:4px 7px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.pill.g{color:var(--good)} .pill.y{color:var(--warn)} .pill.r{color:var(--bad)}
+
+/* demo script + clock */
+.beats{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;counter-reset:b}
+@media (max-width:900px){.beats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.beats{grid-template-columns:minmax(0,1fr)}}
+.beats li{counter-increment:b;border-top:2px solid var(--line-3);padding-top:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.beats li::before{content:counter(b) " · " attr(data-t);font:500 11px/1 var(--f-mono);letter-spacing:.08em;color:var(--ink-3)}
+.beats li:nth-child(3){border-top-color:var(--with)}
+.beats p{font-size:14px;color:var(--ink-2)}
+.clock{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.slot{display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,1.1fr);gap:14px;padding:12px 16px;border-top:1px solid var(--line);background:var(--bg-2);align-items:start}
+.slot:first-child{border-top:0}
+.slot time{font:500 13px/1.4 var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.slot b{font-weight:600}
+.slot span{font-size:13.5px;color:var(--ink-2)}
+.slot.gate{background:var(--accent-wash)}
+.slot.gate time{color:var(--accent)}
+@media (max-width:720px){.slot{grid-template-columns:minmax(0,1fr)}}
+.asks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.asks{grid-template-columns:minmax(0,1fr)}}
+.asks>div{display:flex;flex-direction:column;gap:6px}
+.asks p{font-size:14px;color:var(--ink-2)}
+.metric{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:760px){.metric{grid-template-columns:minmax(0,1fr)}}
+.metric ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink-2)}
+@media (prefers-reduced-motion: no-preference){.fanline{transition:opacity .25s}}
+</style>
+
+<div class="wrap">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-txt">
+    <div class="eyebrow">MassHack · Energy track · proposal for the team</div>
+    <h1>Feel the weather, <em>imagine the bill, then act.</em></h1>
+    <p class="lead">A small <b>world model</b> for a commercial building with solar and a battery. It learns how climate drives the building's power, imagines what tomorrow costs under each possible battery plan, and executes the plan whose imagined future is cheapest. Then it checks reality against its imagination.</p>
+    <p class="q">Research question: how much of the best possible bill saving can a climate-aware world model capture, compared with the battery setting most installers ship, especially on the hot days that set the monthly peak?</p>
+  </div>
+  <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+    <span class="lbl">Why climate first: from our own FlexGrid evaluation</span>
+    <div class="facts">
+      <div><span class="lbl">Load error from weather</span><b>43 %</b><small>of the deployed load-forecast error disappears with the actual temperature</small></div>
+      <div><span class="lbl">Price-only batteries</span><b>+159 MW</b><small>higher Illinois peak with batteries acting alone</small></div>
+      <div><span class="lbl">Peaks raised</span><b>153</b><small>days of 365 where solo batteries raised the daily peak</small></div>
+    </div>
+    <p class="note">Weather is the biggest single error in predicting load, and acting on price alone makes peaks worse. That is the gap a climate-aware world model fills.</p>
+  </div>
+</section>
+
+<!-- MODEL -->
+<section>
+  <div class="eyebrow">The model</div>
+  <h2>A world model with three parts: <em>see, imagine, choose.</em></h2>
+  <p class="lead">"JEPA-like" here means the model predicts the building's <b>next state in a learned embedding</b>, conditioned on the weather and on the action, instead of only forecasting one number. Small read-out heads turn that embedding into kW and dollars so the planner can compare futures.</p>
+  <div class="panel dgm" role="img" aria-label="Diagram: weather and building history feed an encoder into a latent state; an action-conditioned predictor rolls the latent forward; heads read out load, solar and cost; a planner compares candidate plans and sends the first action to the battery; observations flow back.">
+    <svg viewBox="0 0 1100 360">
+      <defs>
+        <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+        <marker id="al" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah loop" d="M0,0 L10,5 L0,10 z"/></marker>
+      </defs>
+      <!-- inputs -->
+      <rect class="bx" x="10" y="30" width="200" height="88" rx="10"/>
+      <text class="h" x="26" y="58">Climate window</text>
+      <text class="s" x="26" y="80">temp, irradiance, humidity,</text>
+      <text class="s" x="26" y="97">day-ahead forecast</text>
+      <rect class="bx" x="10" y="140" width="200" height="88" rx="10"/>
+      <text class="h" x="26" y="168">Building history</text>
+      <text class="s" x="26" y="190">last 24 h load, PV, SOC,</text>
+      <text class="s" x="26" y="207">hour, weekday, holiday</text>
+      <!-- encoder -->
+      <rect class="bx learn" x="260" y="70" width="170" height="110" rx="10"/>
+      <text class="h" x="276" y="98">Encoder</text>
+      <text class="s" x="276" y="120">compresses state</text>
+      <text class="m" x="276" y="148">z_t  (32 dims)</text>
+      <text class="s" x="276" y="168">EMA target copy</text>
+      <!-- predictor -->
+      <rect class="bx learn" x="480" y="70" width="190" height="110" rx="10"/>
+      <text class="h" x="496" y="98">Predictor</text>
+      <text class="m" x="496" y="122">z_t+1 = f(z_t, a_t, w_t+1)</text>
+      <text class="s" x="496" y="146">rolls forward 96 steps</text>
+      <text class="s" x="496" y="166">(24 h at 15 min)</text>
+      <!-- heads -->
+      <rect class="bx learn" x="720" y="30" width="170" height="70" rx="10"/>
+      <text class="h" x="736" y="58">Read-out heads</text>
+      <text class="s" x="736" y="80">load kW, PV kW (P10–P90)</text>
+      <rect class="bx phys" x="720" y="120" width="170" height="80" rx="10"/>
+      <text class="h" x="736" y="148">Physics + tariff</text>
+      <text class="s" x="736" y="168">battery SOC, grid kW,</text>
+      <text class="s" x="736" y="186">energy $ + demand $</text>
+      <!-- planner -->
+      <rect class="bx" x="930" y="70" width="160" height="110" rx="10"/>
+      <text class="h" x="946" y="98">Planner</text>
+      <text class="s" x="946" y="120">imagine 256 plans,</text>
+      <text class="s" x="946" y="138">keep the cheapest</text>
+      <text class="m" x="946" y="162">CEM / MPC</text>
+      <!-- action / world -->
+      <rect class="bx" x="480" y="260" width="410" height="70" rx="10"/>
+      <text class="h" x="496" y="288">Act, then observe</text>
+      <text class="s" x="496" y="310">send the first 15-min setpoint, read the meter, re-plan</text>
+      <!-- wires -->
+      <path class="w" d="M210,74 C236,74 236,110 258,110" marker-end="url(#a)"/>
+      <path class="w" d="M210,184 C236,184 236,140 258,140" marker-end="url(#a)"/>
+      <path class="w" d="M430,125 L478,125" marker-end="url(#a)"/>
+      <path class="w" d="M670,105 C694,105 694,65 718,65" marker-end="url(#a)"/>
+      <path class="w" d="M670,145 C694,145 694,160 718,160" marker-end="url(#a)"/>
+      <path class="w" d="M890,65 C912,65 910,110 928,110" marker-end="url(#a)"/>
+      <path class="w" d="M890,160 C912,160 910,140 928,140" marker-end="url(#a)"/>
+      <path class="w loop" d="M1010,180 L1010,295 L892,295" marker-end="url(#al)"/>
+      <path class="w loop" d="M480,295 L110,295 L110,230" marker-end="url(#al)"/>
+      <text class="s" x="1018" y="240">action a_t</text>
+      <text class="s" x="200" y="285">new observation</text>
+      <text class="s" x="560" y="56">imagined actions a_t…a_t+95</text>
+      <path class="w" d="M1010,70 L1010,44 L575,44 L575,68" marker-end="url(#a)"/>
+    </svg>
+  </div>
+  <div class="keys"><span><i class="sw learn"></i>learned from the dataset (PyTorch on the Mac)</span><span><i class="sw phys"></i>exact equations, not learned</span><span><i class="ln w d"></i>the decision loop</span></div>
+  <div class="truth">
+    <div><span class="lbl">What it learns</span><p><b>Climate → load and solar.</b> Hot afternoons raise cooling load; cloud cuts PV. This is where the data has rich variation, and where judges will see "it understands climate".</p></div>
+    <div><span class="lbl">What it does not need to learn</span><p><b>Battery and bill math.</b> SOC, efficiency, and the tariff are known equations. Keeping them exact makes every imagined dollar trustworthy and the model small enough to train in minutes.</p></div>
+    <div><span class="lbl">The one limit to state plainly</span><p><b>Action effects on load need varied actions in the data.</b> If the dataset never pre-cools, the model cannot learn what pre-cooling does. Batteries are safe; HVAC actions need a simulator (path 3 below).</p></div>
+  </div>
+</section>
+
+<!-- IDEAS -->
+<section>
+  <div class="eyebrow">Five demo ideas</div>
+  <h2>Pick one core, <em>add two moments.</em></h2>
+  <p class="lead">Each idea has a working mock-up. <b>The curves are illustrative shapes from a toy building, not results.</b> They show what the judges would see once our model and dataset fill them in. My pick is <b>A as the core</b>, <b>B as the climax</b>, and <b>C as the "what did it learn" moment</b>.</p>
+
+  <div class="ideas">
+
+    <!-- A -->
+    <article class="panel idea rec">
+      <div class="idea-txt">
+        <div class="idea-head"><span class="letter">A</span><h3>Imagine before acting</h3><span class="badge rec">Core</span></div>
+        <p>At 6 am the model reads tomorrow's forecast and imagines dozens of battery plans as faint futures. It picks the cheapest, highlights it in amber, then the real day plays and the imagined line is laid over what happened.</p>
+        <ul><li>Shows the world model working, not just a forecast.</li><li>The "fan of futures" is the hero image.</li><li>Ends on a number: <b>$ saved vs. doing nothing and vs. the vendor default</b>.</li></ul>
+        <div class="score"><span>Wow</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span>Risk</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><em>low: works on recorded data</em></span><span>Build</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><em>~3 h after the model</em></span></div>
+      </div>
+      <div class="viz">
+        <div class="viz-top"><span class="mock">Mock-up · illustrative</span>
+          <div class="seg" role="group" aria-label="Show stage"><button id="fanImag" aria-pressed="true">1 · Imagine</button><button id="fanReal" aria-pressed="false">2 · Reality</button></div></div>
+        <svg class="ch" id="chA" viewBox="0 0 560 260" aria-label="Grid import over a day: grey without battery, faint candidate plans, amber chosen plan"></svg>
+        <div class="keys"><span><i class="ln wo"></i>no battery</span><span><i class="ln" style="border-color:var(--line-3)"></i>imagined plans</span><span><i class="ln w"></i>chosen plan</span><span id="realKey" hidden><i class="ln w d"></i>what happened</span></div>
+      </div>
+    </article>
+
+    <!-- B -->
+    <article class="panel idea">
+      <div class="idea-txt">
+        <div class="idea-head"><span class="letter">B</span><h3>Heatwave stress test</h3><span class="badge" style="color:var(--heat)">Climax</span></div>
+        <p>Drag the temperature up. Cooling load climbs into the late afternoon. The vendor default battery spent itself at noon and sits empty when the peak hits. The world model saw the heat coming and held its charge for 4–6 pm.</p>
+        <ul><li>Ties directly to "climate": a Massachusetts July heatwave.</li><li>Demand charges are set by one 15-minute peak, so one hot day decides the month.</li><li>Judges can drive it themselves.</li></ul>
+        <div class="score"><span>Wow</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span>Risk</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><em>low: replays real hot days</em></span><span>Build</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><em>~1.5 h, reuses A</em></span></div>
+      </div>
+      <div class="viz">
+        <div class="viz-top"><span class="mock">Mock-up · illustrative</span>
+          <label class="ctl" for="dT">Afternoon temperature <input id="dT" type="range" min="0" max="8" step="1" value="5"><output id="dTo">+5 °C</output></label></div>
+        <svg class="ch" id="chB" viewBox="0 0 560 260" aria-label="Grid import during a hot day for no battery, vendor default and the world model"></svg>
+        <div class="keys"><span><i class="ln wo"></i>no battery</span><span><i class="ln v"></i>vendor default</span><span><i class="ln w"></i>world model</span><span><i class="ln t d"></i>temperature</span></div>
+        <div class="readout" id="roB"></div>
+      </div>
+    </article>
+
+    <!-- C -->
+    <article class="panel idea">
+      <div class="idea-txt">
+        <div class="idea-head"><span class="letter">C</span><h3>What the model learned</h3><span class="badge" style="color:var(--accent)">Insight</span></div>
+        <p>Each dot is one day of the year, placed by its learned embedding (PCA or UMAP of z). Color it by temperature: hot weekdays, mild weekends and cloudy days separate without being told. Click a dot to load that day into A.</p>
+        <ul><li>Makes the "world model" visible and explainable.</li><li>Cheap to make once the encoder exists.</li></ul>
+        <div class="score"><span>Wow</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>Risk</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><em>clusters may be messy</em></span><span>Build</span><span class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><em>~45 min</em></span></div>
+      </div>
+      <div class="viz">
+        <div class="viz-top"><span class="mock">Mock-up · illustrative</span><span class="note" style="font-size:12.5px">color = daily max temperature</span></div>
+        <svg class="ch" id="chC" viewBox="0 0 560 260" aria-label="Scatter of days in the learned latent space colored by temperature"></svg>
+      </div>
+    </article>
+
+    <!-- D -->
+    <article class="panel idea">
+      <div class="idea-txt">
+        <div class="idea-head"><span class="letter">D</span><h3>Climate-to-cost curve</h3><span class="badge" style="color:var(--ink-3)">Optional</span></div>
+        <p>For every degree of daily max temperature, what does a day cost: with no battery, with the vendor default, and with the world model? The gap widens as it gets hotter. Add a "2050 climate" slider that shifts the year's temperatures.</p>
+        <div class="score"><span>Wow</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>Risk</span><span class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><em>very low</em></span><span>Build</span><span class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><em>~45 min from A's runs</em></span></div>
+      </div>
+      <div class="viz">
+        <div class="viz-top"><span class="mock">Mock-up · illustrative</span></div>
+        <svg class="ch" id="chD" viewBox="0 0 560 230" aria-label="Daily cost versus daily max temperature for three strategies"></svg>
+        <div class="keys"><span><i class="ln wo"></i>no battery</span><span><i class="ln v"></i>vendor default</span><span><i class="ln w"></i>world model</span></div>
+      </div>
+    </article>
+
+    <!-- E -->
+    <article class="panel idea">
+      <div class="idea-txt">
+        <div class="idea-head"><span class="letter">E</span><h3>Ask the building</h3><span class="badge" style="color:var(--ink-3)">Stretch</span></div>
+        <p>A chat panel built with Kiro where an LLM calls the world model as a tool: "what if the battery were twice as big?", "why hold charge until 3 pm?". The LLM explains; the world model and the physics decide.</p>
+        <div class="score"><span>Wow</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span>Risk</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><em>needs an API key, Wi-Fi</em></span><span>Build</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><em>~1.5 h</em></span></div>
+      </div>
+      <div class="viz">
+        <div class="viz-top"><span class="mock">Mock-up · illustrative</span></div>
+        <div class="chat">
+          <div class="msg u">Tomorrow is 34 °C. Why aren't we discharging at noon like usual?</div>
+          <div class="msg a">Because the hot afternoon is when this month's peak will be set. I imagined 256 plans; holding 140 kWh until 15:30 keeps the peak <b>about 40 kW lower</b> than discharging at noon.<span class="tool">world_model.rollout(date=2025-07-18, plans=256) · tariff.demand_charge()</span></div>
+          <div class="msg u">And with a battery twice as big?</div>
+          <div class="msg a">I'd re-run the month with 400 kWh and report the extra saving and payback.<span class="tool">what_if(battery_kwh=400, period="2025-07")</span></div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- DEMO SCRIPT -->
+<section>
+  <div class="eyebrow">The 2-minute demo</div>
+  <h2>Four beats, <em>one building, one hot day.</em></h2>
+  <ol class="beats">
+    <li data-t="0:00"><h3>The problem</h3><p>A Massachusetts office with solar and a battery. Its bill is set by the hottest 15 minutes of the month, and the battery app doesn't know the weather.</p></li>
+    <li data-t="0:25"><h3>The model sees climate</h3><p>Idea C: the learned map of days. Prediction accuracy vs. a naive forecast, on held-out hot days.</p></li>
+    <li data-t="0:50"><h3>Heatwave, live</h3><p>Ideas A and B: imagine plans, pick one, play the real day. The vendor battery runs empty at 4 pm; ours doesn't.</p></li>
+    <li data-t="1:40"><h3>The number</h3><p>Over the summer: % of the best possible saving captured, $ per month, peak kW avoided. One line on what comes next.</p></li>
+  </ol>
+</section>
+
+<!-- PATHS -->
+<section>
+  <div class="eyebrow">Three ways to build it on one Mac</div>
+  <h2>Start safe, <em>upgrade to the world model.</em></h2>
+  <p class="lead">Each path produces the same demo. They differ in what "the model" is. Building path 1 first gives us a baseline and a fallback; path 2 is the one I'd pitch.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Path</th><th>Model</th><th>Decision</th><th>Training on the Mac</th><th>Risk</th></tr></thead>
+    <tbody>
+      <tr><td>1 · Forecast + optimizer<small>the fallback</small></td><td>LightGBM: climate + calendar + lags → load and PV, with quantiles</td><td>Linear program (cvxpy) re-solved every 15 min over 24 h</td><td>Minutes on CPU</td><td><span class="pill g">low</span></td></tr>
+      <tr class="rec"><td>2 · Latent world model<small>the pitch</small></td><td>PyTorch: encoder + EMA target + action-conditioned predictor (JEPA-style loss) + read-out heads, ~200k parameters</td><td>Sample-and-refine planner (CEM, 256 plans) inside the model's imagination, physics for the battery and bill</td><td>10–30 min on Apple-silicon GPU (MPS), one year at 15 min</td><td><span class="pill y">medium</span></td></tr>
+      <tr><td>3 · Learn actions too<small>if time remains</small></td><td>Same model trained on data where HVAC and storage actions vary, e.g. the CityLearn building simulator</td><td>Planner can also pre-cool and shift loads; compare with a model-free RL agent</td><td>1–2 h incl. generating data</td><td><span class="pill r">high</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="metric">
+    <div class="panel" style="display:flex;flex-direction:column;gap:10px"><span class="lbl">How we prove the model predicts</span>
+      <ul><li>Split by time: train on earlier months, test on the hottest held-out weeks.</li><li>Load and PV error (MAE, P10–P90 coverage) vs. a seasonal-naive forecast.</li><li>Ablation: remove climate inputs and show the error rise.</li></ul></div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:10px"><span class="lbl">How we prove the decisions pay</span>
+      <ul><li>Same days, five strategies: no battery, vendor default, time-of-use rule, <b>world model</b>, perfect-foresight optimum.</li><li>Headline: <b>% of the optimum's saving captured</b>, split into energy $ and demand $.</li><li>Monthly peak kW and the days the vendor default set a new peak.</li></ul></div>
+  </div>
+</section>
+
+<!-- CLOCK -->
+<section>
+  <div class="eyebrow">The 8-hour clock</div>
+  <h2>Two gates: <em>a baseline by 12:30, the demo frozen by 17:30.</em></h2>
+  <div class="clock">
+    <div class="slot"><time>09:45–10:45</time><b>Load the dataset, define the tariff</b><span>Join weather to load and PV at 15 min; pick an Eversource or National Grid commercial rate; set battery size.</span></div>
+    <div class="slot"><time>10:45–12:30</time><b>Baselines + path 1</b><span>No battery, vendor default, TOU rule, perfect-foresight LP, LightGBM forecast + LP. First real dollar numbers.</span></div>
+    <div class="slot gate"><time>12:30</time><b>Gate 1: a working result</b><span>If the world model fails later, this is the demo.</span></div>
+    <div class="slot"><time>12:30–15:00</time><b>Path 2: train the world model</b><span>Encoder, predictor, heads; CEM planner; score on held-out hot weeks. Meanwhile the front-end person builds A and B on path 1's output.</span></div>
+    <div class="slot"><time>15:00–16:30</time><b>Swap in the world model, add C and D</b><span>Export JSON for every view; latent map; climate-to-cost curve.</span></div>
+    <div class="slot gate"><time>17:30</time><b>Gate 2: freeze the demo</b><span>Only fixes after this. Record a backup video of the demo.</span></div>
+    <div class="slot"><time>17:30–20:00</time><b>Story, slides, submission</b><span>Rehearse the four beats; README with the question, method and numbers; submit before 20:00.</span></div>
+  </div>
+</section>
+
+<!-- ASKS -->
+<section>
+  <div class="eyebrow">Decisions I need from you</div>
+  <div class="asks">
+    <div class="panel"><h3>The dataset</h3><p>Which buildings, what interval, and which columns? I need load, PV and weather; a battery log and a tariff are bonuses. If it has no HVAC actions, we stay on paths 1–2.</p></div>
+    <div class="panel"><h3>The Mac</h3><p>Apple-silicon chip and RAM? M1–M4 with 16 GB is plenty for path 2.</p></div>
+    <div class="panel"><h3>The team</h3><p>How many people? Ideal split: data + baselines, model, front-end, story. With fewer, drop E first.</p></div>
+    <div class="panel"><h3>The core</h3><p>Agree on A + B + C as the demo, or tell me which other idea you prefer.</p></div>
+  </div>
+</section>
+</div>
+
+<script>
+(function(){
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NS="http://www.w3.org/2000/svg";
+const H=Array.from({length:96},(_,i)=>i/4);
+// toy commercial building (illustrative only)
+function temp(h,dT){return 22+dT*0.6+(7+dT*0.4)*Math.sin((h-9)/24*2*Math.PI)}
+function pv(h){return h<6||h>19.5?0:120*Math.pow(Math.sin((h-6)/13.5*Math.PI),1.6)}
+function load(h,dT){const occ=(h>=7&&h<19)?1:0.25;const t=temp(h,dT);return 70+90*occ+Math.max(0,t-21)*(occ?9:3)}
+const E=200,P=80;
+function vendor(net){let s=E*0.5,g=[];for(const n of net){let b=0;if(n<0){b=Math.max(n,-P,-(E-s)/0.25*0.95);}else{b=Math.min(n,P,s*4)}s-=b/4;g.push(n-b)}return g}
+function shave(net,cap){let s=E*0.5,g=[];for(let i=0;i<net.length;i++){const n=net[i];const h=H[i];let b=0;
+  if(n>cap){b=Math.min(n-cap,P,s*4)} else if(n<0){b=Math.max(n,-P,-(E-s)*4)} else if(h<6&&s<E){b=-Math.min(P*0.5,(E-s)*4,cap-n)}
+  s-=b/4;g.push(n-b)}return g}
+function bestCap(net){let best=null;for(let c=40;c<=260;c+=2){const g=shave(net,c);const m=Math.max(...g);const sc=m*15+g.reduce((a,b)=>a+Math.max(0,b),0)*0.25*0.2;if(!best||sc<best.sc)best={c,g,sc,m}}return best}
+
+function frame(svg,{w=560,h=260,xmax=24,ymin,ymax,ylab,yt}){
+  svg.innerHTML="";const L=44,R=16,T=14,B=30;const x=v=>L+(v/xmax)*(w-L-R);const y=v=>T+(1-(v-ymin)/(ymax-ymin))*(h-T-B);
+  const add=(tag,a,txt)=>{const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e};
+  for(const v of yt){add("line",{x1:L,x2:w-R,y1:y(v),y2:y(v),class:v===0?"ax":"g"});add("text",{x:L-6,y:y(v)+3.5,"text-anchor":"end",class:"tk"},v)}
+  for(const v of [0,6,12,18,24]){add("text",{x:x(v),y:h-10,"text-anchor":"middle",class:"tk"},String(v).padStart(2,"0")+":00")}
+  add("text",{x:L,y:T-2,class:"at"},ylab);
+  const path=(xs,ys,a)=>add("path",Object.assign({d:ys.map((v,i)=>(i?"L":"M")+x(xs[i]).toFixed(1)+","+y(v).toFixed(1)).join(""),fill:"none","stroke-width":2,"stroke-linejoin":"round"},a));
+  return {x,y,add,path,L,R,T,B,w,h};
+}
+
+// A
+const netA=H.map(h=>load(h,3)-pv(h));
+let stageA="imag";
+function drawA(){
+  const f=frame(document.getElementById("chA"),{ymin:-20,ymax:280,ylab:"Grid import, kW",yt:[0,100,200]});
+  const best=bestCap(netA);
+  for(let c=60;c<=240;c+=12){const g=shave(netA,c);f.path(H,g,{stroke:css("--line-3"),"stroke-width":1,class:"fanline",opacity:stageA==="imag"?0.9:0.35})}
+  f.path(H,netA,{stroke:css("--without")});
+  f.path(H,best.g,{stroke:css("--with"),"stroke-width":2.6});
+  if(stageA==="real"){const real=best.g.map((v,i)=>v+8*Math.sin(i/5)+(H[i]>15&&H[i]<18?6:0));f.path(H,real,{stroke:css("--with"),"stroke-dasharray":"5 4","stroke-width":1.8});
+    const nm=Math.max(...netA),rm=Math.max(...real);f.add("text",{x:f.x(17.4),y:f.y(nm)-6,class:"lbl2","text-anchor":"middle",fill:css("--ink-2")},"peak "+nm.toFixed(0)+" kW");
+    f.add("text",{x:f.x(9),y:f.y(rm)-8,class:"lbl2","text-anchor":"middle",fill:css("--with")},"peak "+rm.toFixed(0)+" kW")}
+  else f.add("text",{x:f.x(9),y:f.y(best.m)-8,class:"lbl2","text-anchor":"middle",fill:css("--with")},"cheapest imagined plan")
+}
+const bI=document.getElementById("fanImag"),bR=document.getElementById("fanReal");
+function setA(s){stageA=s;bI.setAttribute("aria-pressed",s==="imag");bR.setAttribute("aria-pressed",s==="real");document.getElementById("realKey").hidden=s!=="real";drawA()}
+bI.onclick=()=>setA("imag");bR.onclick=()=>setA("real");
+
+// B
+const dT=document.getElementById("dT"),dTo=document.getElementById("dTo");
+function drawB(){
+  const d=+dT.value;dTo.textContent="+"+d+" °C";
+  const net=H.map(h=>load(h,d)-pv(h));const v=vendor(net);const wm=bestCap(net).g;
+  const f=frame(document.getElementById("chB"),{ymin:-20,ymax:320,ylab:"Grid import, kW",yt:[0,100,200,300]});
+  const tt=H.map(h=>temp(h,d));const ty=tt.map(t=>(t-10)*8);
+  f.path(H,ty,{stroke:css("--heat"),"stroke-dasharray":"3 4","stroke-width":1.4});
+  f.path(H,net,{stroke:css("--without")});f.path(H,v,{stroke:css("--vendor")});f.path(H,wm,{stroke:css("--with"),"stroke-width":2.6});
+  const m=a=>Math.max(...a);const tar=18;
+  document.getElementById("roB").innerHTML=`<span>Peak, no battery<b>${m(net).toFixed(0)} kW</b></span><span class="v">Vendor default<b>${m(v).toFixed(0)} kW</b></span><span class="w">World model<b>${m(wm).toFixed(0)} kW</b></span><span>Demand charge avoided vs. vendor (at $${tar}/kW)<b>$${Math.max(0,(m(v)-m(wm))*tar).toFixed(0)}</b></span>`;
+}
+dT.oninput=drawB;
+
+// C
+function drawC(){
+  const svg=document.getElementById("chC");svg.innerHTML="";let s=7;const rnd=()=>{s=(s*9301+49297)%233280;return s/233280};
+  const w=560,h=260,add=(tag,a)=>{const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e};
+  const cool=css("--vendor"),hot=css("--heat");
+  const mix=(a,b,t)=>{const p=c=>c.match(/\w\w/g).map(x=>parseInt(x,16));const A=p(a.replace("#","")),B=p(b.replace("#",""));return"rgb("+A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(",")+")"};
+  const groups=[{cx:150,cy:150,n:70,t:[.0,.35],r:55},{cx:330,cy:90,n:60,t:[.45,.75],r:50},{cx:440,cy:180,n:45,t:[.75,1],r:45},{cx:250,cy:205,n:40,t:[.2,.55],r:35}];
+  for(const g of groups)for(let i=0;i<g.n;i++){const a=rnd()*6.28,r=Math.sqrt(rnd())*g.r;const t=g.t[0]+rnd()*(g.t[1]-g.t[0]);
+    add("circle",{cx:(g.cx+Math.cos(a)*r*1.3).toFixed(1),cy:(g.cy+Math.sin(a)*r).toFixed(1),r:4,fill:mix(cool,hot,t),opacity:.85})}
+  const lab=(x,y,t)=>{const e=add("text",{x,y,class:"lbl2",fill:css("--ink"),"text-anchor":"middle"});e.textContent=t};
+  lab(150,62,"mild weekdays");lab(330,22,"warm weekdays");lab(450,252,"heatwave days");lab(250,252,"weekends");
+  add("text",{x:10,y:250,class:"tk"}).textContent="latent axis 1 →";
+}
+
+// D
+function drawD(){
+  const f=frame(document.getElementById("chD"),{h:230,xmax:24,ymin:0,ymax:1600,ylab:"Daily cost, $ (energy + demand share)",yt:[0,500,1000,1500]});
+  f.svg=document.getElementById("chD");
+  // relabel x as temperature 14–38 °C
+  f.svg.querySelectorAll("text.tk").forEach(t=>{if(/:00$/.test(t.textContent)){const v=parseInt(t.textContent);t.textContent=(14+v)+" °C"}});
+  const xs=[],a=[],b=[],c=[];for(let k=0;k<=24;k++){const T=14+k;xs.push(k);const base=420+Math.max(0,T-20)*38+Math.max(0,T-28)*45;a.push(base);b.push(base*0.86+Math.max(0,T-28)*22);c.push(base*0.72)}
+  f.path(xs,a,{stroke:css("--without")});f.path(xs,b,{stroke:css("--vendor")});f.path(xs,c,{stroke:css("--with"),"stroke-width":2.6});
+}
+
+function all(){drawA();drawB();drawC();drawD()}
+all();
+const mq=matchMedia("(prefers-color-scheme: dark)");mq.addEventListener&&mq.addEventListener("change",all);
+new MutationObserver(all).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+})();
+</script>
