@@ -1,0 +1,345 @@
+<meta charset="utf-8">
+<title>GridCollective Boston</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column of numbered stages that follow the system top-down (grid -> coordinator -> trust -> agents ->
+   buildings), then proof (forecast accuracy, learned map), then Boston. Dark first, like the team's FlexGrid pages.
+   Colour rule: grey = without the collective, amber = with it, violet = vendor default battery, teal = grid/coordinator. */
+:root{
+  color-scheme:dark;
+  --bg:#0b1014; --bg2:#10181e; --bg3:#172229; --line:rgba(214,232,238,.09); --line2:rgba(214,232,238,.17); --line3:rgba(214,232,238,.3);
+  --ink:#e6eef0; --ink2:#a3b3ba; --ink3:#73878f; --emph:#f1e5c6;
+  --accent:#67dabb; --wash:rgba(103,218,187,.10);
+  --with:#e6b56d; --without:#8a887f; --vendor:#9a8ff0; --own:#5aa9e6; --heat:#e9785a; --cold:#6fb7f2; --good:#4fcf8a; --bad:#e66767;
+  --f-sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --f-serif:"Instrument Serif",Georgia,serif; --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){color-scheme:light;
+  --bg:#f3f5f2; --bg2:#fff; --bg3:#e9eee9; --line:rgba(16,24,28,.08); --line2:rgba(16,24,28,.16); --line3:rgba(16,24,28,.32);
+  --ink:#11181c; --ink2:#47535a; --ink3:#6a777e; --emph:#11181c; --accent:#0b7d64; --wash:rgba(14,143,114,.09);
+  --with:#a76a06; --without:#8f8d87; --vendor:#6250d6; --own:#2a78d6; --heat:#c4482a; --cold:#2a78d6; --good:#1e8a4b; --bad:#d13c3b;}}
+:root[data-theme="light"]{color-scheme:light;
+  --bg:#f3f5f2; --bg2:#fff; --bg3:#e9eee9; --line:rgba(16,24,28,.08); --line2:rgba(16,24,28,.16); --line3:rgba(16,24,28,.32);
+  --ink:#11181c; --ink2:#47535a; --ink3:#6a777e; --emph:#11181c; --accent:#0b7d64; --wash:rgba(14,143,114,.09);
+  --with:#a76a06; --without:#8f8d87; --vendor:#6250d6; --own:#2a78d6; --heat:#c4482a; --cold:#2a78d6; --good:#1e8a4b; --bad:#d13c3b;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15.5px/1.55 var(--f-sans);-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1240px;margin:0 auto;padding-block:28px 80px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3,p{margin:0} h1,h2,h3{text-wrap:balance}
+h1{font-size:clamp(34px,4.8vw,62px);line-height:1.02;font-weight:500;letter-spacing:-.035em}
+h2{font-size:clamp(26px,3vw,40px);line-height:1.08;font-weight:500;letter-spacing:-.03em}
+h1 em,h2 em{font-family:var(--f-serif);font-style:italic;font-weight:400;color:var(--emph)}
+h3{font-size:16.5px;font-weight:600}
+section{display:flex;flex-direction:column;gap:16px;min-width:0}
+.eyebrow{font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);display:flex;gap:10px;align-items:center}
+.eyebrow b{border:1px solid var(--line3);border-radius:6px;padding:3px 6px;color:var(--ink);font-weight:500}
+.lead{font-size:clamp(16px,1.3vw,18.5px);color:var(--ink2);max-width:74ch}
+.lead b,.note b{color:var(--ink);font-weight:600}
+.note{font-size:13.5px;color:var(--ink2);max-width:90ch}
+.panel{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,1.6vw,20px);min-width:0}
+.lbl{font:500 10.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.seg{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line2);border-radius:999px;background:var(--bg)}
+.seg button{border:0;background:transparent;color:var(--ink2);font:500 12.5px/1 var(--f-sans);padding:7px 12px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+select,input[type=range]{font:inherit;color:var(--ink);background:var(--bg2);border:1px solid var(--line2);border-radius:8px;padding:6px 8px;max-width:100%;min-width:0}
+input[type=range]{padding:0;accent-color:var(--with)}
+button:focus-visible,select:focus-visible,input:focus-visible,.layer:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line2)}
+.kpis>div{padding:14px 16px 0 0;min-width:0}.kpis>div+div{padding-left:16px;border-left:1px solid var(--line)}
+.kpis b{display:block;font:300 clamp(26px,2.6vw,40px)/1.05 var(--f-sans);letter-spacing:-.03em;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpis small{display:block;font-size:12.5px;color:var(--ink2);margin-top:5px}
+@media (max-width:820px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis>div:nth-child(3){border-left:0;padding-left:0}}
+@media (max-width:440px){.kpis{grid-template-columns:minmax(0,1fr)}.kpis>div{border-left:0!important;padding-left:0!important}}
+/* architecture flow */
+.flow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:16px}
+@media (max-width:960px){.flow{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:6px}
+.layer{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:start;text-align:left;width:100%;padding:12px 14px;border:1px solid var(--line2);border-radius:12px;background:var(--bg2);color:var(--ink);cursor:pointer;font:inherit}
+.layer[aria-pressed="true"]{border-color:var(--with);background:var(--bg3)}
+.layer .n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--line3);font:600 12px/1 var(--f-mono)}
+.layer[aria-pressed="true"] .n{background:var(--with);border-color:var(--with);color:var(--bg)}
+.layer b{display:block;font-weight:600;font-size:15px}
+.layer span{display:block;font-size:13px;color:var(--ink2)}
+.arrow{font:500 11px/1 var(--f-mono);color:var(--ink3);padding-left:22px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.detail{display:flex;flex-direction:column;gap:12px}
+.detail ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--ink2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 12px/1 var(--f-sans);padding:6px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--ink2);background:var(--bg)}
+.chip b{color:var(--ink);font-weight:600}
+.chip.use_less{border-color:var(--heat);color:var(--heat)} .chip.soak_up{border-color:var(--accent);color:var(--accent)}
+/* charts */
+.ch{display:block;width:100%;height:auto;overflow:visible}
+.ch .g{stroke:var(--line);stroke-width:1}.ch .ax{stroke:var(--line3)}
+.ch .tk{fill:var(--ink3);font:400 10.5px var(--f-sans);font-variant-numeric:tabular-nums}
+.ch .at{fill:var(--ink2);font:500 10.5px var(--f-sans)}
+.ch .lb{font:600 11px var(--f-sans);paint-order:stroke;stroke:var(--bg2);stroke-width:4px;stroke-linejoin:round}
+.keys{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--ink2)}
+.keys span{display:inline-flex;align-items:center;gap:7px}
+.k{display:inline-block;width:18px;border-top:2.5px solid;flex:none}.k.d{border-top-style:dashed}
+.sw{display:inline-block;width:14px;height:10px;border-radius:2px;flex:none}
+.grid2{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px}
+@media (max-width:960px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--bg2)}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--ink2);font-weight:600;font-size:12px;position:sticky;top:0;background:var(--bg2)}
+td.l,th.l{text-align:left} tbody tr:last-child td{border-bottom:0}
+.ok{color:var(--good)} .no{color:var(--bad)}
+.pill{display:inline-block;font:500 11px/1 var(--f-mono);padding:4px 7px;border-radius:999px;border:1px solid currentColor}
+.mono{font-family:var(--f-mono);font-size:12px}
+.bar{height:12px;border-radius:0 3px 3px 0;background:var(--with)}
+.zip{display:grid;grid-template-columns:62px minmax(0,1fr) 92px;gap:10px;align-items:center;font-size:13px}
+.zips{display:flex;flex-direction:column;gap:6px;max-height:440px;overflow:auto;padding-right:4px}
+.src td{white-space:normal;text-align:left;vertical-align:top}
+.receipt{font:400 11.5px/1.5 var(--f-mono);color:var(--ink2);border:1px dashed var(--line2);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere}
+.empty{color:var(--ink3);font-size:13.5px}
+</style>
+
+<div class="wrap" id="app">
+  <section>
+    <div class="eyebrow">MassHack · Track 3 Climate Tech · data May 2025 – May 2026</div>
+    <h1>Boston buildings that <em>think ahead together.</em></h1>
+    <p class="lead">Each building forecasts its own load from the weather, plans its battery for its own bill, and offers the extra help it can give. A coordinator pools those offers when the grid needs help, a trust layer enforces every member's limits in code and signs a receipt for each action, and the money is split by contribution.</p>
+    <div class="row"><span class="lbl">Peak day</span>
+      <div class="seg" role="group" aria-label="Choose peak day"><button id="bWinter" aria-pressed="true">Winter</button><button id="bSummer" aria-pressed="false">Summer</button></div>
+      <span class="note" id="dayNote"></span></div>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section>
+    <div class="eyebrow"><b>1</b> How it works</div>
+    <h2>Five layers, <em>top to bottom.</em></h2>
+    <div class="flow">
+      <div class="stack" id="stack" role="group" aria-label="System layers"></div>
+      <div class="panel detail" id="layerDetail"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow"><b>2</b> The day</div>
+    <h2>The community's grid import, <em>hour by hour.</em></h2>
+    <div class="panel"><div class="row" style="justify-content:space-between"><span class="lbl">Community grid import, kW · shaded hours = grid needs help</span><div class="keys">
+      <span><i class="k" style="border-color:var(--without)"></i>no battery</span><span><i class="k" style="border-color:var(--vendor)"></i>vendor default</span>
+      <span><i class="k" style="border-color:var(--own)"></i>own optimizer only</span><span><i class="k" style="border-color:var(--with)"></i>collective</span>
+      <span><i class="k d" style="border-color:var(--ink3)"></i>perfect foresight</span></div></div>
+      <svg class="ch" id="chDay" viewBox="0 0 900 300" role="img" aria-label="Community grid import over the day for each strategy"></svg>
+      <svg class="ch" id="chWx" viewBox="0 0 900 120" role="img" aria-label="Outdoor temperature and Boston price over the day"></svg>
+      <div class="keys"><span><i class="k" id="tKey"></i>outdoor temperature (measured)</span><span><i class="k d" style="border-color:var(--ink3)"></i>day-ahead forecast used</span><span><i class="k" style="border-color:var(--accent)"></i>Boston price, $/MWh</span></div>
+    </div>
+    <div class="tbl"><table id="stratTbl"></table></div>
+  </section>
+
+  <section>
+    <div class="eyebrow"><b>3</b> One grid-need hour</div>
+    <h2>Offers in, <em>tasks out, receipts signed.</em></h2>
+    <div class="row"><label class="lbl" for="hourSel">Hour</label><select id="hourSel"></select><span class="note" id="hourWhy"></span></div>
+    <div class="grid2">
+      <div class="panel"><h3>Coordinator decisions</h3><p class="note">Cheapest kW first. The trust layer checks each command against the member's limits; one oversized request is sent on purpose to show it being refused.</p><div class="tbl" style="margin-top:10px;max-height:380px"><table id="decTbl"></table></div></div>
+      <div class="panel detail"><h3>Signed receipts</h3><p class="note" id="rcNote"></p><div id="receipts"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow"><b>4</b> One member</div>
+    <h2>Forecast, plan, <em>and what really happened.</em></h2>
+    <div class="row"><label class="lbl" for="memSel">Member</label><select id="memSel"></select><span class="note" id="memNote"></span></div>
+    <div class="grid2">
+      <div class="panel"><svg class="ch" id="chMem" viewBox="0 0 640 260" role="img" aria-label="Member forecast band, actual load and grid import"></svg>
+        <div class="keys"><span><i class="sw" style="background:var(--wash);border:1px solid var(--accent)"></i>forecast P10–P90</span><span><i class="k" style="border-color:var(--ink)"></i>actual load</span><span><i class="k" style="border-color:var(--without)"></i>import, no battery</span><span><i class="k" style="border-color:var(--with)"></i>import, collective</span><span><i class="k d" style="border-color:var(--with)"></i>battery charge %</span></div></div>
+      <div class="panel"><div class="tbl"><table id="billTbl"></table></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow"><b>5</b> Does the model see the weather?</div>
+    <h2>Forecast accuracy on <em>held-out weeks.</em></h2>
+    <p class="lead" id="evalLead"></p>
+    <div class="grid2">
+      <div class="panel"><div class="tbl"><table id="fcTbl"></table></div><p class="note" style="margin-top:10px">Error = mean absolute error as % of mean load; peak error = error on the day's highest hour. Day-ahead, with a noisy weather forecast (no future data). Coverage = share of hours inside the P10–P90 band (target 80%; bands calibrated on separate weeks).</p>
+        <h3 style="margin-top:14px">By building group</h3><div class="tbl" style="margin-top:8px"><table id="grpTbl"></table></div>
+        <h3 style="margin-top:14px">On the two real, measured buildings</h3><div class="tbl" style="margin-top:8px"><table id="realTbl"></table></div>
+        <p class="note" id="homesNote" style="margin-top:8px"></p>
+        <h3 style="margin-top:14px">Does it predict what an action does?</h3><div class="tbl" style="margin-top:8px"><table id="actTbl"></table></div>
+        <p class="note" style="margin-top:8px">Predicted vs actual change in load when a building switches mode, on held-out days. Error is % of the building's peak; "right direction" is at the building's peak hour.</p>
+        <h3 style="margin-top:14px">Does better forecasting turn into savings?</h3><div class="tbl" style="margin-top:8px"><table id="planTbl"></table></div>
+        <p class="note" style="margin-top:8px">Share of the best possible battery savings (perfect knowledge of the day) each planner captures, same forecasts, both peak days.</p></div>
+      <div class="panel"><span class="lbl" id="latTitle">What the world model learned</span><svg class="ch" id="chLat" viewBox="0 0 480 300" role="img" aria-label="Days of the year placed by the model's learned state, colored by temperature"></svg><p class="note">Each dot is one day, placed by the encoder's state at midnight (PCA of 32 dimensions), colored by the day's high temperature.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow"><b>6</b> What if tomorrow is hotter?</div>
+    <h2>The world model imagines, <em>the coordinator changes its actions.</em></h2>
+    <p class="lead">Same summer peak day, with the weather forecast shifted by −10, −5, 0 or +3 °C. Every member re-forecasts, the world model imagines each building mode, batteries re-plan, and the coordinator re-assigns. A hotter forecast can trigger a <b>heat warning</b>: cooling centers then lock half their battery and refuse building-mode control.</p>
+    <div class="tbl"><table id="whatTbl"></table></div>
+  </section>
+
+  <section>
+    <div class="eyebrow"><b>7</b> Across Boston</div>
+    <h2>If more buildings joined, <em>by zip code.</em></h2>
+    <div class="row"><label class="lbl" for="adopt">Adoption</label><input id="adopt" type="range" min="0" max="4" step="1" value="2"><b id="adoptOut" class="mono"></b><span class="note" id="cityNote"></span></div>
+    <div class="grid2"><div class="panel"><span class="lbl">kW avoided in grid-need hours, by zip</span><div class="zips" id="zips" style="margin-top:10px"></div></div>
+      <div class="panel detail"><h3>How the projection works</h3><p class="note" id="bosMethod"></p><div class="tbl"><table id="effTbl"></table></div></div></div>
+  </section>
+
+  <section>
+    <div class="eyebrow"><b>8</b> Data</div>
+    <h2>What is measured, <em>what is simulated.</em></h2>
+    <div class="tbl"><table class="src" id="srcTbl"></table></div>
+  </section>
+</div>
+
+<script>
+const S={day:"winter",hour:null,member:null};
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NS="http://www.w3.org/2000/svg";
+const fmt=(v,d=0)=>v==null||isNaN(v)?"–":Number(v).toLocaleString("en-US",{maximumFractionDigits:d,minimumFractionDigits:d});
+const el=(id)=>document.getElementById(id);
+let D=null;
+fetch("demo.json").then(r=>r.json()).then(j=>{D=j;init()}).catch(e=>{el("app").insertAdjacentHTML("afterbegin",`<p class="empty">Could not load demo.json (${e}). Run <span class="mono">python run_all.py</span> first.</p>`)});
+
+function svgFrame(svg,{w,h,ymin,ymax,ylab,yt,L=48,R=14,T=16,B=26,n=24}){
+  svg.innerHTML="";const x=i=>L+i/(n-1)*(w-L-R);const y=v=>T+(1-(v-ymin)/(ymax-ymin||1))*(h-T-B);
+  const add=(tag,a,txt)=>{const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e};
+  for(const v of yt){add("line",{x1:L,x2:w-R,y1:y(v),y2:y(v),class:"g"});add("text",{x:L-6,y:y(v)+3.5,"text-anchor":"end",class:"tk"},fmt(v))}
+  for(let i=0;i<n;i+=3)add("text",{x:x(i),y:h-8,"text-anchor":"middle",class:"tk"},String(i).padStart(2,"0")+":00");
+  if(ylab)add("text",{x:L,y:T-4,class:"at"},ylab);
+  const path=(ys,a)=>add("path",Object.assign({d:ys.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+","+y(v).toFixed(1)).join(""),fill:"none","stroke-width":2,"stroke-linejoin":"round"},a));
+  return {x,y,add,path};
+}
+const ticks=(mx,mn=0)=>{const span=mx-mn;const st=Math.pow(10,Math.floor(Math.log10(span||1)));const s=[1,2,5,10].map(k=>k*st).find(k=>span/k<=5)||st*10;const o=[];for(let v=Math.ceil(mn/s)*s;v<=mx+1e-9;v+=s)o.push(+v.toFixed(6));return o};
+
+function day(){return D.days[S.day]}
+function init(){
+  el("bWinter").onclick=()=>setDay("winter");el("bSummer").onclick=()=>setDay("summer");
+  el("hourSel").onchange=e=>{S.hour=+e.target.value;drawHour()};
+  el("memSel").onchange=e=>{S.member=e.target.value;drawMember()};
+  el("adopt").oninput=drawBoston;
+  buildStack();setDay("winter");drawForecast();drawSources();drawWhatIf();drawGroups();
+  const rerender=()=>{drawDay();drawMember();drawLatent()};
+  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",rerender);
+  new MutationObserver(rerender).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+}
+function setDay(d){S.day=d;el("bWinter").setAttribute("aria-pressed",d==="winter");el("bSummer").setAttribute("aria-pressed",d==="summer");
+  const dd=day();const t=dd.weather.temp_c;el("dayNote").textContent=`${new Date(dd.date+"T12:00").toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})} · ${fmt(Math.min(...t),1)} to ${fmt(Math.max(...t),1)} °C measured at HouseZero · busiest ${d} day on the ISO-NE grid`;
+  const hs=dd.coordinator_log.filter(h=>h.kind!=="normal");S.hour=hs.length?dd.hours.indexOf(hs.find(h=>h.kind==="use_less")?.hour||hs[0].hour):null;
+  el("hourSel").innerHTML=hs.length?hs.map(h=>`<option value="${dd.hours.indexOf(h.hour)}">${h.hour.slice(11,16)} · ${h.kind==="use_less"?"use less":"soak up"}</option>`).join(""):"<option>no grid-need hours</option>";
+  if(S.hour!=null)el("hourSel").value=S.hour;
+  const ids=Object.keys(dd.members);S.member=S.member&&ids.includes(S.member)?S.member:(ids.find(i=>i==="hz_main")||ids[0]);
+  const grpName={housezero:"Measured: HouseZero",civic_measured:"Measured: Boston Public Library",civic:"Civic institutions",large_retail:"Large retail",small_business:"Small businesses",home:"Homes"};
+  const byG={};ids.forEach(i=>{const g=(D.members_table.find(x=>x.member_id===i)||{}).group||"other";(byG[g]=byG[g]||[]).push(i)});
+  el("memSel").innerHTML=Object.keys(grpName).concat(Object.keys(byG).filter(g=>!grpName[g])).filter(g=>byG[g]).map(g=>`<optgroup label="${grpName[g]||g} (${byG[g].length})">${byG[g].map(i=>{const m=dd.members[i];return `<option value="${i}">${i==="hz_main"?"HouseZero":i==="bpl_central"?"Central Library":m.building_type.replace(/_/g," ")+" · "+i} · ${m.role}</option>`}).join("")}</optgroup>`).join("");el("memSel").value=S.member;
+  drawKpis();drawLayer(S.layer||0);drawDay();drawHour();drawMember();drawBoston();
+}
+function drawKpis(){const s=day().summary;const nb=s.no_battery,co=s.collective,ve=s.vendor_default;const need=nb.need_hours_kw!=null;
+  const rec=day().receipts.length,ref=day().refused_commands.length;
+  el("kpis").innerHTML=`
+  <div><span class="lbl">Grid-need hours, avg import</span><b>${need?fmt((1-co.need_hours_kw/nb.need_hours_kw)*100,0)+"%":"–"}</b><small>lower with the collective (${fmt(nb.need_hours_kw)} → ${fmt(co.need_hours_kw)} kW)</small></div>
+  <div><span class="lbl">Community peak, kW</span><b>${fmt(co.peak_kw)}</b><small>collective · batteries planning alone ${fmt(s.own_optimizer.peak_kw)} · no battery ${fmt(nb.peak_kw)}</small></div>
+  <div><span class="lbl">Day's bills, ${Object.keys(day().members).length} members</span><b>$${fmt(nb.bill_usd-co.bill_usd)}</b><small>saved vs no battery, demand charge billed on this day's peak</small></div>
+  <div><span class="lbl">Trust layer</span><b>${rec} / ${ref}</b><small>signed receipts / commands refused</small></div>`}
+
+const LAYERS=[
+ {t:"Grid",s:"asks the collective to soak up surplus or use less",render:()=>{const d=day();const c={use_less:0,soak_up:0};d.grid.signal.forEach(k=>{if(c[k]!=null)c[k]++});
+   return `<h3>Grid signal, ${d.date}</h3><p class="note">Each hour is classified from real ISO-NE data: the day's peak-load hours (if in the year's top 10%), the day's price spikes (if in the year's top 5%) or a demand-response event → <b>use less</b>; bottom-10% price while members export solar → <b>soak up</b>. Before that, the coordinator also flags the community's own planned peak hours with a small price signal so batteries stop charging together.</p>
+   <div class="chips"><span class="chip use_less"><b>${c.use_less}</b> use-less hours</span><span class="chip soak_up"><b>${c.soak_up}</b> soak-up hours</span><span class="chip">peak ISO-NE load <b>${fmt(Math.max(...d.grid.system_load_mw))} MW</b></span><span class="chip">max Boston price <b>$${fmt(Math.max(...d.grid.lmp_usd_mwh))}/MWh</b></span></div>`}},
+ {t:"Collective coordinator",s:"pools every offer and assigns tasks across members",render:()=>{const d=day();const L=d.coordinator_log;const acc=L.flatMap(h=>h.decisions.filter(x=>x.accepted)).length;const rej=L.flatMap(h=>h.rejected_by_coordinator).length;
+   return `<h3>Merit order with a rebound check</h3><ul><li>Buys the cheapest kW first until the target (15% of community import) is met.</li><li>Before sending, uses the forecast to reject any assignment whose rebound would set a new community peak.</li><li>Pays from the grid value of the hour; splits it pro rata to delivered kW after reimbursing each member's cost.</li></ul>
+   <div class="chips"><span class="chip"><b>${L.reduce((a,h)=>a+h.offers.length,0)}</b> offers received</span><span class="chip"><b>${acc}</b> tasks assigned</span><span class="chip"><b>${rej}</b> offers rejected (cost or rebound)</span><span class="chip">grid value <b>$${fmt(d.grid_value_usd,2)}</b></span></div>`}},
+ {t:"Trust layer",s:"limits enforced in code, signed receipts",render:()=>{const d=day();const r=d.refused_commands[0];
+   return `<h3>Nothing outside a member's limits ever runs</h3><ul><li>Each member sets max kW up/down, a minimum battery charge, allowed hours and a comfort band.</li><li>Every command is checked before it reaches the building; refusals are logged.</li><li>Every delivery earns an Ed25519-signed receipt, hash-chained to the previous one.</li></ul>
+   ${r?`<div class="receipt">refused: ${r.member_id} · ${r.direction} ${fmt(r.kw,2)} kW · ${r.reason}</div>`:""}<p class="note">Coordinator public key <span class="mono">${d.trust_public_key.slice(0,24)}…</span></p>`}},
+ {t:"Member agents",s:"forecast load (ML) · plan battery · offer hourly flex + cost",render:()=>`<h3>Every member runs the same three steps</h3><ul><li><b>Forecast:</b> ${D.forecaster_used==="world_model"?"the shared world model":"LightGBM"} predicts the next 24 h (P10/P50/P90) from a day-ahead weather forecast.</li><li><b>Plan:</b> a linear program schedules the battery to cut its own bill (energy + demand charge).</li><li><b>Offer:</b> for each grid-need hour, how many extra kW it can give and what that costs it, including rebound.</li></ul>`},
+ {t:"Buildings",s:"prosumers with solar + battery · flex members without",split:true,render:()=>{const m=D.members_table;const p=m.filter(x=>x.role==="prosumer"),f=m.filter(x=>x.role==="flex");const cnt=a=>Object.entries(a.reduce((o,x)=>(o[x.building_type]=(o[x.building_type]||0)+1,o),{})).map(([k,v])=>`<span class="chip"><b>${v}</b> ${k.replace("HouseZero (small net-positive office, Cambridge)","HouseZero")}</span>`).join("");
+   return `<h3>${m.length} members in ${new Set(m.map(x=>x.zip)).size} Boston-area zip codes</h3><p class="note"><b>Prosumers</b> (Massachusetts buildings with solar, a battery and their own meter data) offer battery flexibility.</p><div class="chips">${cnt(p)}</div><p class="note"><b>Flex members</b> (small businesses and renters, no battery) offer building modes: thermostat load shift, pre-cool, pre-heat or a short HVAC curtail.</p><div class="chips">${cnt(f)}</div>`}},
+];
+function buildStack(){const st=el("stack");st.innerHTML="";LAYERS.forEach((L,i)=>{if(i)st.insertAdjacentHTML("beforeend",`<div class="arrow">↓</div>`);
+  const b=document.createElement("button");b.className="layer";b.setAttribute("aria-pressed",i===0);b.innerHTML=`<span class="n">${i+1}</span><span><b>${L.t}</b><span>${L.s}</span></span>`;b.onclick=()=>drawLayer(i);st.appendChild(b)})}
+function drawLayer(i){S.layer=i;[...el("stack").querySelectorAll(".layer")].forEach((b,j)=>b.setAttribute("aria-pressed",i===j));el("layerDetail").innerHTML=LAYERS[i].render()}
+
+function drawDay(){const d=day();const C=d.community;const keys=["no_battery","vendor_default","own_optimizer","collective","perfect_foresight"];
+  const col={no_battery:"--without",vendor_default:"--vendor",own_optimizer:"--own",collective:"--with",perfect_foresight:"--ink3"};
+  const mx=Math.max(...keys.flatMap(k=>C[k]))*1.08;const f=svgFrame(el("chDay"),{w:900,h:300,ymin:0,ymax:mx,yt:ticks(mx),ylab:"kW"});
+  d.grid.signal.forEach((k,i)=>{if(k!=="normal"){const x0=f.x(Math.max(i-.5,0)),x1=f.x(Math.min(i+.5,23));f.add("rect",{x:x0,y:16,width:x1-x0,height:258,fill:css(k==="use_less"?"--heat":"--accent"),opacity:.12})}});
+  keys.forEach(k=>f.path(C[k],{stroke:css(col[k]),"stroke-width":k==="collective"?2.8:1.8,"stroke-dasharray":k==="perfect_foresight"?"5 4":null}));
+  const i=C.collective.indexOf(Math.max(...C.collective));f.add("text",{x:f.x(i),y:f.y(C.collective[i])-8,"text-anchor":"middle",class:"lb",fill:css("--with")},`collective peak ${fmt(C.collective[i])} kW`);
+  const t=d.weather.temp_c,tf=d.weather.temp_forecast_c,p=d.grid.lmp_usd_mwh;const tmn=Math.min(...t,...tf)-1,tmx=Math.max(...t,...tf)+1;
+  const g=svgFrame(el("chWx"),{w:900,h:120,ymin:tmn,ymax:tmx,yt:ticks(tmx,tmn),ylab:"°C",T:14,B:22});
+  const tc=css(S.day==="summer"?"--heat":"--cold");el("tKey").style.borderColor=tc;
+  g.path(t,{stroke:tc});g.path(tf,{stroke:css("--ink3"),"stroke-dasharray":"4 4","stroke-width":1.4});
+  const pm=Math.max(...p.filter(v=>v!=null))||1;g.path(p.map(v=>tmn+(v/pm)*(tmx-tmn)),{stroke:css("--accent"),"stroke-width":1.4,opacity:.9});
+  g.add("text",{x:880,y:g.y(tmn+(p[p.indexOf(pm)]/pm)*(tmx-tmn))-4,"text-anchor":"end",class:"lb",fill:css("--accent")},`$${fmt(pm)}/MWh`);
+  const names={no_battery:"No battery",vendor_default:"Vendor default battery",own_optimizer:"Own optimizer only",collective:"Collective",perfect_foresight:"Perfect foresight (ceiling)"};
+  const s=d.summary;const base=s.no_battery.bill_usd;const pay=Object.values(d.payouts_usd).reduce((a,b)=>a+b,0);
+  const net=k=>s[k].bill_usd-(k==="collective"?pay:0);
+  el("stratTbl").innerHTML=`<thead><tr><th class="l">Strategy (same ${Object.keys(d.members).length} members, same day)</th><th>Community peak, kW</th><th>Avg import in grid-need hours, kW</th><th>Bills, $</th><th>Grid payouts, $</th><th>Net cost, $</th><th>Saved vs no battery, $</th></tr></thead><tbody>${keys.map(k=>`<tr><td class="l">${names[k]}</td><td>${fmt(s[k].peak_kw)}</td><td>${fmt(s[k].need_hours_kw)}</td><td>${fmt(s[k].bill_usd)}</td><td>${k==="collective"?fmt(pay):"–"}</td><td>${fmt(net(k))}</td><td>${fmt(base-net(k))}</td></tr>`).join("")}</tbody>`}
+
+function drawHour(){const d=day();if(S.hour==null){el("decTbl").innerHTML="";el("receipts").innerHTML=`<p class="empty">No grid-need hours on this day.</p>`;el("hourWhy").textContent="";el("rcNote").textContent="";return}
+  const h=d.coordinator_log.find(x=>x.hour===d.hours[S.hour]);el("hourWhy").textContent=`${h.kind==="use_less"?"Use less":"Soak up"} · target ${fmt(h.target_kw,1)} kW · grid pays $${fmt(h.value_usd_per_kw,2)}/kW · ${h.reasons.join("; ")}`;
+  el("decTbl").innerHTML=`<thead><tr><th class="l">Member</th><th class="l">Source</th><th>kW</th><th>$/kW</th><th class="l">Trust layer</th></tr></thead><tbody>${h.decisions.map(x=>`<tr><td class="l">${x.member}</td><td class="l">${x.source}</td><td>${fmt(x.kw,2)}</td><td>${x.usd_per_kw==null?"–":fmt(x.usd_per_kw,2)}</td><td class="l ${x.accepted?"ok":"no"}">${x.accepted?"✓ ":"✕ "}${x.reason}${x.demo_overreach?" (test request)":""}</td></tr>`).join("")}${h.rejected_by_coordinator.slice(0,6).map(x=>`<tr><td class="l">${x.member}</td><td class="l">${x.source}</td><td>–</td><td>–</td><td class="l no">coordinator: ${x.reason}</td></tr>`).join("")}</tbody>`;
+  const rc=d.receipts.filter(r=>r.hour===d.hours[S.hour]);el("rcNote").textContent=`${rc.length} receipts for this hour. Each is signed by the coordinator key and chained to the previous receipt's hash.`;
+  el("receipts").innerHTML=rc.slice(0,5).map(r=>`<div class="receipt"><b>${r.member_id}</b> · ${r.source} · promised ${fmt(r.promised_kw,2)} kW · delivered ${fmt(r.delivered_kw,2)} kW · paid $${fmt(r.payment_usd,2)}<br>sig ${r.signature.slice(0,32)}…<br>prev ${r.prev_hash.slice(0,16)}… → hash ${r.hash.slice(0,16)}…</div>`).join("")||`<p class="empty">No deliveries this hour.</p>`}
+
+function drawMember(){if(!D)return;const d=day();const m=d.members[S.member];if(!m)return;
+  el("memNote").textContent=`${m.role==="prosumer"?"Prosumer":"Flex member"} · ${m.building_type} · zip ${m.zip} · ${fmt(m.sqft)} sq ft · ${m.battery_kwh?fmt(m.battery_kwh,0)+" kWh battery · ":""}${m.pv_kwdc?fmt(m.pv_kwdc,0)+" kW solar · ":""}mode used: ${m.mode_used} · ${m.source}`;
+  const st=m.strategies;const vals=[...m.forecast_p90,...m.load_actual_kw,...st.no_battery.import_kw,...st.collective.import_kw];const mx=Math.max(...vals)*1.1||1;
+  const f=svgFrame(el("chMem"),{w:640,h:260,ymin:0,ymax:mx,yt:ticks(mx),ylab:"kW"});
+  const band=m.forecast_p90.map((v,i)=>`${f.x(i)},${f.y(v)}`).concat(m.forecast_p10.map((v,i)=>`${f.x(i)},${f.y(v)}`).reverse());
+  f.add("polygon",{points:band.join(" "),fill:css("--wash"),stroke:css("--accent"),"stroke-width":.8});
+  f.path(m.load_actual_kw,{stroke:css("--ink"),"stroke-width":1.6});f.path(st.no_battery.import_kw,{stroke:css("--without")});f.path(st.collective.import_kw,{stroke:css("--with"),"stroke-width":2.6});
+  if(st.collective.soc)f.path(st.collective.soc.map(v=>v*mx),{stroke:css("--with"),"stroke-dasharray":"4 4","stroke-width":1.3});
+  const names={no_battery:"No battery",vendor_default:"Vendor default",own_optimizer:"Own optimizer",collective:"Collective",perfect_foresight:"Perfect foresight"};
+  const pay=d.payouts_usd[S.member]||0;
+  el("billTbl").innerHTML=`<thead><tr><th class="l">This member, this day</th><th>Peak kW</th><th>Energy $</th><th>Demand $</th><th>Total $</th></tr></thead><tbody>${Object.keys(names).filter(k=>m.bills[k]).map(k=>`<tr><td class="l">${names[k]}</td><td>${fmt(m.bills[k].peak_kw,1)}</td><td>${fmt(m.bills[k].energy_usd,2)}</td><td>${fmt(m.bills[k].demand_usd,2)}</td><td>${fmt(m.bills[k].total_usd,2)}</td></tr>`).join("")}<tr><td class="l">Collective payout</td><td></td><td></td><td></td><td class="ok">+${fmt(pay,2)}</td></tr></tbody>`}
+
+function drawForecast(){const rows=D.forecast_metrics;const name={world_model:"World model (JEPA-style)",lightgbm:"LightGBM with weather",lightgbm_uncalibrated:"LightGBM, uncalibrated band",lightgbm_no_weather:"LightGBM, no weather",seasonal_naive:"Same hour last week"};
+  const models=Object.keys(name).filter(m=>rows.some(r=>r.model===m));const X=D.forecast_extra||{};
+  const get=(m,s,k)=>(rows.find(r=>r.model===m&&r.season===s)||{})[k];const avg=(m,k)=>{const r=rows.filter(x=>x.model===m&&x[k]!=null);return r.length?r.reduce((a,b)=>a+b[k],0)/r.length:null};
+  const used=m=>(m==="lightgbm"&&/lightgbm/.test(D.forecaster_used))||(m==="world_model"&&/^world model/.test(D.forecaster_used));
+  el("fcTbl").innerHTML=`<thead><tr><th class="l">Model</th><th>Winter error %</th><th>Summer error %</th><th>Spring/fall error %</th><th>Peak error %</th><th>Coverage</th></tr></thead><tbody>${models.map(m=>`<tr><td class="l">${name[m]}${used(m)?' <span class="pill" style="color:var(--with)">used</span>':""}</td><td>${fmt(get(m,"winter","mae_pct"),1)}</td><td>${fmt(get(m,"summer","mae_pct"),1)}</td><td>${fmt(get(m,"shoulder","mae_pct"),1)}</td><td>${fmt(avg(m,"peak_err_pct"),1)}</td><td>${fmt((avg(m,"coverage")||0)*100,0)}%</td></tr>`).join("")}</tbody>`;
+  const sp=X.split||{};const ct=(X.community_total||[]).find(r=>r.model==="lightgbm");
+  el("evalLead").textContent=sp.test_days?`Trained on ${sp.train_days} days, bands calibrated on ${sp.calibration_days} others, tested on ${sp.test_days} held-out days: one week in every month plus the week around each peak day.${ct?` The whole community's load is forecast within ${fmt(ct.mae_pct,1)}% on average (peak hour within ${fmt(ct.peak_err_pct,1)}%).`:""}`:"";
+  const E=X.effects||[];const mn={load_shift_33:"Load shift (offices, schools)",precool_42:"Pre-cool",ev_delay:"EV charging delay (homes)",thermal_preheat:"Thermal pre-heat (HouseZero)",hvac_curtail:"HVAC curtail (HouseZero)"};const en={delta_lgbm:"Paired-difference model",world_model:"World model",none:"Assume no change"};
+  if(E.length){const md=[...new Set(E.map(r=>r.mode))];el("actTbl").innerHTML=`<thead><tr><th class="l">Action</th><th class="l">Model</th><th>Building-days</th><th>Error % of peak</th><th>Shape match (corr.)</th><th>Right direction</th></tr></thead><tbody>${md.map(m=>E.filter(r=>r.mode===m).map(r=>`<tr><td class="l">${mn[m]||m}</td><td class="l">${en[r.model]||r.model}${(X.effect_choice||{})[m]===r.model?' <span class="pill" style="color:var(--with)">used</span>':""}</td><td>${fmt(r.n)}</td><td>${fmt(r.mae_pct_of_peak,2)}</td><td>${r.corr==null||isNaN(r.corr)?"–":fmt(r.corr,2)}</td><td>${r.model==="none"?"–":fmt(r.sign_ok*100,0)+"%"}</td></tr>`).join("")).join("")}</tbody>`}
+  const P=D.planner_eval||null;if(P){const nm={perfect_foresight:"Perfect knowledge of the day (ceiling)",mpc_oracle_fc:"Hourly re-planning with a perfect forecast",mpc_single:"Hourly re-planning, one forecast line (before)",mpc_scenarios:"Hourly re-planning over forecast scenarios (now)"};
+    el("planTbl").innerHTML=`<thead><tr><th class="l">Planner</th><th>Winter</th><th>Summer</th></tr></thead><tbody>${Object.keys(nm).filter(k=>P.winter&&P.winter[k]!=null).map(k=>`<tr><td class="l">${nm[k]}</td><td>${fmt(P.winter[k],0)}%</td><td>${fmt(P.summer[k],0)}%</td></tr>`).join("")}</tbody>`}
+  drawLatent()}
+function drawLatent(){if(!D)return;const P=D.latent_map.points;if(!P.length)return;el("latTitle").textContent=`What the world model learned · ${D.latent_map.member==="hz_main"?"HouseZero":D.latent_map.member}`;
+  const svg=el("chLat");svg.innerHTML="";const xs=P.map(p=>p.x),ys=P.map(p=>p.y);const [x0,x1,y0,y1]=[Math.min(...xs),Math.max(...xs),Math.min(...ys),Math.max(...ys)];
+  const ts=P.map(p=>p.tmax_c).filter(v=>!isNaN(v));const tmn=Math.min(...ts),tmx=Math.max(...ts);const c1=css("--cold"),c2=css("--heat");
+  const hex=c=>c.match(/\w\w/g).map(v=>parseInt(v,16));const mix=t=>{const a=hex(c1.replace("#","")),b=hex(c2.replace("#",""));return`rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(",")})`};
+  for(const p of P){const c=document.createElementNS(NS,"circle");c.setAttribute("cx",20+(p.x-x0)/(x1-x0||1)*440);c.setAttribute("cy",20+(1-(p.y-y0)/(y1-y0||1))*250);c.setAttribute("r",p.weekend?2.6:3.6);c.setAttribute("fill",isNaN(p.tmax_c)?css("--ink3"):mix((p.tmax_c-tmn)/(tmx-tmn||1)));c.setAttribute("opacity",.85);
+    const t=document.createElementNS(NS,"title");t.textContent=`${p.date} · high ${p.tmax_c} °C${p.weekend?" · weekend":""}`;c.appendChild(t);svg.appendChild(c)}
+  const lab=(x,y,t,c)=>{const e=document.createElementNS(NS,"text");e.setAttribute("x",x);e.setAttribute("y",y);e.setAttribute("class","lb");e.setAttribute("fill",c);e.textContent=t;svg.appendChild(e)};
+  lab(20,292,`● blue = cold day (${fmt(tmn,0)} °C)`,c1);lab(250,292,`● red = hot day (${fmt(tmx,0)} °C)`,c2)}
+
+function drawWhatIf(){const W=D.whatif||{};const ks=Object.keys(W).sort((a,b)=>+a-+b);if(!ks.length){el("whatTbl").innerHTML="";return}
+  const row=k=>{const w=W[k];const mx=a=>Math.max(...a);const n=Object.keys(w.assigned||{}).length;const modes=Object.keys(w.modes_chosen||{}).length;const acc=w.accepted_kw_by_source||{};const tot=Object.values(acc).reduce((a,b)=>a+b,0);
+    return `<tr><td class="l">${+k>0?"+":""}${k} °C</td><td>${fmt(mx(w.temp_forecast_c),1)} °C</td><td class="l">${w.heat_warning?'<span class="pill" style="color:var(--heat)">heat warning</span>':"–"}</td><td>${fmt(mx(w.planned_round1_kw))}</td><td>${fmt(mx(w.planned_round2_kw))}</td><td>${fmt(tot)}</td><td>${fmt(acc.battery||0)}</td><td>${n}</td><td>${modes}</td></tr>`};
+  el("whatTbl").innerHTML=`<thead><tr><th class="l">Forecast shift</th><th>Forecast high</th><th class="l">Public-mission rule</th><th>Planned peak, solo kW</th><th>Planned peak, coordinated kW</th><th>kW assigned in grid-need hours</th><th>of which batteries</th><th>Members tasked</th><th>Building modes chosen</th></tr></thead><tbody>${ks.map(row).join("")}</tbody>`}
+function drawGroups(){const X=D.forecast_extra||{};const name={world_model:"World model",lightgbm:"LightGBM",lightgbm_no_weather:"LightGBM, no weather",seasonal_naive:"Last week"};
+  const g=X.by_group||[];if(g.length){const ms=Object.keys(name).filter(m=>g.some(r=>r[m]!=null));el("grpTbl").innerHTML=`<thead><tr><th class="l">Group</th>${ms.map(m=>`<th>${name[m]} error %</th>`).join("")}</tr></thead><tbody>${g.map(r=>`<tr><td class="l">${r.group}</td>${ms.map(m=>`<td>${fmt(r[m],1)}</td>`).join("")}</tr>`).join("")}</tbody>`}
+  const R=(X.real_buildings||[]).filter(r=>r.model!=="lightgbm_uncalibrated");if(R.length){const keys=[...new Set(R.map(r=>r.member+"|"+r.season))];const ms=[...new Set(R.map(r=>r.model))];
+    el("realTbl").innerHTML=`<thead><tr><th class="l">Building</th><th class="l">Season</th>${ms.map(m=>`<th>${name[m]||m} %</th>`).join("")}</tr></thead><tbody>${keys.map(k=>{const [mb,se]=k.split("|");return `<tr><td class="l">${mb==="hz_main"?"HouseZero (Harvard)":"Boston Public Library Central"}</td><td class="l">${se}</td>${ms.map(m=>{const r=R.find(x=>x.member===mb&&x.season===se&&x.model===m);return `<td>${r?fmt(r.mae_pct,1):"–"}</td>`}).join("")}</tr>`}).join("")}</tbody>`}
+  const H=X.homes_combined||{};el("homesNote").textContent=Object.keys(H).length?`40 homes forecast together (their sum): world model ${fmt(H.world_model,1)}% · LightGBM ${fmt(H.lightgbm,1)}% error. Single homes are much noisier; groups of homes are what the coordinator sees.`:""}
+function drawBoston(){const B=D.boston[S.day];const i=+el("adopt").value;const a=B.adoption[i];el("adoptOut").textContent=`${Math.round(a*100)}%`;
+  const cw=B.citywide[String(a)];el("cityNote").textContent=`Citywide: ${fmt(cw.mw_avoided,2)} MW avoided in grid-need hours · $${fmt(cw.usd_day)} saved on this day · ${fmt(B.covered_buildings)} commercial buildings, ${fmt(B.covered_gfa_sqft/1e6,0)}M sq ft`;
+  const z=Object.entries(B.zips).map(([k,v])=>({zip:k,kw:v.kw[i],usd:v.usd_day[i],n:v.buildings})).sort((p,q)=>q.kw-p.kw);const mx=Math.max(...z.map(r=>r.kw),1);
+  el("zips").innerHTML=z.map(r=>`<div class="zip"><span class="mono">${r.zip}</span><div style="background:var(--bg3);border-radius:3px"><div class="bar" style="width:${(r.kw/mx*100).toFixed(1)}%"></div></div><span class="mono" style="text-align:right">${fmt(r.kw)} kW</span></div>`).join("");
+  el("bosMethod").innerHTML=`From the simulated day we measure, per 1,000 sq ft of each building type, the kW avoided in grid-need hours and the dollars saved. Each zip's projection is its <b>BERDO 2025 floor area</b> of that type × adoption × that effect. This is a projection for buildings of 20,000 sq ft or more; apartments are excluded because no member represents them.`;
+  el("effTbl").innerHTML=`<thead><tr><th class="l">Type</th><th>kW avoided / 1,000 sq ft</th><th>$ saved / 1,000 sq ft / day</th></tr></thead><tbody>${B.effects_per_1000_sqft.map(r=>`<tr><td class="l">${r.archetype}</td><td>${fmt(r.need_kw_per_ksf,3)}</td><td>${fmt(r.usd_per_ksf_day,3)}</td></tr>`).join("")}</tbody>`}
+
+function drawSources(){const s=D.sources;const rows=[["HouseZero building","Measured","Electricity by circuit, solar, indoor conditions, windows and valves, 15-min",s.housezero],
+  ["Weather","Measured","HouseZero weather station; the only weather source",s.weather],["40 Boston business members","Simulated","Building designs used as physics templates, driven by the measured 2025–26 weather",s.business_members],
+  ["Boston Public Library Central Library","Measured","Real 5-minute meter; a second real test building and a civic member",s.library||""],
+  ["Homes","Synthetic","Single-family homes with heat pumps, EVs, solar and batteries; EV-delay action",s.homes||""],
+  ["Grid","Measured","Boston price and system load; stress and spike hours",s.grid],["Boston building stock","Measured (reported)","Counts, floor area and 2025 electricity by zip",s.stock],
+  ["Tariff","Real rate","Energy charge, monthly demand charge, fixed charge",s.tariff],["Demand-response events","Synthetic","Event days chosen from real ISO-NE peak load",s.dr_events],
+  ["Batteries, flex costs","Assumption","Battery sizes, comfort cost $0.08/kWh shifted, DR pay $200/kW-season","Labeled as assumptions in the code"]];
+  el("srcTbl").innerHTML=`<thead><tr><th class="l">Input</th><th class="l">Kind</th><th class="l">Used for</th><th class="l">Source</th></tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>`}
+</script>

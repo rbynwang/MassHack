@@ -1,0 +1,26 @@
+{
+  "ma_g2_example": {
+    "name": "Town of Concord MA (Concord Municipal Light Plant) G-2 Medium General Service",
+    "effective": "2026-04-01",
+    "source": "OpenEI URDB https://openei.org/IURDB/rate/view/69cfe9ef0184c9c5ee0427ca",
+    "fixed_usd_per_month": 90.0,
+    "energy_usd_per_kwh": 0.18341,
+    "demand_usd_per_kw": 10.56,
+    "demand_basis": "highest 15-min average kW in the billing month",
+    "demand_min_kw": 20,
+    "notes": "Municipal utility, not Eversource. Used as a realistic MA G-2 shape example; applying a 2026 rate to 2018 simulated load."
+  },
+  "eversource_g2_placeholder": {
+    "name": "Eversource (NSTAR / Eastern MA) Rate G-2 Small/Medium General Service -- TO VERIFY",
+    "status": "TO VERIFY - placeholder, every numeric field is null until filled from the current Eversource MA tariff book",
+    "source_to_check": "https://www.eversource.com/content/residential/account-billing/manage-bill/about-your-bill/rates-tariffs (MA, Rate G-2 / A2)",
+    "fixed_usd_per_month": null,
+    "distribution_energy_usd_per_kwh": null,
+    "transmission_energy_usd_per_kwh": null,
+    "basic_service_supply_usd_per_kwh": null,
+    "demand_usd_per_kw": null,
+    "demand_basis": "TO VERIFY (typically max 15-min kW in month, above a threshold)",
+    "demand_min_kw": null,
+    "time_of_use": "TO VERIFY"
+  }
+}
