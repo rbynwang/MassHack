@@ -1,0 +1,20 @@
+{
+  "dataset_title": "Central Library Electricity Usage",
+  "address": "700 Boylston Street, Boston, Massachusetts",
+  "provider": "City of Boston / Analyze Boston",
+  "dataset_url": "https://data.boston.gov/dataset/central-library-electricity-usage",
+  "download_url": "https://data.boston.gov/dataset/652762e9-2556-47cd-8e80-798546992a57/resource/87c759ee-63b9-4aec-a00b-bba1672a20ef/download/tmpt4us3m3n.csv",
+  "resource_id": "87c759ee-63b9-4aec-a00b-bba1672a20ef",
+  "retrieved_at": "2026-10-24T15:25:46.183Z",
+  "source_last_modified": "2026-10-24T15:08:48.294776",
+  "license": "Open Data Commons Public Domain Dedication and License (PDDL)",
+  "license_url": "http://www.opendefinition.org/licenses/odc-pddl",
+  "complete_source_snapshot_sha256": "b7364c80e20ff860e2a5f44a8682917c9fe9e6c10f1fe50b548adf47d9af5870",
+  "selection": "Start time >= 2025-05-01 and < 2026-06-01, Eastern time",
+  "original_source_columns": [
+    "usage_datetime_start_eastern_time",
+    "usage_datetime_end_eastern_time",
+    "usage_kw"
+  ],
+  "timezone_interpretation": "America/New_York, as specified by original Eastern-time headers; ambiguous local times are not guessed."
+}
