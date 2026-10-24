@@ -2,83 +2,61 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Commonwatt · Cambridge commons · June 24, 2025</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="style.css">
-<script src="vendor/plotly-basic.min.js"></script>
+<title>Commonwatt · an energy commons for Massachusetts neighborhoods</title>
+<link rel="stylesheet" href="story.css">
 <script src="data/demo.js"></script>
+<script src="nav.js"></script>
+<style>
+.land-links { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; }
+.land-links a { display:block; background:#fff; border-radius:16px; padding:18px 20px; text-decoration:none; color:var(--ink);
+  box-shadow:var(--shadow); transition:transform .15s ease; }
+.land-links a:hover { transform:translateY(-2px); }
+.land-links b { display:block; font-size:18px; font-stretch:112%; margin-bottom:4px; }
+.land-links span { color:var(--ink-2); font-size:14px; }
+.pitch { font-size:clamp(16px, 2vw, 19px); color:var(--ink-2); max-width:62ch; margin:14px 0 0; }
+</style>
 </head>
 <body>
-<header>
-  <div>
-    <h1>Commonwatt <span>⚡</span></h1>
-    <p class="sub">Every building gets an agent. Every neighborhood gets a network.</p>
-  </div>
-  <div class="meta" id="meta"></div>
-</header>
-
-<section class="controls">
-  <button id="play">▶ Play the day</button>
-  <button id="step">Step</button>
-  <button id="showall">Show all</button>
-  <button id="reset">Reset</button>
-  <label>Speed <input id="speed" type="range" min="20" max="600" value="180"></label>
-  <div class="beats" id="beats"></div>
-</section>
-
-<main>
-  <section class="panel network">
-    <h2>The network <small>coordinator sees agent cards and offers only</small></h2>
-    <svg id="net" viewBox="0 0 660 430"></svg>
-    <div class="legend">
-      <span class="l request">request</span><span class="l accept">accept</span><span class="l counter">counter</span>
-      <span class="l blocked">blocked / decline</span><span class="l receipt">receipt</span><span class="l join">joined</span>
-    </div>
+<div class="wrap" id="app">
+  <section class="card hero" aria-labelledby="heroTitle">
+    <h1 id="heroTitle">Every building gets an agent. Every neighborhood gets a network.</h1>
+    <p class="pitch">Commonwatt turns a Massachusetts neighborhood's homes, businesses and public buildings into an
+      energy commons. Each building's agent keeps its owner's limits private, negotiates with a coordinator when the
+      grid asks for help, and gets paid against a signed receipt.</p>
+    <div class="hero-stats" id="heroStats"></div>
   </section>
-  <section class="panel log">
-    <h2>Message log <small>every message is a signed envelope</small></h2>
-    <ol id="log"></ol>
-  </section>
-
-  <section class="panel chart wide">
-    <h2>Neighborhood load, June 24, 2025 <small id="chart-note"></small></h2>
-    <div id="chart"></div>
-    <div class="kpis" id="kpis"></div>
-  </section>
-
-  <section class="panel phone-panel">
-    <h2>Member card</h2>
-    <select id="member"></select>
-    <div class="phone"><div class="screen" id="phone"></div></div>
-  </section>
-  <section class="panel privacy">
-    <h2>What leaves the building <small>and what stays private</small></h2>
-    <div class="cols">
-      <div><h3>Coordinator sees (offer)</h3><table id="seen"></table></div>
-      <div><h3>Stays with the member and its guard</h3><table id="private"></table></div>
-    </div>
-    <h3>Negotiation for this member</h3>
-    <table id="steps"></table>
-  </section>
-
-  <section class="panel fair">
-    <h2>Fairness <small>earnings by kind of member</small></h2>
-    <div id="fairchart"></div>
-    <table id="fairtable"></table>
-  </section>
-  <section class="panel sources">
-    <h2>Where every number comes from</h2>
-    <div id="labels"></div>
-    <table id="srctable"></table>
-  </section>
-</main>
-<footer>
-  Synthetic and simulated members are labeled. Battery sizes, prices paid and tariffs are assumptions; savings are
-  simulation results, not measured outcomes. Data: HouseZero (Harvard CGBC, CC BY 4.0, DOIs
-  10.6084/m9.figshare.30260233.v1 and 10.6084/m9.figshare.32790984.v1), City of Boston Analyze Boston (Central
-  Library electricity, PDDL), ISO New England, National Grid (Massachusetts Electric) class load shapes, NREL ComStock
-  templates.
-</footer>
-<script src="app.js"></script>
+  <nav class="land-links" aria-label="Explore">
+    <a href="presentation/commonwatt-story.html"><b>Scenes</b><span>The 1-minute story: four buildings, then the network they form.</span></a>
+    <a href="story.html"><b>Network</b><span>Replay the June 24, 2025 negotiation message by message.</span></a>
+    <a href="history.html"><b>Trading history</b><span>Seven days of asks, payments and a verifiable receipt chain.</span></a>
+    <a href="member.html"><b>Member app</b><span>What one owner sees on their phone.</span></a>
+    <a href="about.html"><b>About</b><span>The problem, the architecture, the data.</span></a>
+  </nav>
+  <p class="footnote" id="landNote"></p>
+</div>
+<div class="missing" id="missing" hidden>Run <code>uv run commonwatt-demo</code> first.</div>
+<script>
+(function () {
+  var D = window.COMMONWATT;
+  if (!D) { document.getElementById('app').hidden = true; document.getElementById('missing').hidden = false; return; }
+  var S = D.summary, fmt = function (x, d) { return Number(x).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
+  var drop = 100 * (1 - S.peak_kw.network / S.peak_kw.alone);
+  var pill = '<span class="pill simulated">simulated</span>';
+  document.getElementById('heroStats').innerHTML =
+    '<div class="stat s2"><div class="num"><span class="to">−' + fmt(drop) + '</span><span class="unit">%</span></div>' +
+    '<div class="lab">evening peak on June 24, 2025</div><p>' + fmt(S.peak_kw.alone) + ' kW when every member acts alone, ' +
+    fmt(S.peak_kw.network) + ' kW with the network.</p>' + pill + '</div>' +
+    '<div class="stat s1"><div class="num">' + fmt(S.pooled_kw) + '<span class="unit">kW</span></div>' +
+    '<div class="lab">delivered on the grid\'s request</div><p>' + D.members.length + ' members, ' + S.rounds +
+    ' negotiation rounds, ' + D.window_label + '.</p>' + pill + '</div>' +
+    '<div class="stat s3"><div class="num">$' + fmt(S.paid_usd) + '</div><div class="lab">to ' + S.members_paid +
+    ' members</div><p>' + S.ledger + '; ' + S.hp_only_homes_paid + ' of ' + S.hp_only_homes +
+    ' heat-pump-only homes paid.</p>' + pill + '</div>';
+  document.getElementById('landNote').textContent = 'June 24, 2025 was the ISO-NE peak day. Inputs are measured ' +
+    'Massachusetts data (HouseZero, Boston Public Library, ISO-NE); members, batteries and payments are simulated or ' +
+    'assumptions, labeled on every page. Model tool: ' + D.tool + '.';
+})();
+</script>
 </body>
 </html>
