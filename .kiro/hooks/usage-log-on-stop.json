@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "usage-log-on-stop",
+      "description": "Keep KIRO_USAGE.md current for the submission write-up.",
+      "trigger": "Stop",
+      "action": {
+        "type": "agent",
+        "prompt": "If this turn used a notable Kiro feature (spec, hook, steering, MCP, property-based test, power) or finished a spec task, append one row to the Log table in KIRO_USAGE.md: time (ET), who, feature, what and why. Skip it for trivial turns."
+      }
+    }
+  ]
+}
