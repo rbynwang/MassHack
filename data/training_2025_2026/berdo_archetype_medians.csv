@@ -1,0 +1,7 @@
+archetype,median_kwh_sqft,n,p25,p75
+office,9.658,371,6.425,12.965
+other_commercial,10.244,771,5.533,16.278
+residential_multifamily,4.631,1296,3.482,6.88
+restaurant,16.699,9,9.855,42.193
+retail,14.702,64,10.369,33.032
+school,4.293,144,3.332,6.219
