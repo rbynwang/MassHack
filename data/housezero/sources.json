@@ -1,0 +1,60 @@
+{
+  "dataset": "HouseZero® two year dataset (June 2022 - May 2024)",
+  "version": 3,
+  "doi": "10.6084/m9.figshare.26499595.v3",
+  "license": {
+    "value": 1,
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "source": "https://figshare.com/articles/journal_contribution/HouseZero_two_year_dataset_June_2022_-_May_2024_/26499595",
+  "downloaded_at": "2026-10-24T13:06:20.266Z",
+  "content_changes": "None. Original bytes preserved; files renamed for clarity.",
+  "files": [
+    {
+      "name": "loads_year1_2022-2023.csv",
+      "source_name": "48190963_Loads_hourly.csv",
+      "id": 51042623,
+      "url": "https://ndownloader.figshare.com/files/51042623",
+      "bytes": 2310907,
+      "md5": "271b9d4f3376525a6785820c6a6e3a16",
+      "rows": 8760
+    },
+    {
+      "name": "weather_year1_2022-2023.csv",
+      "source_name": "Weather.csv",
+      "id": 51042587,
+      "url": "https://ndownloader.figshare.com/files/51042587",
+      "bytes": 851664,
+      "md5": "b00bbe60d8d8f02453cbefd8cbdf637f",
+      "rows": 8760
+    },
+    {
+      "name": "loads_year2_2023-2024.csv",
+      "source_name": "48190948_Loads_hourly.csv",
+      "id": 51042611,
+      "url": "https://ndownloader.figshare.com/files/51042611",
+      "bytes": 2156526,
+      "md5": "3924ba3e24c42e0093d8f97ee8c0a00f",
+      "rows": 8784
+    },
+    {
+      "name": "weather_year2_2023-2024.csv",
+      "source_name": "Weather.csv",
+      "id": 51042575,
+      "url": "https://ndownloader.figshare.com/files/51042575",
+      "bytes": 1002947,
+      "md5": "72dd8dde75d584f7e89425a9c11d2c9a",
+      "rows": 8784
+    },
+    {
+      "name": "Data_Report.pdf",
+      "source_name": "Data Report.pdf",
+      "id": 51042560,
+      "url": "https://ndownloader.figshare.com/files/51042560",
+      "bytes": 771327,
+      "md5": "fb01ffbe3cbafa7f53cb75fecacc46c7",
+      "rows": null
+    }
+  ]
+}
