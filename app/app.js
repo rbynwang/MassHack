@@ -92,9 +92,9 @@
   function stop() { if (timer) clearInterval(timer); timer = null; $("play").textContent = "▶ Play the day"; }
   $("play").onclick = () => (timer ? stop() : play());
   $("step").onclick = () => { stop(); step(); };
-  $("all").onclick = () => { stop(); while (idx < log.length) apply(log[idx++]); };
+  $("showall").onclick = () => { stop(); while (idx < log.length) apply(log[idx++]); };
   $("reset").onclick = () => { location.hash = ""; location.reload(); };
-  if (location.hash === "#all") setTimeout(() => $("all").onclick(), 0);
+  if (location.hash === "#all") setTimeout(() => $("showall").onclick(), 0);
   $("speed").oninput = () => { if (timer) play(); };
 
   // ------------------------------------------------------------------ demo beats
