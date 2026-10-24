@@ -9,6 +9,7 @@ how Kiro was used"). Fill the sections at the end; append to the log as you go.
 | --- | --- | --- | --- |
 | 10/24 ~10:00 | Robyn | Steering | Drafted `product.md`, `tech.md`, `structure.md` and a `fileMatch` steering doc (`housezero-data.md`) with Claude Code from our proposal and the dataset README, so Kiro knows the meter semantics and avoids data leakage in backtests. |
 | 10/24 ~10:00 | Robyn | Hooks | Added `py-compile-on-save` (PostFileSave) and `usage-log-on-stop` (Stop) hooks. |
+| 10/24 ~13:00 | Kiro | Vibe session + steering | Reviewed the synthetic household data guideline against HouseZero, pulled public baselines (National Grid R-1 2023–2026, Eversource, NREL ResStock MA single-family, EIA), built `src/homesim` (guideline steps 1–2) and generated two 200-home dev sets with calibration checks. Updated `structure.md` with the new package and data folders. |
 
 ## Write-up sections (fill before 6 PM)
 

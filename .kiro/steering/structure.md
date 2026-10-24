@@ -9,6 +9,9 @@ src/masshack/       Python package
   battery.py        Battery + tariff physics (exact equations)
   planner.py        LP / CEM planners
   world_model.py    Path 2 latent model
+src/homesim/        Synthetic single-family home generator (config.yaml + seed; `uv run homesim`)
+data/baseline/      Public calibration baselines (National Grid R-1, Eversource, ResStock, EIA)
+data/synthetic/     Generated homesim datasets (gitignored; regenerate from config + seed)
 scripts/            Entry points: train, backtest, export demo JSON
 demo/               Static demo page + exported JSON
 tests/              pytest + hypothesis

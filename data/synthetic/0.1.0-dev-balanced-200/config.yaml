@@ -1,0 +1,279 @@
+version: 0.1.0-dev
+seed: 42
+period:
+  timezone: America/New_York
+inputs:
+  housezero_hourly_csv: data/housezero/housezero_hourly.csv
+  columns:
+    timestamp: timestamp_utc
+    temp_out_c: outdoor_temperature_c
+    solar_w_m2: solar_radiation_w_m2
+    pv_kw: pv_total_raw_kw
+  housezero_pv_capacity_kw_dc: 15.0
+  pv_reference_derate: 0.875
+  max_interp_gap_h: 6
+  climatology_window_days: 7
+holidays:
+- '2025-05-26'
+- '2025-06-19'
+- '2025-07-04'
+- '2025-09-01'
+- '2025-10-13'
+- '2025-11-11'
+- '2025-11-27'
+- '2025-12-25'
+- '2026-01-01'
+- '2026-01-19'
+- '2026-02-16'
+- '2026-04-20'
+- '2026-05-25'
+population:
+  representative:
+    heating:
+      heat_pump: 0.1
+      gas_central_ac: 0.4
+      gas_window_ac: 0.5
+    p_solar: 0.12
+    p_battery_given_solar: 0.15
+    p_battery_given_no_solar: 0.01
+    ev:
+      '0': 0.9
+      '1': 0.09
+      '2': 0.01
+    archetype:
+      commuter: 0.45
+      wfh: 0.25
+      retiree: 0.15
+      family: 0.15
+  balanced:
+    heating:
+      heat_pump: 0.34
+      gas_central_ac: 0.33
+      gas_window_ac: 0.33
+    p_solar: 0.5
+    p_battery_given_solar: 0.5
+    p_battery_given_no_solar: 0.1
+    ev:
+      '0': 0.4
+      '1': 0.4
+      '2': 0.2
+    archetype:
+      commuter: 0.25
+      wfh: 0.25
+      retiree: 0.25
+      family: 0.25
+home:
+  sqft:
+    median: 1900
+    sigma: 0.3
+    min: 1000
+    max: 4000
+  vintage_shares:
+    pre_1950: 0.35
+    '1950_1990': 0.4
+    post_1990: 0.25
+  ua_kw_per_c_at_median_sqft:
+    pre_1950:
+    - 0.32
+    - 0.4
+    '1950_1990':
+    - 0.26
+    - 0.34
+    post_1990:
+    - 0.2
+    - 0.28
+  ua_area_exponent: 0.7
+  tau_h:
+    pre_1950:
+    - 20
+    - 35
+    '1950_1990':
+    - 25
+    - 42
+    post_1990:
+    - 35
+    - 50
+  hp_capacity_design_delta_c: 36
+  hp_capacity_spread: 0.2
+  central_ac_capacity_kw_per_ua: 30
+  furnace_capacity_kw_per_ua: 45
+  furnace_blower_kw:
+  - 0.3
+  - 0.5
+  window_ac_fraction:
+  - 0.5
+  - 0.7
+  window_ac_max_kw_thermal: 3.5
+  window_ac_season:
+  - 06-01
+  - 09-15
+  backup_heat_cop: 1.0
+  backup_heat_max_kw: 10.0
+  internal_gain_occupied_kw:
+  - 0.4
+  - 0.8
+  internal_gain_unoccupied_kw: 0.3
+  window_aperture_m2_at_median_sqft:
+  - 1.0
+  - 3.0
+  pv_kw_dc:
+  - 4.0
+  - 12.0
+  pv_derate:
+  - 0.8
+  - 0.95
+  pv_noise_max_frac: 0.05
+  battery_kwh:
+  - 10.0
+  - 20.0
+  battery_kw:
+  - 5.0
+  - 11.5
+  battery_eff:
+  - 0.88
+  - 0.92
+  battery_reserve_pct:
+  - 10.0
+  - 30.0
+thermostat:
+  winter_setpoint_c:
+  - 19.5
+  - 21.5
+  p_no_setback: 0.4
+  setback_c:
+  - 16.5
+  - 18.5
+  setback_recovery_ramp_h: 2.0
+  summer_setpoint_c:
+  - 23.0
+  - 25.5
+  comfort_band_c:
+  - 1.0
+  - 2.0
+  vacation_heat_setpoint_c: 15.5
+occupancy:
+  archetypes:
+    commuter:
+      wake: 6.5
+      sleep: 23.0
+      leave: 7.75
+      return: 18.0
+      dinner: 18.75
+    wfh:
+      wake: 7.0
+      sleep: 23.0
+      leave: null
+      return: null
+      dinner: 18.25
+    retiree:
+      wake: 6.5
+      sleep: 22.0
+      leave: null
+      return: null
+      dinner: 17.25
+    family:
+      wake: 6.0
+      sleep: 22.5
+      leave: 8.0
+      return: 15.0
+      dinner: 17.75
+  weekend_wake_delay_h: 1.0
+  weekend_dinner: 18.25
+  family_morning_rush_multiplier: 1.5
+  jitter_per_home_h: 0.75
+  jitter_per_day_h: 0.6
+  vacation_weeks:
+  - 1
+  - 2
+appliances:
+  base_kw:
+  - 0.25
+  - 0.5
+  plug_activity_kw:
+  - 0.1
+  - 0.5
+  lighting_kw:
+  - 0.1
+  - 0.4
+  darkness_irradiance_w_m2: 150
+  dryer:
+    kw: 3.0
+    duration_h:
+    - 0.75
+    - 1.0
+    per_week:
+    - 2
+    - 5
+  oven:
+    kw: 2.0
+    duration_h:
+    - 0.5
+    - 1.0
+    p_dinner:
+    - 0.5
+    - 0.85
+    p_lunch_if_home: 0.15
+  dishwasher:
+    kw: 1.2
+    duration_h:
+    - 1.0
+    - 1.5
+    per_week:
+    - 3
+    - 7
+  electric_water_heater:
+    p_has:
+      heat_pump: 0.4
+      gas: 0.1
+    kw: 4.5
+    morning_runtime_h:
+    - 0.75
+    - 1.5
+    evening_runtime_h:
+    - 0.5
+    - 1.25
+ev:
+  mean_daily_kwh:
+  - 8.0
+  - 14.0
+  daily_kwh_clip:
+  - 5.0
+  - 20.0
+  daily_cv: 0.3
+  charger_kw:
+    '7.2': 0.8
+    '11.5': 0.2
+  charge_eff: 0.9
+  weekday_arrival:
+    mean: 18.5
+    sd: 1.0
+  weekend_arrival_uniform:
+  - 10.0
+  - 21.0
+  ready_by: 7.5
+compliance_rate:
+- 0.6
+- 0.95
+splits:
+  home_fractions:
+    train: 0.7
+    val: 0.15
+    test: 0.15
+  months:
+    train:
+    - 2025-05
+    - 2026-01
+    val:
+    - 2026-02
+    - 2026-03
+    test:
+    - 2026-04
+    - 2026-05
+output:
+  batch_size: 250
+  compression: zstd
+run:
+  n_homes: 200
+  mode: balanced
+  seed: 42
+  homesim_version: 0.1.0

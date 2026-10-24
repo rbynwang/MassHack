@@ -1,0 +1,40 @@
+[project]
+name = "masshack"
+version = "0.1.0"
+description = "Climate-aware world model for a building with solar and a battery — Hackachusetts 2026"
+readme = "README.md"
+authors = [
+    { name = "Xuening Wang", email = "wxnrobin@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "lightgbm>=4.3",
+    "cvxpy>=1.4",
+    "torch>=2.3",
+    "pytest>=8.2",
+    "hypothesis>=6.103",
+    "pyarrow>=24.0.0",
+    "pyyaml>=6.0.3",
+    "openpyxl>=3.1.5",
+    "matplotlib>=3.9",
+]
+
+[project.scripts]
+masshack-train    = "masshack.scripts.train:main"
+masshack-backtest = "masshack.scripts.backtest:main"
+masshack-export   = "masshack.scripts.export_demo:main"
+homesim           = "homesim.cli:main"
+homesim-baseline  = "homesim.baseline:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = ["masshack", "homesim"]
+source-include = ["src/homesim/config.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
