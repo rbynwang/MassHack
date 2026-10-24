@@ -243,23 +243,23 @@ class Twin:
 
 
 # ====================================================================== builders
-def _local_day(df: pd.DataFrame, col: str = "timestamp_utc") -> pd.DataFrame:
+def _local_day(df: pd.DataFrame, day: str = EVENT_DAY, col: str = "timestamp_utc") -> pd.DataFrame:
     df = df.copy()
     df[col] = pd.to_datetime(df[col], utc=True)
     df = df.set_index(col).tz_convert(LOCAL_TZ)
-    return df.loc[EVENT_DAY]
+    return df.loc[day]
 
 
-def _weather() -> pd.DataFrame:
-    w = _local_day(pd.read_parquet(TRAIN / "weather.parquet"))
+def _weather(day: str = EVENT_DAY) -> pd.DataFrame:
+    w = _local_day(pd.read_parquet(TRAIN / "weather.parquet"), day)
     h = w[["outdoor_temp_c", "ghi_w_m2", "pv_per_kwdc"]].resample("h").mean(numeric_only=True)
     return pd.DataFrame({"temp_out_c": h["outdoor_temp_c"].to_numpy(), "solar_w_m2": h["ghi_w_m2"].to_numpy(),
                          "pv_per_kwdc": h["pv_per_kwdc"].to_numpy()}, index=range(24))
 
 
-def _training_members(ids: list[str]) -> dict[str, dict[str, pd.DataFrame]]:
+def _training_members(ids: list[str], day: str = EVENT_DAY) -> dict[str, dict[str, pd.DataFrame]]:
     ml = pd.read_parquet(TRAIN / "members_load_2025_2026.parquet", filters=[("member_id", "in", ids)])
-    ml = _local_day(ml)
+    ml = _local_day(ml, day)
     out: dict[str, dict[str, pd.DataFrame]] = {}
     for (m, mode), g in ml.groupby(["member_id", "mode"]):
         out.setdefault(m, {})[mode] = g[["demand_kw", "pv_kw", "cooling_kw"]].resample("h").mean().reset_index(drop=True)
@@ -276,9 +276,9 @@ BUSINESS = [  # member_id, display, kind, battery?, cost
 ]
 
 
-def _business_twins(weather: pd.DataFrame) -> list[Twin]:
+def _business_twins(weather: pd.DataFrame, day: str = EVENT_DAY) -> list[Twin]:
     meta = pd.read_csv(TRAIN / "members.csv").set_index("member_id")
-    data = _training_members([b[0] for b in BUSINESS] + ["hz_main"])
+    data = _training_members([b[0] for b in BUSINESS] + ["hz_main"], day)
     twins = []
     t_out = weather["temp_out_c"].to_numpy()
     hz = data["hz_main"]["baseline"]
@@ -310,7 +310,7 @@ def _business_twins(weather: pd.DataFrame) -> list[Twin]:
     return twins
 
 
-def _household_twins() -> list[Twin]:
+def _household_twins(day: str = EVENT_DAY) -> list[Twin]:
     from homesim import load_config
     from homesim.behavior import simulate_behavior
     from homesim.inputs import load_inputs
@@ -328,7 +328,7 @@ def _household_twins() -> list[Twin]:
     beh = simulate_behavior(cfg, chosen, inp, np.random.default_rng(7))
     phy = simulate_physics(cfg, chosen, inp, beh)
     loc = inp.frame["timestamp_local"]
-    idx = np.flatnonzero((loc.dt.strftime("%Y-%m-%d") == EVENT_DAY).to_numpy())
+    idx = np.flatnonzero((loc.dt.strftime("%Y-%m-%d") == day).to_numpy())
     t_out = inp.temp_out_c[idx]
     solar = inp.solar_w_m2[idx]
     twins = []
@@ -368,7 +368,7 @@ def _mild_reference(series_by_day: pd.DataFrame, weather_days: pd.Series) -> np.
     return rows.mean(axis=0).to_numpy()
 
 
-def _public_twins(weather: pd.DataFrame) -> list[Twin]:
+def _public_twins(weather: pd.DataFrame, day: str = EVENT_DAY) -> list[Twin]:
     t_out = weather["temp_out_c"].to_numpy()
     hz = pd.read_csv(ROOT / "data/housezero/housezero_hourly.csv", parse_dates=["timestamp_utc"])
     hz["loc"] = hz.timestamp_utc.dt.tz_convert(LOCAL_TZ)
@@ -381,13 +381,13 @@ def _public_twins(weather: pd.DataFrame) -> list[Twin]:
     ng["Date"] = pd.to_datetime(ng["Date"]).dt.strftime("%Y-%m-%d")
     g2 = ng.set_index("Date").iloc[:, 1:25].astype(float)
     g2.columns = range(24)
-    hot = g2.loc[EVENT_DAY].to_numpy()
+    hot = g2.loc[day].to_numpy()
     mild = _mild_reference(g2, temp_days)
-    scale = 60.0 / hot.max()
+    scale = 60.0 / g2.loc[EVENT_DAY].max()            # building size fixed by its June 24 peak
     school_pv = 40.0 * weather["pv_per_kwdc"].fillna(0).to_numpy()
     school = Twin(
         member_id="school_01", display_name="School 01", kind="public_institution", label="assumption",
-        source="National Grid G-2 class shape for 2025-06-24 scaled to 60 kW; 40 kW PV and shared battery assumed",
+        source=f"National Grid G-2 class shape for {day}, sized to a 60 kW peak on 2025-06-24; 40 kW PV and shared battery assumed",
         owner="Town school department", load_kw=hot * scale, pv_kw=school_pv,
         cooling_kw=np.clip(hot - mild, 0, None) * scale, t_out_c=t_out,
         battery={"kwh": 100.0, "kw": 50.0, "eff_rt": 0.90, "reserve_pct": 20.0, "label": "assumption"},
@@ -399,18 +399,18 @@ def _public_twins(weather: pd.DataFrame) -> list[Twin]:
     b = b[b.quality_flag == "complete"]
     b["day"], b["h"] = b["loc"].dt.strftime("%Y-%m-%d"), b["loc"].dt.hour
     piv = b.pivot_table(index="day", columns="h", values="mean_kw_available")
-    hot = piv.loc[EVENT_DAY].to_numpy()
-    scale = 45.0 / hot.max()
+    hot = piv.loc[day].to_numpy()
+    scale = 45.0 / piv.loc[EVENT_DAY].max()           # building size fixed by its June 24 peak
     library = Twin(
         member_id="library_01", display_name="Library 01", kind="public_institution", label="measured",
-        source="Boston Public Library Central, measured 2025-06-24 shape, scaled to a 45 kW branch; "
+        source=f"Boston Public Library Central, measured {day} shape, sized to a 45 kW branch on 2025-06-24; "
                "HVAC share 30 % assumed",
         owner="City library", load_kw=hot * scale, pv_kw=np.zeros(24),
         cooling_kw=HVAC_SHARE_ASSUMED * hot * scale, t_out_c=t_out, cost_per_kwh=0.08, assets=["hvac"])
     return [school, library]
 
 
-def build_neighborhood() -> tuple[list[Twin], pd.DataFrame]:
-    weather = _weather()
-    twins = _business_twins(weather) + _household_twins() + _public_twins(weather)
+def build_neighborhood(day: str = EVENT_DAY) -> tuple[list[Twin], pd.DataFrame]:
+    weather = _weather(day)
+    twins = _business_twins(weather, day) + _household_twins(day) + _public_twins(weather, day)
     return twins, weather

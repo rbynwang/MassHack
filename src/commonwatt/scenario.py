@@ -41,21 +41,31 @@ def owner_limits(tw) -> OwnerLimits:
                        comfort_max_c=comfort)
 
 
-def run(ask_kw: float, window: list[int], tool_spec: str | None = None) -> dict:
-    tool = load_tool(tool_spec)
-    twins, weather = build_neighborhood()
-    registry, ledger = Registry(), Ledger()
+def run(ask_kw: float, window: list[int], tool_spec: str | None = None, day: str = EVENT_DAY,
+        ledger: Ledger | None = None, library: str = "joins", override: bool = True,
+        guard_keys: dict | None = None) -> dict:
+    """One day of the commons. library: "joins" (joins live, as on June 24), "member" (already a member) or
+    "absent" (not yet in the commons). A shared `ledger` and `guard_keys` chain receipts across days."""
+    tool = load_tool(tool_spec, day)
+    twins, weather = build_neighborhood(day)
+    if library == "absent":
+        twins = [t for t in twins if t.member_id != LATE_JOINER]
+    late = LATE_JOINER if library == "joins" else None
+    registry, ledger = Registry(), (ledger if ledger is not None else Ledger())
     bus = Bus(registry)
-    grid = GridAgent(COMMONS)
+    grid = GridAgent(COMMONS, day)
     coord = Coordinator(COMMONS, bus, registry, tool)
     agents = {t.member_id: MemberAgent(t, tool, COMMONS, owner_limits(t), ledger, weather) for t in twins}
+    if guard_keys is not None:                      # a member's guard keeps its signing key from day to day
+        for m, ag in agents.items():
+            ag.guard.keys = guard_keys.setdefault(m, ag.guard.keys)
 
     # 1. The network forms ------------------------------------------------------------------
     bus.at("09:55")
     for card in (grid.card(), coord.card()):
         registry.register(card)
     for m, ag in agents.items():
-        if m == LATE_JOINER:
+        if m == late:
             continue
         registry.register(ag.card())
         registry.register(ag.guard_card())
@@ -85,22 +95,24 @@ def run(ask_kw: float, window: list[int], tool_spec: str | None = None) -> dict:
     for c in registry.members(COMMONS):
         collect_offer(c.agent_id)
 
-    bus.at("10:02")
-    m_o, kw_o, why = OVERRIDE
-    agents[m_o].guard.limits.max_reduce_kw = kw_o
-    bus.note(f"guard:{m_o}", f"{m_o}'s owner lowered its limit to {kw_o} kW ({why}); private, the coordinator "
-                             f"still has the earlier offer", kind="private")
+    if override:
+        bus.at("10:02")
+        m_o, kw_o, why = OVERRIDE
+        agents[m_o].guard.limits.max_reduce_kw = kw_o
+        bus.note(f"guard:{m_o}", f"{m_o}'s owner lowered its limit to {kw_o} kW ({why}); private, the coordinator "
+                                 f"still has the earlier offer", kind="private")
 
     bus.at("10:03")
     coord.run_round(neg, 1, agents)
 
-    bus.at("10:04")
-    lib = agents[LATE_JOINER]
-    registry.register(lib.card())
-    registry.register(lib.guard_card())
-    bus.send(LATE_JOINER, lib.keys, "registry", lib.card(),
-             f"{LATE_JOINER} joined the commons (agent card registered, no coordinator change)")
-    collect_offer(LATE_JOINER)
+    if late:
+        bus.at("10:04")
+        lib = agents[late]
+        registry.register(lib.card())
+        registry.register(lib.guard_card())
+        bus.send(late, lib.keys, "registry", lib.card(),
+                 f"{late} joined the commons (agent card registered, no coordinator change)")
+        collect_offer(late)
 
     for r in (2, 3):
         if neg.pooled_kw >= ask.kw - 0.05:
@@ -137,10 +149,12 @@ def run(ask_kw: float, window: list[int], tool_spec: str | None = None) -> dict:
     ok, msg = ledger.verify()
     bus.note("ledger", f"Ledger check: {msg}" if ok else f"Ledger FAILED: {msg}", kind="ledger")
 
-    return _export(twins, agents, weather, grid, ask, neg, receipts, no_opt, alone, network, bus, ledger, tool)
+    return _export(twins, agents, weather, grid, ask, neg, receipts, no_opt, alone, network, bus, ledger, tool,
+                   day, late)
 
 
-def _export(twins, agents, weather, grid, ask, neg, receipts, no_opt, alone, network, bus, ledger, tool) -> dict:
+def _export(twins, agents, weather, grid, ask, neg, receipts, no_opt, alone, network, bus, ledger, tool,
+            day: str = EVENT_DAY, late: str | None = LATE_JOINER) -> dict:
     w = ask.window
     after = list(range(max(w) + 1, 24))
     def r1(a):
@@ -163,7 +177,7 @@ def _export(twins, agents, weather, grid, ask, neg, receipts, no_opt, alone, net
             phone = " ".join(parts)
         members.append({
             "id": m, "name": t.display_name, "kind": t.kind, "kind_label": KIND_LABEL[t.kind], "label": t.label,
-            "source": t.source, "assets": t.assets, "late_joiner": m == LATE_JOINER,
+            "source": t.source, "assets": t.assets, "late_joiner": m == late,
             "battery": t.battery, "cost_per_kwh": (o.cost_per_kwh if o else t.cost_per_kwh),
             "offer_window_kw": (min(o.hours[h].can_reduce_kw for h in w) if o else None),
             "steps": steps, "committed_kw": neg.committed.get(m, 0.0),
@@ -214,7 +228,7 @@ def _export(twins, agents, weather, grid, ask, neg, receipts, no_opt, alone, net
                         "tool_calls": len(getattr(tool, "calls", [])),
                         "forecast_day_error_pct": model_fc and round(float(np.mean([v["day_error_pct"] for v in model_fc.values()])), 1)}
     out = {
-        "version": __version__, "day": EVENT_DAY, "commons": COMMONS, "tool": tool.name,
+        "version": __version__, "day": day, "commons": COMMONS, "tool": tool.name,
         "model_forecasts": model_fc, "tool_calls": getattr(tool, "calls", []),
         "ask": ask.model_dump(mode="json"), "window_label": hours_label(w), "tou_peak": TOU_PEAK,
         "hours": list(range(24)),
