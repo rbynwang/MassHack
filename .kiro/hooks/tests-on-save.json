@@ -1,0 +1,17 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Run physics and leakage tests on model save",
+      "trigger": "PostFileSave",
+      "matcher": "^(model|community)/.*\\.py$",
+      "action": { "type": "command", "command": "python -m pytest -q tests/test_physics.py tests/test_no_leakage.py tests/test_period.py" }
+    },
+    {
+      "name": "Refresh demo data after evaluation changes",
+      "trigger": "PostFileSave",
+      "matcher": "^model/(evaluate|export_demo)\\.py$",
+      "action": { "type": "agent", "prompt": "The evaluation or export code changed. Re-run `python -m model.evaluate` and `python -m model.export_demo`, then summarize any change in the headline numbers (dollars saved per month, peak kW avoided, share of the optimum captured)." }
+    }
+  ]
+}

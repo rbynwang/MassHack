@@ -1,0 +1,73 @@
+<title>MassHack Build Status</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..650&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single checklist column, newest activity at the top, like a build log. */
+:root{--bg:#f4f6f3;--card:#fff;--ink:#11181c;--ink2:#4a565d;--ink3:#6d7a81;--line:rgba(16,24,28,.1);--done:#1e8a4b;--run:#a76a06;--wait:#9aa5aa;--bad:#c8403f;
+  --f:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--m:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1014;--card:#10181e;--ink:#e6eef0;--ink2:#a3b3ba;--ink3:#7a8d95;--line:rgba(214,232,238,.1);--done:#4fcf8a;--run:#e6b56d;--wait:#55656c;--bad:#e66767;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1014;--card:#10181e;--ink:#e6eef0;--ink2:#a3b3ba;--ink3:#7a8d95;--line:rgba(214,232,238,.1);--done:#4fcf8a;--run:#e6b56d;--wait:#55656c;--bad:#e66767;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--f);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 60px;display:flex;flex-direction:column;gap:18px}
+h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.02em}
+.sub{color:var(--ink2);font-size:14px}
+.now{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.now b{display:block}
+.dot{width:12px;height:12px;border-radius:50%;flex:none;margin-top:5px;background:var(--run)}
+@media (prefers-reduced-motion:no-preference){.dot.pulse{animation:p 1.4s ease-in-out infinite}}
+@keyframes p{50%{opacity:.35}}
+ol{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:12px}
+li{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;padding:11px 14px;border-top:1px solid var(--line);align-items:start}
+li:first-child{border-top:0}
+.st{width:18px;height:18px;border-radius:50%;margin-top:2px;border:2px solid var(--wait)}
+li.done .st{background:var(--done);border-color:var(--done)}
+li.run .st{border-color:var(--run);border-right-color:transparent}
+@media (prefers-reduced-motion:no-preference){li.run .st{animation:s 1s linear infinite}}
+@keyframes s{to{transform:rotate(360deg)}}
+li.bad .st{background:var(--bad);border-color:var(--bad)}
+li b{font-weight:600}
+li small{display:block;color:var(--ink2);font-size:13px}
+time{font:500 12px/1.6 var(--m);color:var(--ink3);white-space:nowrap}
+.log{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:400 12.5px/1.6 var(--m);color:var(--ink2);white-space:pre-wrap;overflow-wrap:anywhere}
+.lbl{font:500 11px/1 var(--m);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+</style>
+<div class="wrap">
+  <div><div class="lbl">MassHack · GridCollective Boston</div><h1>Build status</h1>
+  <p class="sub">This page updates itself each time Claude finishes a step. Last update: <b id="upd">16:50</b> (Boston time).</p></div>
+
+  <div class="now"><span class="dot" style="background:var(--done)"></span><div><b id="nowT">Model evaluation done: three fixes found and shipped</b><span class="sub" id="nowS">The planner was fine (it captures 99–102% of savings with a perfect forecast); the loss was forecast error. Fixes: plan over forecast scenarios (+16 points of savings captured), calibrated uncertainty bands (80% coverage), and action data rebuilt from paired simulations (load-shift shape match 0.21 → 0.66). Bills down about $4,000 per peak day vs the 15:10 build.</span></div></div>
+
+  <ol id="steps">
+    <li class="done"><span class="st"></span><div><b>Evaluation: where the money is lost</b><small>Perfect-forecast test: planner captures 99–102% → the gap is forecast error, magnified by the demand charge</small></div><time>15:35</time></li>
+    <li class="done"><span class="st"></span><div><b>Fix 1: plan over forecast scenarios</b><small>Stochastic hourly re-planning: savings captured 47→66% (summer), 62→78% (winter) on the same forecasts</small></div><time>15:45</time></li>
+    <li class="done"><span class="st"></span><div><b>Fix 2: action data rebuilt from paired simulations</b><small>Old mode runs were separate fits (noise ≈2× the true load-shift effect); paired-difference model now predicts it (corr 0.66; pre-cool 0.97)</small></div><time>16:00</time></li>
+    <li class="done"><span class="st"></span><div><b>Fix 3: calibrated bands + honest 104-day test</b><small>Coverage 66% → 80%; whole-community error 4.0%, peak hour 3.7%; final models refit with peak weeks held out</small></div><time>16:35</time></li>
+    <li class="done"><span class="st"></span><div><b>Demo, EVALUATION.md, package updated</b><small>New evaluation tables on the demo page; RESULTS.md and EVALUATION.md generated from the run</small></div><time>16:50</time></li>
+    <li class="done"><span class="st"></span><div><b>Final pass: data extended to May 2025 – May 2026</b><small>HouseZero May 2025 from the older release; ISO-NE May 2025; weather and grid rebuilt (all 13 months present)</small></div><time>15:00</time></li>
+    <li class="done"><span class="st"></span><div><b>Final pass: code upgrades</b><small>Type fingerprints, balanced training, world-model action effects, hourly re-planning (MPC), cooling-center heat rules, what-if; 12 tests pass</small></div><time>15:15</time></li>
+    <li class="done"><span class="st"></span><div><b>Final pass: 116 members built</b><small>HouseZero + BPL Central (measured) · 25 civic · 9 large retail · 40 small businesses · 40 homes (4 with batteries, 11 EVs) · +200 training-only homes; 8.2M rows, all May 2025 – May 2026</small></div><time>15:38</time></li>
+    <li class="done"><span class="st"></span><div><b>Final pass: train, simulate, what-if, Boston</b><small>World model on 316 buildings; planner = LightGBM baseline + world-model action effects; library forecast error 3–6%; coordination round now protects the community's own peak hours</small></div><time>15:05</time></li>
+    <li class="done"><span class="st"></span><div><b>Final pass: demo + package</b><small>Demo republished (what-if −10 to +3 °C, 116 members, phone layout fixed) · RESULTS.md generated from the run · README and Kiro specs updated · new zip delivered</small></div><time>15:25</time></li>
+    <li class="done"><span class="st"></span><div><b>Data: weather, grid, events, Boston map</b><small>HouseZero weather 2025–26 · ISO-NE prices and load, 12 months · BERDO 2025 stock</small></div><time>10:51</time></li>
+    <li class="done"><span class="st"></span><div><b>40 building designs learned their weather response</b><small>Fit on held-out days: R² 0.94–0.98, typical error 5–8%</small></div><time>10:55</time></li>
+    <li class="done"><span class="st"></span><div><b>Member files written</b><small>HouseZero + 40 Boston buildings, each in a real Boston zip; all inside the data window</small></div><time>11:15</time></li>
+    <li class="done"><span class="st"></span><div><b>Code: physics, optimizer, trust layer, coordinator, agents, world model</b><small>8 tests passing</small></div><time>11:05</time></li>
+    <li class="done"><span class="st"></span><div><b>World model trained</b><small>33,852 training days across members and modes · loss 0.97 → 0.17</small></div><time>11:19</time></li>
+    <li class="done"><span class="st"></span><div><b>First full run: forecast test</b><small>Error on held-out peak weeks: LightGBM with weather 7.2% · world model 10.9% · no weather 13.2% · same-hour-last-week 18.1%. Summer: 8% with weather vs 19% without.</small></div><time>11:22</time></li>
+    <li class="done"><span class="st"></span><div><b>First full run: peak days + Boston</b><small>Worked end to end, but the collective barely beat the members' own plans; causes found</small></div><time>11:22</time></li>
+    <li class="done"><span class="st"></span><div><b>Second run with fixes</b><small>Peak guard works: no building ends with a higher peak than without a battery. World model 9.8% error (LightGBM 7.1%).</small></div><time>11:38</time></li>
+    <li class="done"><span class="st"></span><div><b>Third run: two-round coordination</b><small>Summer community peak: batteries alone 4,588 kW (higher than no battery 4,553) → collective 4,542 kW. Payout bug fixed; honest battery offers.</small></div><time>12:00</time></li>
+    <li class="done"><span class="st"></span><div><b>Demo page with real results</b><small>Published as GridCollective Boston; checked for errors and phone width</small></div><time>12:05</time></li>
+    <li class="done"><span class="st"></span><div><b>Package delivered</b><small>MassHack-GridCollective.zip: code, data, results, demo, 12 tests, Kiro files</small></div><time>12:10</time></li>
+  </ol>
+
+  <div><div class="lbl" style="margin-bottom:8px">Latest log lines</div><div class="log" id="log">[ 35.4s] what-if -10.0 heat warning False planned peak r1/r2 12121 12027
+[ 36.5s] what-if -5.0 heat warning True  planned peak r1/r2 13614 13524
+[ 37.5s] what-if 0.0  heat warning True  planned peak r1/r2 13868 13761
+[ 38.5s] what-if 3.0  heat warning True  planned peak r1/r2 13879 13773
+[ 38.7s] wrote app/public/demo.json 1.4 MB
+12 passed</div></div>
+</div>
