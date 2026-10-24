@@ -1,0 +1,151 @@
+{
+  "downloaded_at": "2026-10-24T13:33:29.203Z",
+  "institution": "Harvard Center for Green Buildings and Cities",
+  "location": "HouseZero, Cambridge, Massachusetts, USA",
+  "selection": {
+    "start_local": "2025-05-01T00:00:00-04:00",
+    "end_exclusive_local": "2026-06-01T00:00:00-04:00"
+  },
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "datasets": [
+    {
+      "title": "HouseZero® one year dataset (June 2024 - May 2025)",
+      "doi": "10.6084/m9.figshare.30260233.v1",
+      "version": 1,
+      "url": "https://figshare.com/articles/journal_contribution/HouseZero_one_year_dataset_June_2024_-_May_2025_/30260233",
+      "authors": [
+        "Harvard CGBC at GSD",
+        "Sunghwan Lim",
+        "Ali Malkawi",
+        "Sang Won Kang",
+        "Gulai Shen",
+        "Yiwei Lyu",
+        "Peter Howard"
+      ],
+      "files": [
+        {
+          "name": "Data Report.pdf",
+          "id": 64495077,
+          "download_url": "https://ndownloader.figshare.com/files/64495077",
+          "size_bytes": 5893714,
+          "md5": "e692b57f1b8302f169a36dfd2278d8b1"
+        },
+        {
+          "name": "HZ_solar_radiation.csv",
+          "id": 58434559,
+          "download_url": "https://ndownloader.figshare.com/files/58434559",
+          "size_bytes": 16906598,
+          "md5": "416503100cada2a29e420b095a45708a"
+        },
+        {
+          "name": "Weather_station.csv",
+          "id": 58434562,
+          "download_url": "https://ndownloader.figshare.com/files/58434562",
+          "size_bytes": 22644622,
+          "md5": "b4ee1f901a484bb73474a15a9f027fee"
+        },
+        {
+          "name": "Load.csv",
+          "id": 58434592,
+          "download_url": "https://ndownloader.figshare.com/files/58434592",
+          "size_bytes": 202692057,
+          "md5": "39074a2151b2b5457e1ddc0312ab2ac4"
+        }
+      ]
+    },
+    {
+      "title": "HouseZero® one year dataset (June 2025 - May 2026)",
+      "doi": "10.6084/m9.figshare.32790984.v1",
+      "version": 1,
+      "url": "https://figshare.com/articles/dataset/HouseZero_one_year_dataset_June_2025_-_May_2026_/32790984",
+      "authors": [
+        "Harvard CGBC at GSD"
+      ],
+      "files": [
+        {
+          "name": "HZ_solar_radiation.csv",
+          "id": 65863290,
+          "download_url": "https://ndownloader.figshare.com/files/65863290",
+          "size_bytes": 16912196,
+          "md5": "c82598040f31478fcfec6108c821a911"
+        },
+        {
+          "name": "Weather_station.csv",
+          "id": 65863293,
+          "download_url": "https://ndownloader.figshare.com/files/65863293",
+          "size_bytes": 25039663,
+          "md5": "216f396656522331976bab136d10aa41"
+        },
+        {
+          "name": "Load.csv",
+          "id": 65863341,
+          "download_url": "https://ndownloader.figshare.com/files/65863341",
+          "size_bytes": 202997106,
+          "md5": "0e016438fbe9af8fb4d28764f3e542e0"
+        },
+        {
+          "name": "Data Report.pdf",
+          "id": 65863296,
+          "download_url": "https://ndownloader.figshare.com/files/65863296",
+          "size_bytes": 12180952,
+          "md5": "073d7e9e7f3ccc0820273d2b120f522c"
+        }
+      ]
+    }
+  ],
+  "source_handling": [
+    {
+      "name": "HZ_solar_radiation.csv",
+      "year": "2024-2025",
+      "rows": 44640,
+      "range": "bytes 0-16906597/16906598",
+      "excerpt": true,
+      "source_md5": "416503100cada2a29e420b095a45708a"
+    },
+    {
+      "name": "Weather_station.csv",
+      "year": "2024-2025",
+      "rows": 44640,
+      "range": "bytes 0-22644621/22644622",
+      "excerpt": true,
+      "source_md5": "b4ee1f901a484bb73474a15a9f027fee"
+    },
+    {
+      "name": "Load.csv",
+      "year": "2024-2025",
+      "rows": 44640,
+      "range": "bytes 172692057-202692056/202692057",
+      "excerpt": true,
+      "source_md5": "39074a2151b2b5457e1ddc0312ab2ac4"
+    },
+    {
+      "name": "HZ_solar_radiation.csv",
+      "year": "2025-2026",
+      "range": "full verified",
+      "excerpt": false,
+      "source_md5": "c82598040f31478fcfec6108c821a911"
+    },
+    {
+      "name": "Weather_station.csv",
+      "year": "2025-2026",
+      "range": "full verified",
+      "excerpt": false,
+      "source_md5": "216f396656522331976bab136d10aa41"
+    },
+    {
+      "name": "Load.csv",
+      "year": "2025-2026",
+      "range": "full verified",
+      "excerpt": false,
+      "source_md5": "0e016438fbe9af8fb4d28764f3e542e0"
+    },
+    {
+      "name": "Data Report.pdf",
+      "year": "2025-2026",
+      "range": "full verified",
+      "excerpt": false,
+      "source_md5": "073d7e9e7f3ccc0820273d2b120f522c"
+    }
+  ]
+}
