@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Commonwatt Live 3D</title>
+<title>MassWatt Live 3D</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap">
@@ -164,14 +164,17 @@ body{background:var(--page);color:var(--ink);font-family:var(--display);font-siz
 .note{margin:0;max-width:80ch;color:var(--ink-2);font-size:13.5px}
 .note code{font-family:var(--mono);font-size:12.5px;background:#fff;border:1px solid #dde1dc;border-radius:5px;padding:1px 5px}
 @media (prefers-reduced-motion:reduce){ .log .row{animation:none} }
+/* ?hero=1: full-bleed camera tour for the landing page, no overlays */
+body.hero{padding:0;background:#dfdfdc}
+body.hero .wrap{max-width:none;gap:0}
+body.hero .viewport{position:fixed;inset:0;width:100vw;height:100vh;aspect-ratio:auto;border-radius:0;box-shadow:none}
+body.hero .hud,body.hero .pill,body.hero .card,body.hero .log,body.hero .stat,body.hero .nav,body.hero .overlay,body.hero #net,body.hero .controls,body.hero .scrim,body.hero .vignette{display:none!important}
+#gl{cursor:grab} #gl:active{cursor:grabbing} body.hero #gl{cursor:default}
 </style>
 </head>
 <body>
+<script src="../nav.js" data-root="../"></script>
 <div class="wrap">
-  <header class="top">
-    <h1>Commonwatt</h1>
-    <p>Four members, one network. Presentation scenes.</p>
-  </header>
 
   <div class="viewport" id="viewport">
     <div class="canvas" id="canvas">
@@ -182,7 +185,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--display);font-siz
       <div class="overlay" id="overlay"></div>
 
       <div class="hud" id="hud">
-        <div class="brand"><span>Commonwatt</span><span aria-hidden="true">·</span><span>Cambridge, MA</span><span class="clock"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 3.6V7l2.2 1.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="clock">2:40 PM</span></span></div>
+        <div class="brand"><span>MassWatt</span><span aria-hidden="true">·</span><span>Cambridge, MA</span><span class="clock"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 3.6V7l2.2 1.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="clock">2:40 PM</span></span></div>
         <h2 id="hTitle">Office complex</h2>
         <p id="hCaption"></p>
       </div>
@@ -219,9 +222,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--display);font-siz
     <span class="sep" aria-hidden="true"></span>
     <button id="bStill" type="button" title="Saves the 3D render of the current frame at 3840×2160, without labels or cards">Save still (4K)</button>
     <button id="bGlb" type="button" title="Downloads the neighborhood model for Blender, Keynote, Figma or another 3D tool">Export 3D model (.glb)</button>
-    <span class="hint">Space plays or pauses. Arrow keys change scenes.</span>
   </div>
-  <p class="note">Numbers on screen are illustrative. To show your simulation results, edit the <code>STORY</code> object at the top of the script. The 3D models, materials and energy lines live in <code>commonwatt-kit.js</code> and can be reused in other pages. Add <code>?quality=low</code> to the URL on a slow machine.</p>
 </div>
 
 <script>document.write('<script src="story-data.js?t=' + Date.now() + '"><\/script>');</script>
@@ -237,6 +238,8 @@ const NS = 'http://www.w3.org/2000/svg';
 const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 const Q = new URLSearchParams(location.search);
 const LOW = Q.get('quality') === 'low';
+const HERO = Q.get('hero') === '1';
+if(HERO) document.body.classList.add('hero');
 function el(tag, attrs, parent){ const e=document.createElementNS(NS, tag); if(attrs) for(const k in attrs) e.setAttribute(k, attrs[k]); if(parent) parent.appendChild(e); return e; }
 const $ = id => document.getElementById(id);
 
@@ -379,6 +382,7 @@ function enter(i, instant){
   viewport.classList.toggle('evening', ch.mood==='evening');
   stage.setMood(ch.mood);
   if(instant) stage.snapMood();
+  stage.setFreeCam(false);
   stage.setCamera(camOf(ch), instant || RM);
   stage.allFlowsOff();
   (ch.flows||[]).forEach(f => stage.setFlow(f[0], f[1], f[2]));
@@ -421,7 +425,7 @@ function runEvent(e){
   }
 }
 
-function setPlaying(p){ playing = p; $('bPlay').textContent = p ? 'Pause' : 'Play'; }
+let setPlaying = function(p){ playing = p; $('bPlay').textContent = p ? 'Pause' : 'Play'; };
 function next(){ if(cur < STORY.chapters.length-1){ enter(cur+1); setPlaying(true); } }
 function prev(){ enter(Math.max(0, cur-1)); setPlaying(true); }
 $('bPlay').addEventListener('click', () => {
@@ -450,7 +454,7 @@ let fitK = 1, prScale = 1;
 function applyPR(){ stage.setPixelRatio(Math.max(0.75, Math.min(1.5, (window.devicePixelRatio||1)*fitK) * prScale * (LOW ? 0.6 : 1))); }
 function fit(){
   const W = viewport.clientWidth, H = viewport.clientHeight;
-  const k = Math.min(W/1600, H/900);
+  const k = HERO ? Math.max(W/1600, H/900) : Math.min(W/1600, H/900);
   canvas.style.transform = `translate(${(W-1600*k)/2}px,${(H-900*k)/2}px) scale(${k})`;
   if(Math.abs(k-fitK) > 0.02){ fitK = k; applyPR(); }
 }
@@ -467,9 +471,10 @@ function frame(now){
     elapsed += dt;
     const ev = ch.events || [];
     while(fired < ev.length && ev[fired].at <= elapsed) runEvent(ev[fired++]);
-    if(elapsed >= ch.dur){ if(cur < STORY.chapters.length-1) enter(cur+1); else { elapsed = ch.dur; setPlaying(false); } }
+    if(elapsed >= ch.dur){ if(cur < STORY.chapters.length-1) enter(cur+1); else if(HERO) enter(0); else { elapsed = ch.dur; setPlaying(false); } }
   }
   for(let i=timers.length-1;i>=0;i--){ const t=timers[i]; if(t.tok!==token){ timers.splice(i,1); continue; } if(elapsed >= t.at){ timers.splice(i,1); t.fn(); } }
+  if(orbit && stage.isFreeCam()) orbit.update();
   stage.update(dt, { reducedMotion: RM });
   stage.render();
   chips.forEach(c => { if(c.ch!==cur) return; const p = stage.project(c.wp); c.el.style.left = p[0].toFixed(1)+'px'; c.el.style.top = p[1].toFixed(1)+'px'; });
@@ -486,6 +491,16 @@ function frame(now){
   if(cur>=0) navBtns[cur].querySelector('i').style.width = Math.min(100, elapsed/ch.dur*100).toFixed(1)+'%';
   requestAnimationFrame(frame);
 }
+
+/* drag to look around the whole neighborhood (not on the landing-page hero) */
+let orbit = null;
+if(!HERO && X.OrbitControls){
+  orbit = new X.OrbitControls(stage.camera, $('gl'));
+  orbit.enableDamping = true; orbit.dampingFactor = 0.08; orbit.maxPolarAngle = Math.PI*0.47; orbit.minDistance = 20; orbit.maxDistance = 700;
+  orbit.addEventListener('start', () => { if(!stage.isFreeCam()){ orbit.target.copy(stage.cam.at); stage.setFreeCam(true); setPlaying(false); } });
+}
+const _setPlaying = setPlaying;
+setPlaying = p => { if(p && stage.isFreeCam()){ stage.setFreeCam(false); } _setPlaying(p); };
 
 /* establishing shot: start on the whole neighborhood, then glide to the first building */
 stage.setCamera(camOf(STORY.chapters[STORY.chapters.length-1]), true);
@@ -515,7 +530,7 @@ const fail = (e) => {
   m.textContent = 'The 3D scene could not load. It needs an internet connection the first time, to fetch three.js. Offline, open commonwatt-story.v1-backup.html for the 2D version.';
 };
 try {
-  const [THREE, BGU, RE, EC, RP, GT, OP, L2, LM, LG, GE] = await Promise.all([
+  const [THREE, BGU, RE, EC, RP, GT, OP, L2, LM, LG, GE, OC] = await Promise.all([
     import('three'),
     import('three/addons/utils/BufferGeometryUtils.js'),
     import('three/addons/environments/RoomEnvironment.js'),
@@ -526,12 +541,13 @@ try {
     import('three/addons/lines/Line2.js'),
     import('three/addons/lines/LineMaterial.js'),
     import('three/addons/lines/LineGeometry.js'),
-    import('three/addons/exporters/GLTFExporter.js')
+    import('three/addons/exporters/GLTFExporter.js'),
+    import('three/addons/controls/OrbitControls.js')
   ]);
   window.__cwStart(THREE, {
     mergeGeometries: BGU.mergeGeometries, RoomEnvironment: RE.RoomEnvironment, EffectComposer: EC.EffectComposer,
     RenderPass: RP.RenderPass, GTAOPass: GT.GTAOPass, OutputPass: OP.OutputPass,
-    Line2: L2.Line2, LineMaterial: LM.LineMaterial, LineGeometry: LG.LineGeometry, GLTFExporter: GE.GLTFExporter
+    Line2: L2.Line2, LineMaterial: LM.LineMaterial, LineGeometry: LG.LineGeometry, GLTFExporter: GE.GLTFExporter, OrbitControls: OC.OrbitControls
   });
 } catch (e) { fail(e); }
 </script>

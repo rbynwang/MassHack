@@ -1,10 +1,10 @@
-# Commonwatt Presentation Scenes: Handoff
+# MassWatt Presentation Scenes: Handoff
 
-Context for continuing work on the Commonwatt presentation in an AI coding tool. Keep this file beside the HTML and include it from `.kiro/steering/presentation.md` when working in Kiro.
+Context for continuing work on the MassWatt presentation in an AI coding tool. Keep this file beside the HTML and include it from `.kiro/steering/presentation.md` when working in Kiro.
 
 ## What It Is
 
-An animated, recordable presentation for the Commonwatt hackathon pitch (Hackachusetts 2026, Energy & Climate track). It visits four member buildings, then pulls back to the agent network that connects them:
+An animated, recordable presentation for the MassWatt hackathon pitch (Hackachusetts 2026, Energy & Climate track). It visits four member buildings, then pulls back to the agent network that connects them:
 
 1. **Office complex** (modeled on HouseZero): curtain wall behind wood fins, solar chimney, roof PV, rooftop heat pumps, battery yard
 2. **Single-family home**: modern two-volume house, cutaway living room, balcony, roof PV, two wall-mounted home batteries, heat pump
@@ -22,7 +22,7 @@ The visual style is a white-clay architectural model inspired by clean home-ener
 | `story-data.js` | `STORY`: every word, number, camera and label on screen. Shared by all pages. |
 | `renders/` | `<chapter>.webp` stills (3200×1800) and `scenes.js` (where every flow line, label, node and smoke source lands on the 1600×900 frame). Generated; don't edit by hand. |
 | `commonwatt-bake.html` | **The renderer.** Builds the 3D neighborhood with the kit and writes `renders/`. Soft shadows come from averaging 16 renders with the sun nudged around a small disk. |
-| `commonwatt-kit.js` | **Reusable 3D kit**: materials, building models, people and furniture, energy lines, lighting moods, camera rig, stills and GLB export. Use it for any other Commonwatt visual. |
+| `commonwatt-kit.js` | **Reusable 3D kit**: materials, building models, people and furniture, energy lines, lighting moods, camera rig, stills and GLB export. Use it for any other MassWatt visual. |
 | `commonwatt-live-3d.html` | The same story rendered live in WebGL (heavy). Useful for exploring cameras; also has Save still (4K) and Export 3D model (.glb). |
 | `commonwatt-story.v1-backup.html` | The earlier 2D SVG version. |
 

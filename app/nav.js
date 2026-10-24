@@ -1,4 +1,4 @@
-/* Shared top navigation for every Commonwatt page. Include with
+/* Shared top navigation for every MassWatt page. Include with
      <script src="nav.js"></script>                      (pages in app/)
      <script src="../nav.js" data-root="../"></script>  (pages in app/presentation/)
    It injects a <nav> at the top of <body> and highlights the current page. No dependencies, works from file://. */
@@ -8,8 +8,8 @@
   var me = document.currentScript;
   var root = (me && me.getAttribute('data-root')) || '';
   var PAGES = [
-    ['index.html', 'Commonwatt', 'home'],
-    ['presentation/commonwatt-story.html', 'Scenes'],
+    ['index.html', 'MassWatt', 'home'],
+    ['presentation/commonwatt-live-3d.html', 'Scenes'],
     ['story.html', 'Network'],
     ['history.html', 'Trading history'],
     ['member.html', 'Member app'],
@@ -36,7 +36,7 @@
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   function mount() {
     var nav = document.createElement('nav');
-    nav.className = 'cw-nav'; nav.setAttribute('aria-label', 'Commonwatt pages');
+    nav.className = 'cw-nav'; nav.setAttribute('aria-label', 'MassWatt pages');
     PAGES.forEach(function (p) {
       var a = document.createElement('a');
       a.href = root + p[0]; a.textContent = p[1];

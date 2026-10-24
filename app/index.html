@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Commonwatt · an energy commons for Massachusetts neighborhoods</title>
+<title>MassWatt · an energy commons for Massachusetts neighborhoods</title>
 <link rel="stylesheet" href="story.css">
 <script src="data/demo.js"></script>
 <script src="nav.js"></script>
@@ -13,6 +13,7 @@ body { background:var(--page); }
 .cw-nav { position:fixed; left:0; right:0; background:rgba(243,244,241,.72); border-bottom-color:transparent; }
 /* a. hero */
 .hero-full { position:relative; height:100vh; min-height:560px; overflow:hidden; background:#dfdfdc; }
+.hero-full iframe { position:absolute; left:0; right:0; bottom:0; top:clamp(150px, 26vh, 300px); width:100%; height:calc(100% - clamp(150px, 26vh, 300px)); border:0; pointer-events:none; }
 .hero-full img { position:absolute; left:0; right:0; bottom:0; top:clamp(150px, 26vh, 300px); width:100%; height:calc(100% - clamp(150px, 26vh, 300px)); object-fit:cover; object-position:50% 0; }
 .hero-full::after { content:""; position:absolute; left:0; right:0; top:clamp(150px, 26vh, 300px); height:60px; background:linear-gradient(#dfdfdc, rgba(223,223,220,0)); pointer-events:none; }
 .hero-copy { position:absolute; z-index:2; left:0; right:0; top:clamp(70px, 9vh, 96px); text-align:center; padding:0 20px; }
@@ -59,9 +60,10 @@ body { background:var(--page); }
 </head>
 <body>
 <header class="hero-full">
-  <img src="presentation/renders/hero.webp" alt="White-clay model of a Cambridge neighborhood: homes, shops, an office building and a library with rooftop solar, a substation and transmission towers">
+  <iframe src="presentation/commonwatt-live-3d.html?embed=1&amp;hero=1" title="3D tour of the neighborhood: from the whole neighborhood down to one building" tabindex="-1" aria-hidden="true"></iframe>
+  <noscript><img src="presentation/renders/hero.webp" alt="White-clay model of a Cambridge neighborhood"></noscript>
   <div class="hero-copy">
-    <h1>Commonwatt</h1>
+    <h1>MassWatt</h1>
     <p>Every building gets an agent. Every neighborhood gets a network.</p>
     <div class="btns">
       <a class="btn dark" href="#story">Watch the story</a>
@@ -77,9 +79,9 @@ body { background:var(--page); }
 <section class="sec" id="story" aria-labelledby="storyTitle">
   <h2 id="storyTitle">The story<span class="sub">Four buildings, then the network they form, on the evening of the ISO-NE peak.</span></h2>
   <div class="player">
-    <iframe src="presentation/commonwatt-story.html?embed=1" title="Commonwatt story: four buildings and the agent network" loading="lazy" allowfullscreen></iframe>
+    <iframe src="presentation/commonwatt-story.html?embed=1" title="MassWatt story: four buildings and the agent network" loading="lazy" allowfullscreen></iframe>
   </div>
-  <a class="fs" href="presentation/commonwatt-story.html">Open full screen →</a>
+  <a class="fs" href="presentation/commonwatt-live-3d.html">Explore it in 3D →</a>
 </section>
 
 <section class="sec" aria-labelledby="exploreTitle">
@@ -100,7 +102,7 @@ body { background:var(--page); }
 </footer>
 <script>
 (function () {
-  var D = window.COMMONWATT, el = document.getElementById('band');
+  var D = window.MASSWATT, el = document.getElementById('band');
   if (!D) { el.innerHTML = '<p>Run <code>uv run commonwatt-demo</code> first.</p>'; return; }
   var S = D.summary, fmt = function (x, d) { return Number(x).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
   var pill = '<span class="pill simulated">simulated</span>';

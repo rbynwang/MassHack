@@ -1,4 +1,4 @@
-# Commonwatt
+# MassWatt
 
 **An agent network for Massachusetts' energy commons.** Every building gets an agent. Every neighborhood gets a network.
 
@@ -20,7 +20,7 @@ and public buildings that each optimize alone. When they all react to the same p
 peak. Grid programs mostly pay battery owners, and joining means handing your data and device control to a utility
 or aggregator, so most buildings never take part.
 
-## What Commonwatt does
+## What MassWatt does
 
 | Layer | What it does | Code |
 |---|---|---|

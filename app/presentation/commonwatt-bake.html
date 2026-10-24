@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Commonwatt Renderer</title>
+<title>MassWatt Renderer</title>
 <style>
 /* Renders each STORY chapter once with the 3D kit and saves: renders/<key>.webp (3200x1800)
    and renders/scenes.js (where every flow line, label and node lands on the 1600x900 frame).
@@ -23,7 +23,7 @@ code{font-family:ui-monospace,Menlo,monospace}
 </head>
 <body>
 <div class="wrap">
-  <h1>Commonwatt renderer</h1>
+  <h1>MassWatt renderer</h1>
   <p>Renders each scene in <code>story-data.js</code> with <code>commonwatt-kit.js</code>. Your browser downloads <code>office.webp</code>, <code>home.webp</code>, <code>cafe.webp</code>, <code>library.webp</code>, <code>network.webp</code> and <code>scenes.js</code>. Put them in the <code>renders/</code> folder next to <code>commonwatt-story.html</code>. Re-render after changing a camera, a building, or a flow route.</p>
   <button id="go" type="button" disabled>Render all scenes</button>
   <div class="frame"><canvas id="gl" width="1600" height="900"></canvas></div>
