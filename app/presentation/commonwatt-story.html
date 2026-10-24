@@ -191,13 +191,17 @@ svg.net .dot{filter:drop-shadow(0 0 4px currentColor)}
 </style>
 </head>
 <body>
+<script>if (/[?&]embed=1(&|$)/.test(location.search)) document.documentElement.classList.add('embed');</script>
+<style>
+/* ?embed=1: shown inside the landing page. Fit the frame and the controls inside the iframe. */
+html.embed body{padding:6px 0 4px;background:transparent}
+html.embed .wrap{gap:10px}
+html.embed .viewport{width:min(100%,calc((100vh - 64px) * 16 / 9));margin-inline:auto}
+html.embed .controls{justify-content:center}
+@media (max-width:640px){html.embed .viewport{width:min(100%,calc((100vh - 110px) * 16 / 9))}}
+</style>
 <script src="../nav.js" data-root="../"></script>
 <div class="wrap">
-  <header class="top">
-    <h1>Commonwatt</h1>
-    <p>Four members, one network. Presentation scenes.</p>
-  </header>
-
   <div class="viewport" id="viewport">
     <div class="canvas" id="canvas">
       <div id="scenes" role="img" aria-label="Rendered model of a Cambridge neighborhood: an office complex, single-family homes, a corner café, a public library, a substation, transmission towers, and a power plant"></div>
@@ -240,9 +244,7 @@ svg.net .dot{filter:drop-shadow(0 0 4px currentColor)}
     <button id="bFull" type="button">Full screen</button>
     <span class="sep" aria-hidden="true"></span>
     <a href="commonwatt-live-3d.html">Live 3D view</a>
-    <span class="hint">Space plays or pauses. Arrow keys change scenes.</span>
   </div>
-  <p class="note">Numbers on screen are illustrative. Words and numbers live in <code>story-data.js</code>; edit them and reload. Scenes are pre-rendered by <code>commonwatt-bake.html</code>; re-render after changing a camera, a building, or an energy-line route.</p>
 </div>
 
 <script>
