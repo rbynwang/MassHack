@@ -1,0 +1,26 @@
+{
+  "requested_local_start": "2025-05-01T00:00:00-04:00",
+  "requested_local_end_exclusive": "2026-06-01T00:00:00-04:00",
+  "first_source_local": "2025-05-01 00:00:00",
+  "last_source_local": "2026-05-28 00:05:00",
+  "source_records": 85244,
+  "expected_5min_intervals": 114048,
+  "usable_utc_intervals": 85244,
+  "ambiguous_source_records": 0,
+  "invalid_local_time_records": 0,
+  "duplicate_utc_records": 0,
+  "hourly_grid_rows": 9504,
+  "hourly_flags": {
+    "complete": 7094,
+    "missing": 2377,
+    "partial": 33
+  },
+  "min_observed_kw": 172.8,
+  "max_observed_kw": 1432.8,
+  "notes": [
+    "Missing grid intervals are blank, never zero-filled.",
+    "Eastern source timestamps have no UTC offset. Repeated fall daylight-saving hour cannot be assigned unambiguously; those original records are preserved separately and both possible UTC hours are flagged.",
+    "mean_kw_available uses available observed intervals only; estimated_energy_kwh_complete_hour is populated only for complete, unambiguous hours.",
+    "This is a large public library building, not a small business. No measured PV, battery or weather is included."
+  ]
+}
