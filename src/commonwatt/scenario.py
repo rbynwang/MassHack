@@ -127,9 +127,10 @@ def run(ask_kw: float, window: list[int], tool_spec: str | None = None) -> dict:
     receipts = {}
     for m in neg.committed:
         ag = agents[m]
-        dec = ag.decision.predicted
+        bmin = ag.battery_min_pct()
         r = ag.guard.settle(ask.ask_id, window, neg.committed[m], ag.twin.planned_kw.tolist(),
-                            actual[m].tolist(), ask.price_usd_per_kwh, ag.indoor_f(), dec.get("battery_min_pct"))
+                            actual[m].tolist(), ask.price_usd_per_kwh, ag.indoor_f(),
+                            round(bmin, 1) if bmin is not None else None)
         receipts[m] = r
         bus.send(f"guard:{m}", ag.guard.keys, m, r,
                  f"Receipt signed: {m}, {r.delivered_kwh:.1f} kWh, ${r.payment_usd:.2f}")

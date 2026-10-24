@@ -30,6 +30,7 @@ class MemberAgent:
                                  weather_today=weather[["temp_out_c", "solar_w_m2"]],
                                  assets={"battery": twin.battery, "assets": twin.assets}, twin=twin)
         self.decision = None
+        self.plan = None
         self.assignment: Assignment | None = None
 
     # ------------------------------------------------------------ protocol
@@ -61,16 +62,32 @@ class MemberAgent:
             return Response(request_id=req.request_id, member_id=self.id, decision="blocked", kw=0.0,
                             reason=f"trust guard: {verdict.reason}")
         d = self.tool.decide(self.ctx, req.reduce_kw, req.window, req.price_usd_per_kwh)
+        fixed = {int(h): v for h, v in d.predicted.get("fixed_kw", {}).items()}
         if d.decision in ("accept", "counter"):
-            plan_ok = self.guard.check_plan(d.predicted)
+            # The simulated building carries out whatever kW the model committed to (any tool, not only the mock).
+            plan = self.twin.plan(d.kw, req.window)
+            checked = {**self._plan_facts(plan), **{k: v for k, v in d.predicted.items()
+                                                    if k in ("indoor_c_range", "battery_min_pct")}}
+            plan_ok = self.guard.check_plan(checked)
             if not plan_ok.ok:
                 return Response(request_id=req.request_id, member_id=self.id, decision="decline", kw=0.0,
                                 reason=f"trust guard: {plan_ok.reason}")
-            self.decision = d
-        fixed = {int(h): v for h, v in d.predicted.get("fixed_kw", {}).items()}
+            self.decision, self.plan = d, plan
+            if not fixed:
+                fixed = {h: round(float(v), 3) for h, v in enumerate(plan.fixed_delta_kw)
+                         if abs(v) > 1e-3 and h not in req.window}
         return Response(request_id=req.request_id, member_id=self.id, decision=d.decision, kw=d.kw,
                         reason=d.reason, prep_kwh=d.prep_kwh, rebound_kwh=d.rebound_kwh,
                         max_recovery_kw=d.max_recovery_kw, fixed_kw=fixed)
+
+    @staticmethod
+    def _plan_facts(plan) -> dict:
+        facts = {}
+        if plan.indoor_c is not None:
+            facts["indoor_c_range"] = [float(plan.indoor_c.min()), float(plan.indoor_c.max())]
+        if plan.battery_min_pct is not None:
+            facts["battery_min_pct"] = plan.battery_min_pct
+        return facts
 
     def on_assignment(self, env: Envelope) -> None:
         self.assignment = Assignment(**env.body)
@@ -78,15 +95,18 @@ class MemberAgent:
     # ------------------------------------------------------------ the day itself
     def actual_kw(self):
         """Metered draw for the day under its assignment (no assignment = its own plan)."""
-        if self.assignment is None or self.decision is None:
+        if self.assignment is None or self.plan is None:
             return self.twin.planned_kw.copy()
         a = self.assignment
-        plan = self.decision.predicted["plan"]
+        plan = self.twin.plan(a.reduce_kw, a.window) if abs(a.reduce_kw - self.plan.kw) > 0.011 else self.plan
         return self.twin.execute(plan, a.window, a.prep_kw, a.recovery_kw)
+
+    def battery_min_pct(self) -> float | None:
+        return self.plan.battery_min_pct if self.plan is not None else None
 
     def indoor_f(self) -> list[float] | None:
         if self.twin.home is None:
             return None
-        tin = self.decision.predicted["plan"].indoor_c if self.decision else self.twin.indoor_baseline_c()
+        tin = self.plan.indoor_c if self.plan is not None else self.twin.indoor_baseline_c()
         occupied = tin[7:23]
         return [round(float(occupied.min()) * 9 / 5 + 32, 1), round(float(occupied.max()) * 9 / 5 + 32, 1)]

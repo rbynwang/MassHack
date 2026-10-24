@@ -57,7 +57,6 @@ class MockModelTool:
             predicted["battery_min_pct"] = round(p.battery_min_pct, 1)
         predicted["fixed_kw"] = {int(h): round(float(v), 3) for h, v in enumerate(p.fixed_delta_kw)
                                  if abs(v) > 1e-3 and h not in window}
-        predicted["plan"] = p
         args = dict(prep_kwh=round(p.battery_prep_kwh, 3), rebound_kwh=round(p.battery_recovery_kwh, 3),
                     max_recovery_kw=p.battery_max_kw, predicted=predicted)
         if p.kw >= reduce_kw - 0.01:

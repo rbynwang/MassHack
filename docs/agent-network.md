@@ -50,14 +50,16 @@ COMMONWATT_TOOL=mlmodel.tool:TrainedModelTool uv run commonwatt-demo
 |---|---|---|---|
 | `forecast(ctx, horizon_h)` | member | its own context | hourly `load_kw`, `pv_kw`, `net_kw`, P10/P90 |
 | `flexibility(ctx, window)` | member | its own context | `can_reduce_kw` per hour, `sustain_reduce_kw` for the whole window, prep and rebound kWh per kWh, `cost_per_kwh` |
-| `decide(ctx, reduce_kw, window, price)` | member | a request | `accept` / `counter` (kW it can hold for every window hour) / `decline`, with `predicted` = `indoor_c_range`, `battery_min_pct`, `fixed_kw`, `plan` |
+| `decide(ctx, reduce_kw, window, price)` | member | a request | `accept` / `counter` (kW it can hold for every window hour) / `decline`. Optional `predicted`: `indoor_c_range`, `battery_min_pct`, `fixed_kw` (otherwise the simulated building supplies them) |
 | `plan_dispatch(offers, need_kw, window, price, round_no, exclude, committed)` | coordinator | offers only | who to ask for how much this round |
 
 Rules the tests check (`tests/test_commonwatt.py`): an accepted or countered kW must be one the member can hold;
 the guard blocks anything over the owner's limit; batteries stay above the reserve; payouts add up.
 
 The mock (`tools/mock.py`) is a perfect-foresight stand-in: it reads each member's digital twin
-(`members.py`). The demo page shows the tool's name, so judges can see which one produced the numbers.
+(`members.py`). Whatever tool decides, the twin is the simulated building that carries out the committed kW,
+and its trust guard checks the result (battery reserve, comfort band) before it runs. The demo page shows the
+tool's name, so judges can see which one produced the numbers.
 
 ## Data (Massachusetts only)
 
