@@ -83,7 +83,7 @@ Copy for the page (edit freely):
 | 1:05–1:45 | Scenes → network (evening), then Network replay | Grid asks 60 kW; coordinator negotiates; a guard blocks the EV request (80% by 7 AM); library joins live; peak flattens; receipts are signed. |
 | 1:45–2:15 | Trading history (week, audit chain) | Seven days, every receipt chained and verified; who earned what by member type. |
 | 2:15–2:35 | Member app: household, then café | What one owner sees on their phone. |
-| 2:35–3:00 | README / `.kiro` folder | Built with Kiro: steering, specs, hooks, property-based tests caught a rounding bug; Claude drafted, Kiro executed. |
+| 2:35–3:00 | README / `.kiro` folder | Built with Kiro: steering, specs, hooks, and property-based tests; show the rounding bug the tests caught and how the spec drove implementation. |
 
 ## Submission form text (paste)
 

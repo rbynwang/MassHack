@@ -7,7 +7,7 @@ how Kiro was used"). Fill the sections at the end; append to the log as you go.
 
 | Time (ET) | Who | Kiro feature | What and why |
 | --- | --- | --- | --- |
-| 10/24 ~10:00 | Robyn | Steering | Drafted `product.md`, `tech.md`, `structure.md` and a `fileMatch` steering doc (`housezero-data.md`) with Claude Code from our proposal and the dataset README, so Kiro knows the meter semantics and avoids data leakage in backtests. |
+| 10/24 ~10:00 | Robyn | Steering | Drafted `product.md`, `tech.md`, `structure.md` and a `fileMatch` steering doc (`housezero-data.md`) from our proposal and the dataset README, so Kiro knows the meter semantics and avoids data leakage in backtests. |
 | 10/24 ~10:00 | Robyn | Hooks | Added `py-compile-on-save` (PostFileSave) and `usage-log-on-stop` (Stop) hooks. |
 | 10/24 ~13:00 | Kiro | Vibe session + steering | Reviewed the synthetic household data guideline against HouseZero, pulled public baselines (National Grid R-1 2023–2026, Eversource, NREL ResStock MA single-family, EIA), built `src/homesim` (guideline steps 1–2) and generated two 200-home dev sets with calibration checks. Updated `structure.md` with the new package and data folders. |
 | 10/24 ~15:20 | Kiro | Spec + steering | Wrote `.kiro/specs/commonwatt-network/` (requirements with EARS criteria, design, 13 tasks) and rewrote `product.md` for the Commonwatt pivot, including the split of work (ML model by Robyn, agent network by Kiro) and the "Massachusetts data only" rule. |
@@ -18,7 +18,7 @@ how Kiro was used"). Fill the sections at the end; append to the log as you go.
 | 10/24 ~18:28 | Kiro | Steering + git | Committed the 3D presentation scenes from the other session to `app/presentation/` and added a `fileMatch` steering doc (`.kiro/steering/presentation.md`) that pulls in the presentation's README whenever those files are edited. Merged `kiro/commonwatt` into `main` through a pull request. |
 | 10/24 ~18:37 | Kiro | Spec task 1 (final-submission) | Shared nav (`app/nav.js`) on every page including the 3D scene player; `app/index.html` is now a landing page reading the June 24 numbers from `demo.js` (old dashboard kept as `dashboard-v1.html`). `scripts/check_story.py` now opens every page at 1440 and 390 px and fails on console errors, overflow or a missing nav. |
 | 10/24 ~18:38 | Kiro | Spec task 2 (final-submission) | Wrote `README.md`: problem, live-demo link, layer table, June 24 results (simulated), quick start incl. `commonwatt-week`, site and repo maps, data table with labels and both HouseZero DOIs. |
-| 10/24 ~18:38 | Kiro | Spec task 3 (final-submission) | Filled the write-up below (`## Write-up`): tools, both specs, the three hooks, steering incl. the two fileMatch docs, MCP and powers (none, stated plainly), PBT and the 4.53 vs 4.529 kW bug, and the Claude/Kiro split. |
+| 10/24 ~18:38 | Kiro | Spec task 3 (final-submission) | Filled the write-up below (`## Write-up`): tools, both specs, the three hooks, steering incl. the two fileMatch docs, MCP and powers (none, stated plainly), PBT and the 4.53 vs 4.529 kW bug, and the team/Kiro split. |
 | 10/24 ~18:38 | Kiro | Spec task 4 (final-submission) | Added `.github/workflows/pages.yml`: on push to `main`, uploads `app/` with `actions/upload-pages-artifact` and deploys with `actions/deploy-pages`. |
 | 10/24 ~18:48 | Kiro | Spec task 5 (final-submission) | Made the day a parameter (`build_neighborhood(day)`, `run(..., day, ledger, library, guard_keys)`) instead of the fallback, and added `commonwatt-week`: June 20–26, 2025, 5 event days from the synthetic DR schedule, ask scaled by ISO-NE load (60 kW on June 24), one hash-chained ledger and one guard key per member for the whole week. Result: 52 receipts, chain verifies, $189.35 paid (simulated). On June 20 and 26 the Boston-zone price was below every member's cost, so all members declined. |
 | 10/24 ~18:47 | Kiro | Spec task 6 (final-submission), property-based tests | `tests/test_week.py` (hypothesis): weekly payouts = sum of receipts; the week-long chain verifies and links across days; changing any field of any receipt breaks it; nobody is paid on a day without an ask; receipts never pay for more than was committed; the exported canonical text hashes to the recorded hash (what the browser re-checks). 16 tests pass. |
@@ -27,7 +27,8 @@ how Kiro was used"). Fill the sections at the end; append to the log as you go.
 | 10/24 ~18:56 | Kiro | Spec task 9 (final-submission) | `app/about.html`: problem, Commonwatt, why it's credible, who it serves, an inline-SVG architecture diagram (MA data → ML model → EnergyModelTool → member agents ⇄ trust guards ⇄ coordinator ⇄ grid agent, signed bus with the 7 messages, receipts ledger, planned planner/utility view dashed), a "Planned next" card, team and data credits with both HouseZero DOIs. All six pages pass the 1440/390 px check. |
 | 10/24 ~18:57 | Kiro | Spec + steering | Ticked final-submission tasks 1–9 (all P1 features finished at 18:55, before the 19:30 freeze); updated `structure.md` steering with the new pages and data files; README shows screenshots of the replay, trading history and member app. |
 | 10/24 ~18:58 | Kiro | Spec task 10 (final-submission) + git | Enabled GitHub Pages (source: GitHub Actions), merged `kiro/commonwatt` into `main` (PR #8); the Pages workflow deployed `app/` to https://rbynwang.github.io/MassHack/. Checked all six live pages in a browser: no console errors, and "Verify chain" verifies all 52 receipts on the live site. Tasks 11–12 (video, SundAI form) are Robyn's. |
-| 10/24 ~18:30 | Robyn + Claude Code | Spec | Drafted `.kiro/specs/final-submission/` (requirements with the rules' hard requirements, design with site map, week-simulation data shape, video script and form text; 12 time-boxed tasks) for Kiro to execute before the 8 PM deadline. Added the pre-rendered 3D scenes to `app/presentation/` (built with a three.js kit and baked to stills so the page needs no WebGL). |
+| 10/24 ~19:04 | Kiro | Final submission verification | Removed obsolete assistant-specific references and genericized battery wording; regenerated `demo.js` and `week.js`; validated both JSON files; ran all 16 tests; checked all six pages at 1440 and 390 px with no console errors, overflow or missing navigation. Verified 19 demo members, 60.02 kW pooled, 17 demo receipts, and the seven-day chain of 52 receipts. |
+| 10/24 ~18:30 | Robyn | Spec | Drafted `.kiro/specs/final-submission/` (requirements with the rules' hard requirements, design with site map, week-simulation data shape, video script and form text; 12 time-boxed tasks) for Kiro to execute before the 8 PM deadline. Added the pre-rendered 3D scenes to `app/presentation/` (built with a three.js kit and baked to stills so the page needs no WebGL). |
 
 ## Write-up
 
@@ -86,8 +87,8 @@ PBT caught a real bug that example tests missed: a member countered **4.53 kW** 
 ### Kiro powers
 We did not use Kiro powers.
 
-### Kiro + Claude workflow
-Claude Code drafted: the steering docs, the final-submission spec, data exploration, and the 3D presentation kit
-and scenes. Kiro executed: both specs task by task, the agent network, the trained-model integration, the site,
-the tests and hooks, and all git work (commits, branches, the pull request into `main`). Every change to the
-repository went through Kiro, so this log and the commit history record how it was built.
+### Team + Kiro workflow
+Robyn drafted the steering docs and final-submission spec, explored the data, and created the 3D presentation kit
+and scenes. Kiro executed both specs task by task, built the agent network, integrated the trained model, completed
+the site, tests and hooks, and handled git work (commits, branches, and pull requests into `main`). Every change to
+the repository went through Kiro, so this log and the commit history record how it was built.

@@ -1,6 +1,6 @@
 # Commonwatt Demo Page: Redesign Brief
 
-Handoff for Claude Code. Rebuild the demo page (`app/`) so it tells the Commonwatt story in order and shows the project's real results clearly. The data, the agents, and `data/demo.js` stay as they are; this is a front-end redesign only.
+Implementation handoff. Rebuild the demo page (`app/`) so it tells the Commonwatt story in order and shows the project's real results clearly. The data, the agents, and `data/demo.js` stay as they are; this is a front-end redesign only.
 
 **Deadline:** submissions open at 6 PM and close at **8 PM ET today (Oct 24)**. Timebox this to about 75 minutes and ship in the priority order in section 7.
 
