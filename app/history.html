@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commonwatt · Trading history, June 20–26, 2025</title>
+<link rel="stylesheet" href="story.css">
+<script src="vendor/plotly-basic.min.js"></script>
+<script src="data/week.js"></script>
+<script src="nav.js"></script>
+<style>
+.days { display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 14px; }
+.days button { font:600 13px var(--display); border:1px solid #d3d7d2; background:#fff; border-radius:12px; padding:7px 12px; cursor:pointer; text-align:left; }
+.days button small { display:block; font:500 11px var(--mono); color:var(--ink-3); }
+.days button[aria-pressed=true] { background:var(--ink); color:#fff; border-color:var(--ink); }
+.days button[aria-pressed=true] small { color:#c9cdd2; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.chart { height:280px; }
+.daysum { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; }
+.daysum div { background:#f6f7f5; border-radius:12px; padding:10px 12px; }
+.daysum b { display:block; font:650 20px var(--mono); }
+.daysum span { font-size:12.5px; color:var(--ink-2); }
+.events { margin:12px 0 0; padding:0; list-style:none; display:grid; gap:6px; font-size:14px; }
+.events li { background:#f6f7f5; border-radius:10px; padding:8px 12px; border-left:4px solid #c4c9c3; }
+.events li.blocked, .events li.decline { border-color:var(--strain); } .events li.counter { border-color:var(--battery); }
+table.sortable th { cursor:pointer; user-select:none; white-space:nowrap; }
+table.sortable th[aria-sort]::after { content:" ↕"; color:var(--ink-3); }
+td.num, th.num { text-align:right; font-family:var(--mono); }
+tr.group td { background:#f3f4f2; font-weight:650; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2); }
+.verify { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0 12px; }
+.verify button { font:600 14px var(--display); background:var(--ink); color:#fff; border:0; border-radius:999px; padding:8px 16px; cursor:pointer; }
+.verify .res { font:600 14px var(--display); }
+.verify .res.ok { color:#1d8a4a; } .verify .res.bad { color:var(--strain); }
+.audit td { font:12px/1.4 var(--mono); }
+.audit td.hash { color:var(--ink-3); }
+.ok-cell { color:#1d8a4a; font-weight:700; } .bad-cell { color:var(--strain); font-weight:700; }
+.scroll { overflow-x:auto; max-height:460px; overflow-y:auto; }
+@media (max-width:900px) { .two { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <section class="card">
+    <div class="sec-head"><h2>Trading history, June 20–26, 2025</h2><p id="weekSub"></p></div>
+    <div class="hero-stats" id="weekStats"></div>
+    <p class="footnote" id="weekNotes"></p>
+  </section>
+
+  <section class="card" aria-labelledby="chartsTitle">
+    <div class="sec-head"><h2 id="chartsTitle">Seven days</h2><p>Bars: energy delivered on the grid's request. Line: payments. Right: the evening peak, alone vs. together. <span class="pill simulated">simulated</span></p></div>
+    <div class="two">
+      <div id="chDelivered" class="chart" role="img"></div>
+      <div id="chPeak" class="chart" role="img"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="dayTitle">
+    <div class="sec-head"><h2 id="dayTitle">One day</h2><p>Pick a day to see its negotiation.</p></div>
+    <div class="days" id="days" role="group" aria-label="Days"></div>
+    <div class="daysum" id="daySum"></div>
+    <ul class="events" id="dayEvents"></ul>
+    <p id="dayReplay" class="footnote"></p>
+  </section>
+
+  <section class="card" aria-labelledby="earnTitle">
+    <div class="sec-head"><h2 id="earnTitle">Earnings by member</h2><p>Dollars per day, grouped by kind of member. Click a column to sort. <span class="pill simulated">simulated</span></p></div>
+    <div class="table-scroll"><table class="sortable" id="earn"></table></div>
+  </section>
+
+  <section class="card" aria-labelledby="auditTitle">
+    <div class="sec-head"><h2 id="auditTitle">Audit trail</h2><p>Every receipt is signed by the member's trust guard and links to the previous one by hash. Check it here, in your browser.</p></div>
+    <div class="verify"><button type="button" id="bVerify">Verify chain</button><span class="res" id="verifyRes" aria-live="polite"></span></div>
+    <div class="scroll"><table class="audit" id="audit"></table></div>
+  </section>
+</div>
+<div class="missing" id="missing" hidden>Run <code>uv run commonwatt-week</code> first.</div>
+<script src="history.js"></script>
+</body>
+</html>
